@@ -1,0 +1,101 @@
+# ==========================================
+# 4HD PRINT - WordPress Git Repository
+# ==========================================
+
+
+# ==========================================
+# WordPress generated files
+# ==========================================
+
+uploads/
+cache/
+upgrade/
+
+
+# ==========================================
+# Backups
+# ==========================================
+
+updraft/
+ai1wm-backups/
+backups/
+
+backuply/
+backuply-pro/
+
+
+# ==========================================
+# Cache / optimization
+# ==========================================
+
+speedycache-config/
+advanced-cache-backup.php
+
+plugins/speedycache/
+plugins/speedycache-pro/
+
+
+# ==========================================
+# Security / generated files
+# ==========================================
+
+jetpack-waf/
+rsssl-managed-htaccess.lock
+
+
+# ==========================================
+# Logs
+# ==========================================
+
+*.log
+plugins/error_log
+
+
+# ==========================================
+# System files
+# ==========================================
+
+.DS_Store
+Thumbs.db
+
+
+# ==========================================
+# Environment / sensitive files
+# ==========================================
+
+.env
+
+
+# ==========================================
+# Plugins
+# Ignore ALL plugins by default
+# ==========================================
+
+plugins/*
+
+# Keep our custom plugin
+!plugins/4hd-product-upload/
+!plugins/4hd-product-upload/**
+
+
+# ==========================================
+# Themes
+# Ignore ALL themes by default
+# ==========================================
+
+themes/*
+
+# Keep our custom theme
+!themes/4hdprint/
+!themes/4hdprint/**
+
+
+# ==========================================
+# Other files
+# ==========================================
+
+index.php-old
+plugins/hello.php
+
+# Local / hosting must-use plugins
+mu-plugins/
