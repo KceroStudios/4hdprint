@@ -745,3 +745,23 @@ footer .social_container {
         width: 100%;
     }
 }
+
+/* WooCommerce cart icon */
+.cart-icon {
+    font-size: 22px;
+    vertical-align: middle;
+}
+
+.cart-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    margin-left: 4px;
+    padding: 0 4px;
+    border-radius: 50%;
+    font-size: 11px;
+    line-height: 18px;
+    vertical-align: top;
+}
