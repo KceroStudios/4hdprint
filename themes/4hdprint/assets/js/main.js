@@ -22,16 +22,27 @@ window.addEventListener('resize', ajustarElementos);
 
 //scroll menu
 
-  const scrollLimit = 110; 
-  const menu = document.querySelector('.menu_container');
+  // Scroll menu
 
-  window.addEventListener('scroll', () => {
-    if (window.scrollY >= scrollLimit) {
-      menu.classList.add('scroll-menu');
-    } else {
-      menu.classList.remove('scroll-menu');
+const scrollLimit = 110;
+const menu = document.querySelector('.menu_container');
+
+if (menu) {
+
+    function updateScrollMenu() {
+
+        if (window.scrollY >= scrollLimit) {
+            menu.classList.add('scroll-menu');
+        } else {
+            menu.classList.remove('scroll-menu');
+        }
+
     }
-  });
+
+    window.addEventListener('scroll', updateScrollMenu);
+
+    updateScrollMenu();
+}
 
   //////////////////////
   document.addEventListener("DOMContentLoaded", function () {
@@ -44,3 +55,30 @@ window.addEventListener('resize', ajustarElementos);
     });
   }
 });
+
+// Back to top
+
+const backToTop = document.querySelector('#back-to-top');
+
+if (backToTop) {
+
+    window.addEventListener('scroll', () => {
+
+        if (window.scrollY >= 400) {
+            backToTop.classList.add('is-visible');
+        } else {
+            backToTop.classList.remove('is-visible');
+        }
+
+    });
+
+    backToTop.addEventListener('click', () => {
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+    });
+
+}

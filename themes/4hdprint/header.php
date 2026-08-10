@@ -49,35 +49,33 @@
 
             
             <div class="menu_container">
-  <div class="line line_1"></div>
+              <div class="center_container">
+ 
+                <a href="<?php echo esc_url( home_url('/') ); ?>" class="logo"></a>
 
-  <a href="<?php echo esc_url( home_url('/') ); ?>" class="logo"></a>
+                <nav>
+                  <div class="main_menu">
+                    <button type="button" class="icon_menu" aria-label="Abrir menú">
+                      <span class="dashicons dashicons-menu-alt2"></span>
+                    </button>
 
-  <div class="line line_2"></div>
+                    <?php
+                    wp_nav_menu([
+                      'theme_location' => 'main_menu',
+                      'container'      => false,
+                      'menu_class'     => 'menu-list',
+                      'fallback_cb'    => function () {
+                        echo '<ul class="menu-list">';
+                        wp_list_pages(['title_li' => '']);
+                        echo '</ul>';
+                      },
+                    ]);
+                    ?>
+                  </div>
+                </nav>
 
-  <nav>
-    <div class="main_menu">
-      <button type="button" class="icon_menu" aria-label="Abrir menú">
-        <span class="dashicons dashicons-menu-alt2"></span>
-      </button>
-
-      <?php
-      wp_nav_menu([
-        'theme_location' => 'main_menu',
-        'container'      => false,
-        'menu_class'     => 'menu-list',
-        'fallback_cb'    => function () {
-          echo '<ul class="menu-list">';
-          wp_list_pages(['title_li' => '']);
-          echo '</ul>';
-        },
-      ]);
-      ?>
-    </div>
-  </nav>
-
-  <div class="line line_3"></div>
-</div>
+              </div>
+            </div>
 
 </header>
 
