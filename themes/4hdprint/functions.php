@@ -6,6 +6,9 @@
         add_theme_support('title-tag');
         add_theme_support('post-thumbnails');
         add_theme_support('woocommerce');
+        add_theme_support('wc-product-gallery-zoom');
+        add_theme_support('wc-product-gallery-lightbox');
+        add_theme_support('wc-product-gallery-slider');
 
         // Registro de menú
         register_nav_menus([
@@ -1498,3 +1501,119 @@ add_action('admin_enqueue_scripts', function ($hook) {
     wp_enqueue_media();
 
 });
+
+/* =========================================
+   PRODUCT QUANTITY LABEL
+========================================= */
+
+add_action('woocommerce_before_add_to_cart_quantity', function () {
+    echo '<span class="fourhd-quantity-label">Quantity</span>';
+});
+
+/* =========================================
+   REMOVE PRODUCT META
+   SKU + CATEGORY + TAGS
+========================================= */
+
+remove_action(
+    'woocommerce_single_product_summary',
+    'woocommerce_template_single_meta',
+    40
+);
+
+/* =========================================
+   ORDER RECEIVED — CUSTOM ACTIONS
+========================================= */
+
+add_action(
+    'woocommerce_thankyou',
+    'fourhd_order_received_actions',
+    20
+);
+
+function fourhd_order_received_actions($order_id) {
+
+    if (!$order_id) {
+        return;
+    }
+
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        return;
+    }
+
+    ?>
+
+    <div class="fourhd-order-actions">
+
+        <!-- PRINT ORDER -->
+
+        <button
+            type="button"
+            class="fourhd-order-action fourhd-order-action--print"
+            onclick="window.print();"
+        >
+            Print Order
+        </button>
+
+
+        <!-- TRACK PACKAGE -->
+
+        <?php
+
+        $tracking_number = $order->get_meta(
+            '_fourhd_tracking_number'
+        );
+
+        if (!empty($tracking_number)) :
+
+            $tracking_url =
+                'https://www.ups.com/track?tracknum=' .
+                rawurlencode($tracking_number);
+
+        ?>
+
+            <a
+                href="<?php echo esc_url($tracking_url); ?>"
+                class="fourhd-order-action"
+                target="_blank"
+                rel="noopener"
+            >
+                Track Package
+            </a>
+
+        <?php endif; ?>
+
+
+        <!-- CREATE ACCOUNT -->
+
+        <?php if (!is_user_logged_in()) : ?>
+
+            <a
+                href="<?php echo esc_url(
+                    wc_get_page_permalink('myaccount')
+                ); ?>"
+                class="fourhd-order-action"
+            >
+                Create Account
+            </a>
+
+        <?php endif; ?>
+
+
+        <!-- CONTINUE SHOPPING -->
+
+        <a
+            href="<?php echo esc_url(
+                wc_get_page_permalink('shop')
+            ); ?>"
+            class="fourhd-order-action"
+        >
+            Continue Shopping
+        </a>
+
+    </div>
+
+    <?php
+}

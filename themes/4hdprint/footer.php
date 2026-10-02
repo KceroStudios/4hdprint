@@ -227,21 +227,7 @@ $video = get_option('4hd_homepage_video', [
 
         <!-- Legal Navigation -->
 
-        <nav
-            class="site-footer__navigation"
-            aria-label="Legal navigation"
-        >
-
-            <?php
-            wp_nav_menu([
-                'theme_location' => 'footer_menu',
-                'container'      => false,
-                'menu_class'     => 'footer-menu',
-                'fallback_cb'    => false,
-            ]);
-            ?>
-
-        </nav>
+       
 
 
         <!-- Copyright -->

@@ -9,7 +9,7 @@ get_header();
             <div class="col"></div>
             <div class="col contact_form">
                 <h1>Contact Us</h1>
-                <?php echo do_shortcode('[wpforms id="51" title="false"]'); ?> 
+                <?php echo do_shortcode('[wpforms id="61" title="false"]'); ?> 
             </div>
         </div>
     </div>

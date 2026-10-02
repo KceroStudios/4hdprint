@@ -90,14 +90,14 @@ $banner = get_option(
         <div class="card"> 
             <img src="<?php echo get_template_directory_uri()?>/assets/images/print.png">
                 <h3>PRINT SERVICES</h3>
-                <p> High-quality printing for your business</p><br>
+                <p> High-quality custom printing for your business</p><br>
                 <a class="featured-products__shop-button" href="/product-category/print-products/">View All Products</a>
         </div>
             
         <div class="card"> 
             <img src="<?php echo get_template_directory_uri()?>/assets/images/custom.png">
                 <h3>CUSTOM PRODUCTS</h3>
-                <p> Custom products designed just for you</p><br>
+                <p> Custom products designed especially just for you</p><br>
                 <a class="featured-products__shop-button" href="/product-category/print-products/">View All Products</a>
         </div>
 

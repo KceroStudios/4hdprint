@@ -27,37 +27,24 @@ get_header();
                 </div>
             </div>
 
-            <div class="center_container">
+            <div class="philosophy">
                 <h2>Our Philosophy</h2>
+
                 <div class="row">
-                    <div class="divider">
-                    <span class="dashicons dashicons-lightbulb" aria-hidden="true"></span>
-                    <div class="line"></div>
-                </div>
                     <div class="col">
                         <h3>Mission</h3>
                         <p>
                             At 4HD PRINT, we are dedicated to transforming ideas into art through graphic design, promotional products, and personalized items. Our mission is to provide creative, high-quality solutions that reflect each client’s unique identity, contributing to their success, recognition, and growth.
                         </p>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="divider">
-                    <span class="dashicons dashicons-visibility" aria-hidden="true"></span>
-                    <div class="line"></div>
-                </div>
+                
                     <div class="col">
                         <h3>Vision</h3>
                         <p>
                             To be leaders in design and promotional product customization, recognized for our creativity, innovation, and commitment to excellence. We aspire to inspire and empower our clients, becoming their trusted partner for all their creative, graphic, and promotional needs.
                         </p>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="divider">
-                    <span class="dashicons dashicons-art" aria-hidden="true"></span>
-                    <div class="line"></div>
-                </div>
+               
                     <div class="col">
                         <h3>Values</h3>
                         <ul>
@@ -77,7 +64,7 @@ get_header();
                 </div>
             </div>
 
-            <div class="center_container">
+            <div class="team">
                 <h2>Our Team</h2>
                 <div class="row">
                     <div class="col team_card">
