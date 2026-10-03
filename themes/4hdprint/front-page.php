@@ -84,31 +84,48 @@ $banner = get_option(
     <div class="featured__header"></div>
 
     <h2>Our Services</h2>
-    <p>Personalized Solutions, Made for You</p>
-    <br>
+    <h3>Personalized Solutions, Made for You</h3>
+
     <div class="center_container slide">
+
         <div class="card"> 
-            <img src="<?php echo get_template_directory_uri()?>/assets/images/print.png">
-                <h3>PRINT SERVICES</h3>
-                <p> High-quality custom printing for your business</p><br>
-                <a class="featured-products__shop-button" href="/product-category/print-products/">View All Products</a>
+            <img src="https://4hdprint.local/wp-content/themes/4hdprint/assets/images/print.png" alt="Print Services">
+            <h3>Print Services</h3>
+            <p>High-quality custom printing for your business</p>
+            <a class="featured-products__shop-button" href="/product-category/print-services/">
+                View All Products
+            </a>
         </div>
             
         <div class="card"> 
-            <img src="<?php echo get_template_directory_uri()?>/assets/images/custom.png">
-                <h3>CUSTOM PRODUCTS</h3>
-                <p> Custom products designed especially just for you</p><br>
-                <a class="featured-products__shop-button" href="/product-category/print-products/">View All Products</a>
+            <img src="https://4hdprint.local/wp-content/themes/4hdprint/assets/images/custom.png" alt="Promotional Products">
+            <h3>Promotional Products</h3>
+            <p>Custom products designed especially just for you</p>
+            <a class="featured-products__shop-button" href="/product-category/promotional-products/">
+                View All Products
+            </a>
         </div>
 
         <div class="card"> 
-            <img src="<?php echo get_template_directory_uri()?>/assets/images/web.png">
-                <h3>WEB SOLUTIONS</h3>
-                <p>Modern web design for growing businesses</p><br>
-                <a class="featured-products__shop-button" href="#/product-category/print-products/">View All Products</a>
+            <img src="https://4hdprint.local/wp-content/themes/4hdprint/assets/images/design.png" alt="Graphic Design">
+            <h3>Graphic Design</h3>
+            <p>Creative solutions to bring your ideas to life.</p>
+            <a class="featured-products__shop-button" href="/product-category/graphic-design/">
+                View All Products
+            </a>
         </div> 
+
+        <div class="card"> 
+            <img src="https://4hdprint.local/wp-content/themes/4hdprint/assets/images/web.png" alt="Web Solutions">
+            <h3>Web Solutions</h3>
+            <p>Modern web design for growing businesses</p>
+            <a class="featured-products__shop-button" href="/product-category/web-solutions/">
+                View All Products
+            </a>
+        </div>
+
     </div>
-</div> 
+</div>
 
 
     <?php endif; ?>

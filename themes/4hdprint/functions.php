@@ -33,14 +33,36 @@
 
     // Estilos principales del tema
     add_action('wp_enqueue_scripts', function () {
-        wp_enqueue_style(
-            'main-style',
-            get_template_directory_uri() . '/assets/css/main.css',
-            [], // dependencias
-            filemtime(get_template_directory() . '/assets/css/main.css') // versión dinámica segun fecha de modificación
-        );
-    });
 
+    // Main CSS
+    wp_enqueue_style(
+        'main-style',
+        get_template_directory_uri() . '/assets/css/main.css',
+        [],
+        filemtime(get_template_directory() . '/assets/css/main.css')
+    );
+
+    // Website Estimate CSS
+    if (is_page('website-estimate')) {
+
+        wp_enqueue_style(
+            'website-estimate-style',
+            get_template_directory_uri() . '/assets/css/website-estimate.css',
+            ['main-style'],
+            filemtime(get_template_directory() . '/assets/css/website-estimate.css')
+        );
+
+        wp_enqueue_script(
+        'website-estimate-script',
+        get_template_directory_uri() . '/assets/js/website-estimate.js',
+        [],
+        filemtime(get_template_directory() . '/assets/js/website-estimate.js'),
+        true
+    );
+
+    }
+
+});
     // JavaScript principal del tema
 add_action('wp_enqueue_scripts', function () {
 
@@ -1617,3 +1639,993 @@ function fourhd_order_received_actions($order_id) {
 
     <?php
 }
+
+/* =========================================
+   4HD DELIVERY METHOD
+   PICKUP / SHIPPING
+========================================= */
+
+add_action('woocommerce_cart_totals_before_shipping', function () {
+
+    if (!WC()->cart || !WC()->cart->needs_shipping()) {
+        return;
+    }
+
+    ?>
+    <tr class="fourhd-delivery-method">
+        <th>Delivery Method</th>
+
+        <td data-title="Delivery Method">
+
+            <label style="display:block; margin-bottom:6px;">
+                <input
+                    type="radio"
+                    name="fourhd_delivery_method"
+                    value="pickup"
+                    onchange="this.form.submit();"
+                >
+                Pickup
+            </label>
+
+            <label style="display:block;">
+                <input
+                type="radio"
+                name="fourhd_delivery_method"
+                value="shipping"
+                onchange="this.form.submit();"
+            >
+                Shipping
+            </label>
+
+        </td>
+    </tr>
+    <?php
+});
+
+/* =========================================
+   WAIT FOR DELIVERY METHOD SELECTION
+========================================= */
+
+add_filter('woocommerce_cart_ready_to_calc_shipping', function ($ready) {
+
+    if (!is_cart()) {
+        return $ready;
+    }
+
+    if (!WC()->session) {
+        return $ready;
+    }
+
+    $method = WC()->session->get('fourhd_delivery_method', '');
+
+    if ($method !== 'shipping') {
+        return false;
+    }
+
+    return $ready;
+});
+
+/* =========================================
+   SAVE DELIVERY METHOD
+========================================= */
+
+add_action('wp_loaded', function () {
+
+    if (
+        isset($_POST['fourhd_delivery_method']) &&
+        WC()->session
+    ) {
+        $method = sanitize_key(
+            wp_unslash($_POST['fourhd_delivery_method'])
+        );
+
+        if (in_array($method, ['pickup', 'shipping'], true)) {
+            WC()->session->set('fourhd_delivery_method', $method);
+        }
+    }
+});
+
+/* =========================================
+   WEBSITE ESTIMATE — FORM PROCESSING
+========================================= */
+
+add_action('template_redirect', function () {
+
+    // Only process POST requests.
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        return;
+    }
+
+    // Make sure this is our estimate form.
+    if (
+        !isset($_POST['fourhd_estimate_action']) ||
+        $_POST['fourhd_estimate_action'] !== 'submit_estimate'
+    ) {
+        return;
+    }
+
+    // Verify WordPress nonce.
+    if (
+        !isset($_POST['fourhd_estimate_nonce']) ||
+        !wp_verify_nonce(
+            sanitize_text_field(
+                wp_unslash($_POST['fourhd_estimate_nonce'])
+            ),
+            'fourhd_website_estimate'
+        )
+    ) {
+        wp_die('Security verification failed.');
+    }
+
+
+    /* =====================================
+       CUSTOMER INFORMATION
+    ===================================== */
+
+    $name = isset($_POST['name'])
+        ? sanitize_text_field(wp_unslash($_POST['name']))
+        : '';
+
+    $business = isset($_POST['business'])
+        ? sanitize_text_field(wp_unslash($_POST['business']))
+        : '';
+
+    $email = isset($_POST['email'])
+        ? sanitize_email(wp_unslash($_POST['email']))
+        : '';
+
+    $phone = isset($_POST['phone'])
+        ? sanitize_text_field(wp_unslash($_POST['phone']))
+        : '';
+
+    $current_website = isset($_POST['current_website'])
+        ? esc_url_raw(wp_unslash($_POST['current_website']))
+        : '';
+
+    $description = isset($_POST['description'])
+        ? sanitize_textarea_field(
+            wp_unslash($_POST['description'])
+        )
+        : '';
+
+
+    /* =====================================
+       BASIC SERVER VALIDATION
+    ===================================== */
+
+    if (
+        empty($name) ||
+        empty($email) ||
+        !is_email($email) ||
+        empty($description)
+    ) {
+        wp_die(
+            'Please complete all required fields with valid information.'
+        );
+    }
+
+
+    /* =====================================
+       ESTIMATOR SELECTIONS
+    ===================================== */
+
+    $website_type = isset($_POST['website_type'])
+        ? sanitize_key($_POST['website_type'])
+        : '';
+
+    $pages = isset($_POST['pages'])
+        ? sanitize_key($_POST['pages'])
+        : '';
+
+    $products = isset($_POST['products'])
+        ? sanitize_key($_POST['products'])
+        : '';
+
+    $domain_hosting = isset($_POST['domain_hosting'])
+        ? sanitize_key($_POST['domain_hosting'])
+        : '';
+
+    $maintenance = isset($_POST['maintenance'])
+        ? sanitize_key($_POST['maintenance'])
+        : '';
+
+
+    /* =====================================
+       FEATURES
+    ===================================== */
+
+    $features = [];
+
+    if (
+        isset($_POST['features']) &&
+        is_array($_POST['features'])
+    ) {
+
+        $features = array_map(
+            'sanitize_key',
+            wp_unslash($_POST['features'])
+        );
+
+    }
+
+/* =====================================
+   SERVER-SIDE PRICE CALCULATION
+===================================== */
+
+$project_price = 0;
+$custom_quote  = false;
+
+
+/* -------------------------------------
+   STARTER
+------------------------------------- */
+
+if ($website_type === 'starter') {
+
+    $project_price = 450;
+
+    // Pages
+    switch ($pages) {
+
+        case '1':
+            break;
+
+        case '3':
+            $project_price += 200;
+            break;
+
+        case '5':
+            $project_price += 400;
+            break;
+
+        case '10':
+            $project_price += 750;
+            break;
+
+        case '10plus':
+            $custom_quote = true;
+            break;
+    }
+
+
+    // Features
+    $starter_feature_prices = [
+        'gallery'         => 100,
+        'maps'            => 50,
+        'blog'            => 150,
+        'newsletter'      => 100,
+        'quote_form'      => 150,
+        'employment_form' => 150,
+        'booking'         => 250,
+        'calculator'      => 300,
+        'multilingual'    => 250,
+    ];
+
+    foreach ($starter_feature_prices as $feature => $price) {
+
+        if (in_array($feature, $features, true)) {
+            $project_price += $price;
+        }
+
+    }
+
+
+    // File Upload +$75 only when a form is selected.
+    $has_standard_form =
+        in_array('quote_form', $features, true) ||
+        in_array('employment_form', $features, true);
+
+    if (
+        in_array('upload', $features, true) &&
+        $has_standard_form
+    ) {
+        $project_price += 75;
+    }
+
+}
+
+
+/* -------------------------------------
+   BUSINESS
+------------------------------------- */
+
+elseif ($website_type === 'business') {
+
+    $project_price = 1500;
+
+
+    // Pages
+    switch ($pages) {
+
+        case '1':
+        case '3':
+        case '5':
+            break;
+
+        case '10':
+            $project_price += 400;
+            break;
+
+        case '10plus':
+            $custom_quote = true;
+            break;
+    }
+
+
+    // Features
+    $business_feature_prices = [
+        'booking'      => 250,
+        'blog'         => 150,
+        'newsletter'   => 100,
+        'calculator'   => 300,
+        'multilingual' => 250,
+    ];
+
+    foreach ($business_feature_prices as $feature => $price) {
+
+        if (in_array($feature, $features, true)) {
+            $project_price += $price;
+        }
+
+    }
+
+
+    /*
+     * One standard custom form is included.
+     * Second form costs +$150.
+     */
+
+    $standard_form_count = 0;
+
+    if (in_array('quote_form', $features, true)) {
+        $standard_form_count++;
+    }
+
+    if (in_array('employment_form', $features, true)) {
+        $standard_form_count++;
+    }
+
+    if ($standard_form_count > 1) {
+        $project_price += 150;
+    }
+
+}
+
+
+/* -------------------------------------
+   ONLINE STORE
+------------------------------------- */
+
+elseif ($website_type === 'store') {
+
+    $project_price = 2500;
+
+
+    // Pages
+    switch ($pages) {
+
+        case '1':
+        case '3':
+        case '5':
+            break;
+
+        case '10':
+            $project_price += 400;
+            break;
+
+        case '10plus':
+            $custom_quote = true;
+            break;
+    }
+
+
+    // Products
+    switch ($products) {
+
+        case '10':
+            break;
+
+        case '25':
+            $project_price += 250;
+            break;
+
+        case '50':
+            $project_price += 500;
+            break;
+
+        case '100':
+            $project_price += 900;
+            break;
+
+        case 'custom':
+            $custom_quote = true;
+            break;
+    }
+
+
+    // Features
+    $store_feature_prices = [
+        'gallery'         => 100,
+        'blog'            => 150,
+        'newsletter'      => 100,
+        'quote_form'      => 150,
+        'employment_form' => 150,
+        'booking'         => 250,
+        'calculator'      => 300,
+        'multilingual'    => 250,
+    ];
+
+    foreach ($store_feature_prices as $feature => $price) {
+
+        if (in_array($feature, $features, true)) {
+            $project_price += $price;
+        }
+
+    }
+
+
+    // File Upload +$75 when a standard form is selected.
+    $has_standard_form =
+        in_array('quote_form', $features, true) ||
+        in_array('employment_form', $features, true);
+
+    if (
+        in_array('upload', $features, true) &&
+        $has_standard_form
+    ) {
+        $project_price += 75;
+    }
+
+}
+
+
+/* -------------------------------------
+   INVALID PACKAGE
+------------------------------------- */
+
+else {
+
+    wp_die('Invalid website package.');
+
+}
+   /* =====================================
+   HUMAN-READABLE VALUES
+===================================== */
+
+$package_labels = [
+    'starter'  => 'Starter Website',
+    'business' => 'Business Website',
+    'store'    => 'Online Store',
+];
+
+$page_labels = [
+    '1'      => '1 Page',
+    '3'      => '2–3 Pages',
+    '5'      => '4–5 Pages',
+    '10'     => '6–10 Pages',
+    '10plus' => '10+ Pages',
+];
+
+$product_labels = [
+    '10'     => 'Up to 10 Products',
+    '25'     => '11–25 Products',
+    '50'     => '26–50 Products',
+    '100'    => '51–100 Products',
+    'custom' => '100+ Products',
+];
+
+$feature_labels = [
+    'contact'         => 'Contact Form',
+    'gallery'         => 'Gallery / Portfolio',
+    'maps'            => 'Google Maps',
+    'social'          => 'Social Media Integration',
+    'blog'            => 'Blog',
+    'newsletter'      => 'Newsletter',
+    'multilingual'    => 'Multilingual Website',
+    'quote_form'      => 'Quote Request Form',
+    'employment_form' => 'Employment / Application Form',
+    'booking'         => 'Appointment Booking',
+    'calculator'      => 'Custom Calculator',
+    'upload'          => 'File Upload',
+];
+
+$maintenance_labels = [
+    'self'      => 'Self Managed — $0 / month',
+    'care'      => 'Website Care — $49 / month',
+    'care_plus' => 'Website Care Plus — $99 / month',
+    'ecommerce' => 'E-Commerce Care — $149 / month',
+];
+
+$hosting_labels = [
+    'existing' => 'Existing Domain & Hosting — $0 / year',
+    'managed'  => 'Domain + Secure Hosting — Starting at $199 / year',
+    'unsure'   => 'To Be Determined',
+];
+
+
+$package_label = $package_labels[$website_type] ?? $website_type;
+$page_label    = $page_labels[$pages] ?? $pages;
+
+$maintenance_label =
+    $maintenance_labels[$maintenance] ?? 'Not selected';
+
+$hosting_label =
+    $hosting_labels[$domain_hosting] ?? 'Not selected';
+
+$product_label = '';
+
+if ($website_type === 'store') {
+    $product_label =
+        $product_labels[$products] ?? $products;
+}
+
+$estimate_label = $custom_quote
+    ? 'Custom Quote'
+    : '$' . number_format($project_price);
+
+   /* =====================================
+   BUILD HTML EMAIL
+===================================== */
+
+$to = get_option('admin_email');
+
+$subject =
+    'New Website Quote Request - ' .
+    $package_label;
+
+
+/* -------------------------------------
+   FEATURES LIST
+------------------------------------- */
+
+$features_html = '';
+
+if (!empty($features)) {
+
+    foreach ($features as $feature) {
+
+        if (!isset($feature_labels[$feature])) {
+            continue;
+        }
+
+        $status = '';
+
+        // Included features by package.
+        if ($website_type === 'starter') {
+
+            if (in_array($feature, ['contact', 'social'], true)) {
+                $status = 'Included';
+            }
+
+        } elseif ($website_type === 'business') {
+
+            if (
+                in_array(
+                    $feature,
+                    ['contact', 'gallery', 'maps', 'social'],
+                    true
+                )
+            ) {
+                $status = 'Included';
+            }
+
+        } elseif ($website_type === 'store') {
+
+            if (
+                in_array(
+                    $feature,
+                    ['contact', 'maps', 'social'],
+                    true
+                )
+            ) {
+                $status = 'Included';
+            }
+        }
+
+        $features_html .= '
+            <tr>
+                <td style="
+                    padding:8px 0;
+                    border-bottom:1px solid #eeeeee;
+                ">
+                    ' . esc_html($feature_labels[$feature]) . '
+                </td>
+
+                <td style="
+                    padding:8px 0;
+                    border-bottom:1px solid #eeeeee;
+                    text-align:right;
+                    color:#f47721;
+                    font-weight:600;
+                ">
+                    ' . esc_html($status) . '
+                </td>
+            </tr>
+        ';
+    }
+
+} else {
+
+    $features_html = '
+        <tr>
+            <td style="padding:8px 0;">
+                No additional features selected.
+            </td>
+        </tr>
+    ';
+}
+
+
+/* -------------------------------------
+   PRODUCTS ROW
+------------------------------------- */
+
+$products_html = '';
+
+if (
+    $website_type === 'store' &&
+    !empty($product_label)
+) {
+
+    $products_html = '
+        <tr>
+            <td style="padding:6px 0;color:#707070;">
+                Products
+            </td>
+
+            <td style="
+                padding:6px 0;
+                text-align:right;
+                font-weight:600;
+            ">
+                ' . esc_html($product_label) . '
+            </td>
+        </tr>
+    ';
+}
+
+
+/* -------------------------------------
+   OPTIONAL CUSTOMER INFORMATION
+------------------------------------- */
+
+$business_html = '';
+
+if (!empty($business)) {
+    $business_html = '
+        <tr>
+            <td style="padding:6px 0;color:#707070;">
+                Business
+            </td>
+            <td style="padding:6px 0;text-align:right;">
+                ' . esc_html($business) . '
+            </td>
+        </tr>
+    ';
+}
+
+$phone_html = '';
+
+if (!empty($phone)) {
+    $phone_html = '
+        <tr>
+            <td style="padding:6px 0;color:#707070;">
+                Phone
+            </td>
+            <td style="padding:6px 0;text-align:right;">
+                ' . esc_html($phone) . '
+            </td>
+        </tr>
+    ';
+}
+
+$website_html = '';
+
+if (!empty($current_website)) {
+    $website_html = '
+        <tr>
+            <td style="padding:6px 0;color:#707070;">
+                Current Website
+            </td>
+            <td style="padding:6px 0;text-align:right;">
+                ' . esc_html($current_website) . '
+            </td>
+        </tr>
+    ';
+}
+
+
+/* -------------------------------------
+   EMAIL CONTENT
+------------------------------------- */
+
+$message = '
+<!DOCTYPE html>
+<html>
+<body style="
+    margin:0;
+    padding:0;
+    background:#f2f2f2;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#151515;
+">
+
+<div style="
+    max-width:680px;
+    margin:0 auto;
+    padding:35px 20px;
+">
+
+    <div style="
+        background:#252525;
+        padding:28px 30px;
+        border-radius:12px 12px 0 0;
+    ">
+
+        <div style="
+            color:#f47721;
+            font-size:13px;
+            font-weight:700;
+            letter-spacing:1px;
+        ">
+            4HD PRINT
+        </div>
+
+        <h1 style="
+            margin:8px 0 0;
+            color:#ffffff;
+            font-size:24px;
+            font-weight:600;
+        ">
+            New Website Quote Request
+        </h1>
+
+    </div>
+
+
+    <div style="
+        background:#ffffff;
+        padding:30px;
+    ">
+
+        <h2 style="
+            margin:0 0 15px;
+            font-size:16px;
+        ">
+            Customer
+        </h2>
+
+        <table style="
+            width:100%;
+            border-collapse:collapse;
+            font-size:14px;
+        ">
+
+            <tr>
+                <td style="padding:6px 0;color:#707070;">
+                    Name
+                </td>
+                <td style="padding:6px 0;text-align:right;">
+                    ' . esc_html($name) . '
+                </td>
+            </tr>
+
+            <tr>
+                <td style="padding:6px 0;color:#707070;">
+                    Email
+                </td>
+                <td style="padding:6px 0;text-align:right;">
+                    ' . esc_html($email) . '
+                </td>
+            </tr>
+
+            ' . $business_html . '
+            ' . $phone_html . '
+            ' . $website_html . '
+
+        </table>
+
+
+        <h2 style="
+            margin:30px 0 15px;
+            font-size:16px;
+        ">
+            Project
+        </h2>
+
+        <table style="
+            width:100%;
+            border-collapse:collapse;
+            font-size:14px;
+        ">
+
+            <tr>
+                <td style="padding:6px 0;color:#707070;">
+                    Package
+                </td>
+                <td style="
+                    padding:6px 0;
+                    text-align:right;
+                    font-weight:600;
+                ">
+                    ' . esc_html($package_label) . '
+                </td>
+            </tr>
+
+            <tr>
+                <td style="padding:6px 0;color:#707070;">
+                    Pages
+                </td>
+                <td style="
+                    padding:6px 0;
+                    text-align:right;
+                    font-weight:600;
+                ">
+                    ' . esc_html($page_label) . '
+                </td>
+            </tr>
+
+            ' . $products_html . '
+
+        </table>
+
+
+        <h2 style="
+            margin:30px 0 15px;
+            font-size:16px;
+        ">
+            Features
+        </h2>
+
+        <table style="
+            width:100%;
+            border-collapse:collapse;
+            font-size:14px;
+        ">
+            ' . $features_html . '
+        </table>
+
+
+        <h2 style="
+            margin:30px 0 15px;
+            font-size:16px;
+        ">
+            Services
+        </h2>
+
+        <table style="
+            width:100%;
+            border-collapse:collapse;
+            font-size:14px;
+        ">
+
+            <tr>
+                <td style="padding:6px 0;color:#707070;">
+                    Website Care
+                </td>
+
+                <td style="
+                    padding:6px 0;
+                    text-align:right;
+                ">
+                    ' . esc_html($maintenance_label) . '
+                </td>
+            </tr>
+
+            <tr>
+                <td style="padding:6px 0;color:#707070;">
+                    Domain + Hosting
+                </td>
+
+                <td style="
+                    padding:6px 0;
+                    text-align:right;
+                ">
+                    ' . esc_html($hosting_label) . '
+                </td>
+            </tr>
+
+        </table>
+
+
+        <div style="
+            margin:30px 0;
+            padding:22px;
+            background:#252525;
+            border-radius:8px;
+            text-align:center;
+        ">
+
+            <div style="
+                margin-bottom:5px;
+                color:#c9c9c9;
+                font-size:12px;
+                text-transform:uppercase;
+                letter-spacing:1px;
+            ">
+                Preliminary Project Estimate
+            </div>
+
+            <div style="
+                color:#f47721;
+                font-size:28px;
+                font-weight:700;
+            ">
+                ' . esc_html($estimate_label) . '
+            </div>
+
+        </div>
+
+
+        <h2 style="
+            margin:30px 0 10px;
+            font-size:16px;
+        ">
+            Project Description
+        </h2>
+
+        <div style="
+            padding:15px;
+            background:#f2f2f2;
+            border-radius:7px;
+            font-size:14px;
+            line-height:1.6;
+        ">
+            ' . nl2br(esc_html($description)) . '
+        </div>
+
+    </div>
+
+
+    <div style="
+        padding:18px 30px;
+        background:#151515;
+        border-radius:0 0 12px 12px;
+        color:#707070;
+        font-size:11px;
+        text-align:center;
+    ">
+        Website Estimate generated by 4HD PRINT
+    </div>
+
+</div>
+
+</body>
+</html>
+';
+
+
+/* =====================================
+   EMAIL HEADERS
+===================================== */
+
+$headers = [
+    'Content-Type: text/html; charset=UTF-8',
+    'Reply-To: ' . $name . ' <' . $email . '>',
+];
+
+
+/* =====================================
+   SEND EMAIL
+===================================== */
+
+$email_sent = wp_mail(
+    $to,
+    $subject,
+    $message,
+    $headers
+);
+
+/* =====================================
+   REDIRECT
+===================================== */
+
+$redirect_url = add_query_arg(
+    'estimate_status',
+    $email_sent ? 'success' : 'error',
+    get_permalink()
+);
+
+wp_safe_redirect($redirect_url);
+exit;
+});

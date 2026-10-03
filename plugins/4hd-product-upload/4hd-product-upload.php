@@ -2,7 +2,7 @@
 /*
 Plugin Name: 4HD Product Upload
 Description: Reusable artwork upload and product customizer for WooCommerce products.
-Version: 2.0.0
+Version: 2.0.1
 Author: 4HD PRINT
 */
 
@@ -98,8 +98,37 @@ function fourhd_print_field_is_active($field, $variation_attributes = []) {
 add_action('woocommerce_product_options_general_product_data', function () {
     global $post;
 
-    echo '<div class="options_group">';
+    echo '<style>
+        #woocommerce-product-data .fourhd-mode-group .form-field select { min-width: 250px; }
+        #woocommerce-product-data .fourhd-admin-heading { margin: 0; padding: 12px; font-size: 14px; }
+        #woocommerce-product-data .fourhd-print-settings { padding: 0 12px 12px; }
+        #woocommerce-product-data .fourhd-print-settings .fourhd-setting-row { margin: 0 0 16px; }
+        #woocommerce-product-data .fourhd-print-settings .fourhd-setting-label { display:block; margin:0 0 6px; font-weight:600; }
+        #woocommerce-product-data .fourhd-print-settings input[type="number"],
+        #woocommerce-product-data .fourhd-print-settings input[type="text"] { width:100%; max-width:420px; }
+        #woocommerce-product-data .fourhd-file-types { display:flex; flex-wrap:wrap; gap:8px 20px; align-items:center; }
+        #woocommerce-product-data .fourhd-file-types label { display:inline-flex; align-items:center; gap:6px; margin:0; width:auto; float:none; }
+        #woocommerce-product-data .fourhd-file-types input[type="checkbox"] { margin:0; }
+        #woocommerce-product-data .fourhd-upload-fields-help { margin:18px 0 10px; }
+        #woocommerce-product-data .fourhd-print-field-row { border:1px solid #dcdcde; border-radius:4px; padding:14px; margin:0 0 12px; background:#fff; }
+        #woocommerce-product-data .fourhd-print-field-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:0 0 14px; }
+        #woocommerce-product-data .fourhd-print-field-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        #woocommerce-product-data .fourhd-print-field-control { min-width:0; }
+        #woocommerce-product-data .fourhd-print-field-control label { display:block; width:auto; float:none; margin:0 0 5px; font-weight:600; }
+        #woocommerce-product-data .fourhd-print-field-control input[type="text"] { width:100%; max-width:none; float:none; margin:0; }
+        #woocommerce-product-data .fourhd-print-field-required { grid-column:1 / -1; }
+        #woocommerce-product-data .fourhd-print-field-required label { display:inline-flex; align-items:center; gap:7px; width:auto; float:none; margin:0; font-weight:400; }
+        #woocommerce-product-data .fourhd-print-field-required input { margin:0; }
+        #woocommerce-product-data .fourhd-condition-title { grid-column:1 / -1; margin:2px 0 -4px; padding-top:12px; border-top:1px solid #eee; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:#646970; }
+        #woocommerce-product-data .fourhd-add-field-wrap { margin:12px 0 0; }
+        @media (max-width: 782px) {
+            #woocommerce-product-data .fourhd-print-field-grid { grid-template-columns:1fr; }
+            #woocommerce-product-data .fourhd-print-field-required,
+            #woocommerce-product-data .fourhd-condition-title { grid-column:1; }
+        }
+    </style>';
 
+    echo '<div class="options_group fourhd-mode-group">';
     woocommerce_wp_select([
         'id'          => '_fourhd_upload_mode',
         'label'       => 'Upload Mode',
@@ -111,11 +140,10 @@ add_action('woocommerce_product_options_general_product_data', function () {
             'print'      => 'Print Artwork Upload',
         ],
     ]);
-
     echo '</div>';
 
     echo '<div class="options_group fourhd-customizer-admin">';
-    echo '<p style="padding:0 12px"><strong>Product Customizer Pricing</strong></p>';
+    echo '<h4 class="fourhd-admin-heading">Product Customizer Pricing</h4>';
 
     $price_fields = [
         '_fourhd_front_extra'        => ['Front Print Extra', 'Extra price when Front is an additional print location.'],
@@ -135,50 +163,47 @@ add_action('woocommerce_product_options_general_product_data', function () {
             'custom_attributes' => ['step' => '0.01', 'min' => '0'],
         ]);
     }
-
     echo '</div>';
-
-    echo '<div class="options_group fourhd-print-admin">';
-    echo '<p style="padding:0 12px"><strong>Print Artwork Settings</strong></p>';
-
-    woocommerce_wp_text_input([
-        'id'                => '_fourhd_print_max_mb',
-        'label'             => 'Maximum File Size',
-        'description'       => 'Maximum size per artwork file, in MB.',
-        'desc_tip'          => true,
-        'type'              => 'number',
-        'value'             => get_post_meta($post->ID, '_fourhd_print_max_mb', true) ?: '10',
-        'custom_attributes' => ['step' => '1', 'min' => '1', 'max' => '100'],
-    ]);
 
     $saved_types = get_post_meta($post->ID, '_fourhd_print_file_types', true);
     if (!is_array($saved_types) || empty($saved_types)) {
         $saved_types = ['pdf', 'jpg', 'png'];
     }
+    $max_mb = get_post_meta($post->ID, '_fourhd_print_max_mb', true) ?: '10';
 
-    echo '<p class="form-field"><label>Accepted Files</label>';
+    echo '<div class="options_group fourhd-print-admin">';
+    echo '<h4 class="fourhd-admin-heading">Print Artwork Settings</h4>';
+    echo '<div class="fourhd-print-settings">';
+
+    echo '<div class="fourhd-setting-row">';
+    echo '<label class="fourhd-setting-label" for="_fourhd_print_max_mb">Maximum File Size</label>';
+    printf('<input type="number" id="_fourhd_print_max_mb" name="_fourhd_print_max_mb" value="%s" min="1" max="100" step="1"> <span class="description">MB per artwork file</span>', esc_attr($max_mb));
+    echo '</div>';
+
+    echo '<div class="fourhd-setting-row">';
+    echo '<span class="fourhd-setting-label">Accepted File Types</span>';
+    echo '<div class="fourhd-file-types">';
     foreach (['pdf' => 'PDF', 'jpg' => 'JPG / JPEG', 'png' => 'PNG'] as $key => $label) {
         printf(
-            '<label style="margin-right:16px"><input type="checkbox" name="_fourhd_print_file_types[]" value="%s" %s> %s</label>',
+            '<label><input type="checkbox" name="_fourhd_print_file_types[]" value="%s" %s> <span>%s</span></label>',
             esc_attr($key),
             checked(in_array($key, $saved_types, true), true, false),
             esc_html($label)
         );
     }
-    echo '</p>';
+    echo '</div></div>';
 
-    echo '<p style="padding:0 12px 6px"><strong>Upload Fields</strong><br><span class="description">Create reusable artwork fields. Conditions are optional. Example: Back Design → attribute <code>printing</code> → value <code>front-back</code>.</span></p>';
+    echo '<div class="fourhd-upload-fields-help"><strong>Upload Fields</strong><br><span class="description">Create reusable artwork fields. Conditions are optional. Example: Back Design → attribute <code>printing</code> → value <code>front-back</code>.</span></div>';
 
     $fields = fourhd_get_print_fields($post->ID);
-    echo '<div id="fourhd-print-fields" style="padding:0 12px 12px">';
-
+    echo '<div id="fourhd-print-fields">';
     foreach ($fields as $index => $field) {
         fourhd_render_admin_print_field($index, $field);
     }
-
     echo '</div>';
-    echo '<p style="padding:0 12px"><button type="button" class="button" id="fourhd-add-print-field">+ Add Upload Field</button></p>';
-    echo '</div>';
+    echo '<input type="hidden" id="_fourhd_print_fields_json" name="_fourhd_print_fields_json" value="">';
+    echo '<p class="fourhd-add-field-wrap"><button type="button" class="button" id="fourhd-add-print-field">+ Add Upload Field</button></p>';
+    echo '</div></div>';
 
     ?>
     <script type="text/template" id="fourhd-print-field-template">
@@ -197,14 +222,37 @@ add_action('woocommerce_product_options_general_product_data', function () {
         $('#_fourhd_upload_mode').on('change', toggleFourHDAdmin);
 
         $('#fourhd-add-print-field').on('click', function(){
-            var index = $('#fourhd-print-fields .fourhd-print-field-row').length;
+            var indexes = $('#fourhd-print-fields .fourhd-print-field-row').map(function(){
+                return parseInt($(this).attr('data-index'), 10) || 0;
+            }).get();
+            var index = indexes.length ? Math.max.apply(null, indexes) + 1 : 0;
             var html = $('#fourhd-print-field-template').html().replace(/__INDEX__/g, index);
             $('#fourhd-print-fields').append(html);
         });
 
         $(document).on('click', '.fourhd-remove-print-field', function(){
             $(this).closest('.fourhd-print-field-row').remove();
+            syncFourHDPrintFields();
         });
+
+        function syncFourHDPrintFields(){
+            var fields = [];
+            $('#fourhd-print-fields .fourhd-print-field-row').each(function(){
+                var row = $(this);
+                fields.push({
+                    label: row.find('input[name$="[label]"]').val() || '',
+                    key: row.find('input[name$="[key]"]').val() || '',
+                    required: row.find('input[name$="[required]"]').is(':checked') ? 'yes' : 'no',
+                    condition_attr: row.find('input[name$="[condition_attr]"]').val() || '',
+                    condition_value: row.find('input[name$="[condition_value]"]').val() || ''
+                });
+            });
+            $('#_fourhd_print_fields_json').val(JSON.stringify(fields));
+        }
+
+        $(document).on('input change', '#fourhd-print-fields input', syncFourHDPrintFields);
+        $('#post').on('submit', syncFourHDPrintFields);
+        syncFourHDPrintFields();
     });
     </script>
     <?php
@@ -215,13 +263,39 @@ function fourhd_render_admin_print_field($index, $field) {
         'key' => '', 'label' => '', 'required' => 'yes', 'condition_attr' => '', 'condition_value' => ''
     ]);
     ?>
-    <div class="fourhd-print-field-row" style="border:1px solid #ddd;padding:10px;margin:0 0 10px;background:#fff">
-        <p style="margin:0 0 8px"><strong>Artwork Field</strong> <button type="button" class="button-link-delete fourhd-remove-print-field" style="float:right">Remove</button></p>
-        <p style="margin:5px 0"><label>Key<br><input type="text" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][key]" value="<?php echo esc_attr($field['key']); ?>" placeholder="front_design" style="width:100%"></label></p>
-        <p style="margin:5px 0"><label>Label<br><input type="text" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][label]" value="<?php echo esc_attr($field['label']); ?>" placeholder="Front Design" style="width:100%"></label></p>
-        <p style="margin:5px 0"><label><input type="checkbox" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][required]" value="yes" <?php checked($field['required'], 'yes'); ?>> Required when this field is active</label></p>
-        <p style="margin:5px 0"><label>Show when attribute (optional)<br><input type="text" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][condition_attr]" value="<?php echo esc_attr($field['condition_attr']); ?>" placeholder="printing" style="width:100%"></label></p>
-        <p style="margin:5px 0"><label>Equals value/slug (optional)<br><input type="text" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][condition_value]" value="<?php echo esc_attr($field['condition_value']); ?>" placeholder="front-back" style="width:100%"></label></p>
+    <div class="fourhd-print-field-row" data-index="<?php echo esc_attr($index); ?>">
+        <div class="fourhd-print-field-header">
+            <strong>Artwork Field</strong>
+            <button type="button" class="button-link-delete fourhd-remove-print-field">Remove</button>
+        </div>
+
+        <div class="fourhd-print-field-grid">
+            <div class="fourhd-print-field-control">
+                <label for="fourhd-field-label-<?php echo esc_attr($index); ?>">Label</label>
+                <input id="fourhd-field-label-<?php echo esc_attr($index); ?>" type="text" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][label]" value="<?php echo esc_attr($field['label']); ?>" placeholder="Front Design">
+            </div>
+
+            <div class="fourhd-print-field-control">
+                <label for="fourhd-field-key-<?php echo esc_attr($index); ?>">Field Key</label>
+                <input id="fourhd-field-key-<?php echo esc_attr($index); ?>" type="text" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][key]" value="<?php echo esc_attr($field['key']); ?>" placeholder="front_design">
+            </div>
+
+            <div class="fourhd-print-field-required">
+                <label><input type="checkbox" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][required]" value="yes" <?php checked($field['required'], 'yes'); ?>> <span>Required when this field is active</span></label>
+            </div>
+
+            <div class="fourhd-condition-title">Condition (optional)</div>
+
+            <div class="fourhd-print-field-control">
+                <label for="fourhd-field-attr-<?php echo esc_attr($index); ?>">Attribute</label>
+                <input id="fourhd-field-attr-<?php echo esc_attr($index); ?>" type="text" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][condition_attr]" value="<?php echo esc_attr($field['condition_attr']); ?>" placeholder="printing">
+            </div>
+
+            <div class="fourhd-print-field-control">
+                <label for="fourhd-field-value-<?php echo esc_attr($index); ?>">Value / Slug</label>
+                <input id="fourhd-field-value-<?php echo esc_attr($index); ?>" type="text" name="fourhd_print_fields[<?php echo esc_attr($index); ?>][condition_value]" value="<?php echo esc_attr($field['condition_value']); ?>" placeholder="front-back">
+            </div>
+        </div>
     </div>
     <?php
 }
@@ -252,25 +326,44 @@ add_action('woocommerce_process_product_meta', function ($product_id) {
     update_post_meta($product_id, '_fourhd_print_file_types', $types ?: ['pdf', 'jpg', 'png']);
 
     $clean_fields = [];
-    if (isset($_POST['fourhd_print_fields']) && is_array($_POST['fourhd_print_fields'])) {
-        foreach (wp_unslash($_POST['fourhd_print_fields']) as $row) {
-            $label = isset($row['label']) ? sanitize_text_field($row['label']) : '';
-            $key   = isset($row['key']) ? sanitize_key($row['key']) : '';
-            if ($label === '') {
-                continue;
-            }
-            if ($key === '') {
-                $key = sanitize_key($label);
-            }
-            $clean_fields[] = [
-                'key'             => $key,
-                'label'           => $label,
-                'required'        => !empty($row['required']) ? 'yes' : 'no',
-                'condition_attr'  => isset($row['condition_attr']) ? sanitize_title($row['condition_attr']) : '',
-                'condition_value' => isset($row['condition_value']) ? sanitize_title($row['condition_value']) : '',
-            ];
+    $submitted_fields = [];
+
+    // Prefer the compact JSON payload. This is more reliable on products with
+    // many variations because it uses a single POST variable.
+    if (!empty($_POST['_fourhd_print_fields_json'])) {
+        $decoded = json_decode(wp_unslash($_POST['_fourhd_print_fields_json']), true);
+        if (is_array($decoded)) {
+            $submitted_fields = $decoded;
         }
+    } elseif (isset($_POST['fourhd_print_fields']) && is_array($_POST['fourhd_print_fields'])) {
+        $submitted_fields = wp_unslash($_POST['fourhd_print_fields']);
     }
+
+    foreach ($submitted_fields as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+
+        $label = isset($row['label']) ? sanitize_text_field($row['label']) : '';
+        $key   = isset($row['key']) ? sanitize_key($row['key']) : '';
+
+        if ($label === '') {
+            continue;
+        }
+        if ($key === '') {
+            $key = sanitize_key($label);
+        }
+
+        $clean_fields[] = [
+            'key'             => $key,
+            'label'           => $label,
+            'required'        => !empty($row['required']) && $row['required'] === 'yes' ? 'yes' : 'no',
+            'condition_attr'  => isset($row['condition_attr']) ? sanitize_title($row['condition_attr']) : '',
+            // Keep the human-readable WooCommerce option value, e.g. "Front & Back".
+            'condition_value' => isset($row['condition_value']) ? sanitize_text_field($row['condition_value']) : '',
+        ];
+    }
+
     update_post_meta($product_id, '_fourhd_print_fields', $clean_fields);
 });
 
@@ -379,7 +472,7 @@ function fourhd_render_print_artwork_upload($product, $product_id) {
         <?php foreach ($fields as $field) :
             $key = sanitize_key($field['key']);
             $condition_attr = sanitize_title($field['condition_attr'] ?? '');
-            $condition_value = sanitize_title($field['condition_value'] ?? '');
+            $condition_value = sanitize_text_field($field['condition_value'] ?? '');
         ?>
             <div class="fourhd-artwork-field"
                  data-field-key="<?php echo esc_attr($key); ?>"
@@ -419,11 +512,20 @@ function fourhd_render_print_artwork_upload($product, $product_id) {
             return '';
         }
 
+        function normalizeValue(value){
+            return String(value || '')
+                .trim()
+                .toLowerCase()
+                .replace(/&/g, 'and')
+                .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        }
+
         function refreshFields(){
             wrap.querySelectorAll('.fourhd-artwork-field').forEach(function(row){
                 var attr = row.dataset.conditionAttr || '';
                 var wanted = row.dataset.conditionValue || '';
-                var show = !attr || !wanted || selectedValue(attr) === wanted;
+                var selected = selectedValue(attr);
+                var show = !attr || !wanted || normalizeValue(selected) === normalizeValue(wanted);
                 row.hidden = !show;
                 var input = row.querySelector('input[type="file"]');
                 if (input) input.required = show && input.dataset.required === 'yes';

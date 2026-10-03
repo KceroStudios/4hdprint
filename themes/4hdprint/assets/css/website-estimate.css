@@ -1,0 +1,989 @@
+/* =========================================
+   WEBSITE ESTIMATOR
+========================================= */
+
+.website-estimate {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 70px 40px 90px;
+}
+
+
+/* HEADER
+========================================= */
+
+.website-estimate__header {
+    max-width: 700px;
+    margin: 0 auto 55px;
+    text-align: center;
+}
+
+.website-estimate__header h1 {
+    margin: 0 0 15px;
+    font-size: 2.5rem;
+    line-height: 1.15;
+    font-weight: 600;
+}
+
+.website-estimate__header p {
+    margin: 0;
+    color: var(--gray);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+
+/* SECTIONS
+========================================= */
+
+.estimate-section {
+    margin-bottom: 30px;
+    padding: 35px;
+
+    background: var(--white);
+    border: 1px solid var(--ligth-gray);
+    border-radius: 14px;
+}
+
+.estimate-section__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+
+    margin-bottom: 28px;
+}
+
+.estimate-section__header h2 {
+    margin: 0 0 6px;
+
+    font-size: 1.35rem;
+    font-weight: 500;
+}
+
+.estimate-section__header p {
+    margin: 0;
+
+    color: var(--gray);
+
+    font-size: 0.95rem;
+    font-weight: 300;
+}
+
+
+/* STEP NUMBER
+========================================= */
+
+.estimate-step {
+    flex: 0 0 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+
+    background: var(--main-color);
+    border-radius: 50%;
+
+    color: var(--white);
+
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+
+/* OPTION GRID
+========================================= */
+
+.estimate-options {
+    display: grid;
+    gap: 15px;
+}
+
+.estimate-options--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.estimate-options--5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+
+/* OPTION CARD
+========================================= */
+
+.estimate-option {
+    position: relative;
+
+    display: block;
+
+    min-width: 0;
+
+    cursor: pointer;
+}
+
+.estimate-option input {
+    position: absolute;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+.estimate-option__content {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+    box-sizing: border-box;
+
+    padding: 22px 18px;
+
+    background: var(--white);
+
+    border: 1px solid var(--middle-gray);
+    border-radius: 10px;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.estimate-option:hover .estimate-option__content {
+    border-color: var(--ligth-main-color);
+
+    transform: translateY(-2px);
+}
+
+.estimate-option input:checked + .estimate-option__content {
+    border-color: var(--main-color);
+
+    background: rgba(244, 119, 33, 0.06);
+
+    box-shadow: 0 0 0 1px var(--main-color);
+}
+
+.estimate-option__content strong {
+    margin-bottom: 8px;
+
+    color: var(--black);
+
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.estimate-option__content small {
+    color: var(--gray);
+
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.estimate-option__price {
+    display: block;
+
+    margin-top: auto;
+    padding-top: 18px;
+
+    color: var(--main-color);
+
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+
+/* SMALL PAGE OPTIONS
+========================================= */
+
+.estimate-option--small .estimate-option__content {
+    align-items: center;
+    justify-content: center;
+
+    min-height: 100px;
+
+    text-align: center;
+}
+
+.estimate-option--small .estimate-option__content strong {
+    margin-bottom: 4px;
+
+    font-size: 1.15rem;
+}
+
+
+/* FEATURES
+========================================= */
+
+.estimate-features {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 12px;
+}
+
+.estimate-feature {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 14px 16px;
+
+    border: 1px solid var(--middle-gray);
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.estimate-feature:hover {
+    border-color: var(--ligth-main-color);
+}
+
+.estimate-feature:has(input:checked) {
+    border-color: var(--main-color);
+
+    background: rgba(244, 119, 33, 0.06);
+}
+
+.estimate-feature input {
+    width: 17px;
+    height: 17px;
+
+    accent-color: var(--main-color);
+}
+
+.estimate-feature span {
+    font-size: 0.9rem;
+}
+
+
+/* FORM
+========================================= */
+
+.estimate-form-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+}
+
+.estimate-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.estimate-field--full {
+    grid-column: 1 / -1;
+}
+
+.estimate-field label {
+    margin-bottom: 8px;
+
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.estimate-field label span {
+    color: var(--gray);
+
+    font-weight: 300;
+}
+
+.estimate-field input,
+.estimate-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 13px 14px;
+
+    background: var(--white);
+
+    border: 1px solid var(--middle-gray);
+    border-radius: 6px;
+
+    color: var(--black);
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.estimate-field textarea {
+    resize: vertical;
+}
+
+.estimate-field input:focus,
+.estimate-field textarea:focus {
+    border-color: var(--main-color);
+
+    box-shadow: 0 0 0 3px rgba(244, 119, 33, 0.1);
+}
+
+
+/* ESTIMATE RESULT
+========================================= */
+
+.estimate-result {
+    margin-top: 35px;
+    padding: 40px;
+
+    background: var(--dark-gray);
+    border-radius: 14px;
+
+    color: var(--white);
+
+    text-align: center;
+}
+
+.estimate-result__label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: var(--ligth-main-color);
+
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.estimate-result__price {
+    margin-bottom: 15px;
+
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+
+.estimate-result p {
+    max-width: 600px;
+
+    margin: 0 auto 25px;
+
+    color: var(--middle-gray);
+
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+
+/* SUBMIT BUTTON
+========================================= */
+
+.estimate-submit {
+    padding: 13px 28px;
+
+    background: var(--main-color);
+    border: 0;
+    border-radius: 6px;
+
+    color: var(--white);
+
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.estimate-submit:hover {
+    background: var(--ligth-main-color);
+
+    transform: translateY(-2px);
+}
+
+
+/* RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .estimate-options--4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .estimate-features {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .website-estimate {
+        padding: 50px 20px 70px;
+    }
+
+    .website-estimate__header h1 {
+        font-size: 2rem;
+    }
+
+    .estimate-section {
+        padding: 25px 20px;
+    }
+
+    .estimate-options--4,
+    .estimate-options--5,
+    .estimate-features,
+    .estimate-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .estimate-section__header {
+        gap: 12px;
+    }
+
+    .estimate-result {
+        padding: 30px 20px;
+    }
+
+    .estimate-result__price {
+        font-size: 1.8rem;
+    }
+
+}
+
+/* 3 PACKAGE LAYOUT */
+
+.estimate-options--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+
+/* PACKAGE INCLUDED FEATURES */
+
+.estimate-option__includes {
+    display: block;
+
+    margin-top: 18px;
+    padding-top: 15px;
+
+    border-top: 1px solid var(--ligth-gray);
+
+    color: var(--gray);
+
+    font-size: 0.82rem;
+    line-height: 1.8;
+}
+
+
+/* CUSTOMIZE GROUP */
+
+.estimate-customize-group + .estimate-customize-group {
+    margin-top: 35px;
+}
+
+.estimate-customize-group h3 {
+    margin: 0 0 15px;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    color: var(--black);
+}
+
+
+@media (max-width: 900px) {
+
+    .estimate-options--3 {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+.estimate-option__sample {
+    display: inline-block;
+
+    margin-top: 16px;
+
+    color: var(--black);
+
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: underline;
+
+    cursor: pointer;
+}
+
+.estimate-option__sample:hover {
+    color: var(--main-color);
+}
+
+.estimate-group-description {
+    margin: -5px 0 15px;
+
+    color: var(--gray);
+
+    font-size: 0.9rem;
+    font-weight: 300;
+}
+
+
+/* Store options will be controlled by JavaScript */
+.estimate-store-options {
+    display: none;
+}
+
+/* =========================================
+   INCLUDED FEATURES
+========================================= */
+
+.estimate-feature {
+    position: relative;
+}
+
+.estimate-feature.is-included {
+    padding-right: 80px;
+
+    border-color: var(--main-color);
+
+    background: rgba(244, 119, 33, 0.06);
+}
+
+.estimate-feature__status {
+    position: absolute;
+
+    top: 50%;
+    right: 12px;
+
+    transform: translateY(-50%);
+
+    color: var(--main-color);
+
+    font-size: 0.7rem;
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+/* =========================================
+   ESTIMATE SUBGROUPS
+========================================= */
+
+.estimate-subgroup + .estimate-subgroup {
+    margin-top: 28px;
+}
+
+.estimate-subgroup__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+.estimate-subgroup__header strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.estimate-subgroup__badge {
+    padding: 4px 8px;
+
+    background: rgba(244, 119, 33, 0.1);
+    border-radius: 20px;
+
+    color: var(--main-color);
+
+    font-size: 0.7rem;
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+/* =========================================
+   TOOLTIP
+========================================= */
+
+.estimate-option__title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.estimate-tooltip {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 18px;
+    height: 18px;
+
+    border: 1px solid var(--middle-gray);
+    border-radius: 50%;
+
+    color: var(--gray);
+
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1;
+
+    cursor: help;
+}
+
+.estimate-tooltip__content {
+    position: absolute;
+    z-index: 20;
+
+    left: 50%;
+    bottom: calc(100% + 10px);
+
+    width: 250px;
+    padding: 10px 12px;
+
+    background: var(--dark-gray);
+    border-radius: 7px;
+
+    color: var(--white);
+
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.5;
+
+    text-align: left;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform:
+        translateX(-50%)
+        translateY(5px);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+
+    pointer-events: none;
+}
+
+.estimate-tooltip:hover
+.estimate-tooltip__content,
+.estimate-tooltip:focus
+.estimate-tooltip__content,
+.estimate-tooltip:focus-within
+.estimate-tooltip__content {
+
+    opacity: 1;
+    visibility: visible;
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+/* =========================================
+   ESTIMATE SUMMARY
+========================================= */
+
+.estimate-summary {
+    margin: 25px 0;
+    border-top: 1px solid var(--ligth-gray);
+}
+
+.estimate-summary__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+
+    padding: 20px 0;
+
+    border-bottom: 1px solid var(--ligth-gray);
+}
+
+.estimate-summary__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.estimate-summary__info strong {
+    color: var(--black);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.estimate-summary__info small {
+    color: var(--gray);
+    font-size: 0.8rem;
+    font-weight: 300;
+}
+
+.estimate-summary__price {
+    flex-shrink: 0;
+
+    color: var(--main-color);
+
+    font-size: 1.15rem;
+    font-weight: 600;
+
+    text-align: right;
+}
+
+.estimate-result__disclaimer {
+    margin: 20px 0;
+
+    color: var(--gray);
+
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .estimate-summary__item {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .estimate-summary__price {
+        font-size: 1rem;
+    }
+
+}
+
+/* =========================================
+   PRELIMINARY ESTIMATE — REFINED
+========================================= */
+
+.estimate-result {
+    padding: 40px;
+
+    background: var(--dark-gray);
+    border-radius: 14px;
+
+    color: var(--white);
+}
+
+
+/* TITLE */
+
+.estimate-result__label {
+    display: block;
+
+    margin-bottom: 25px;
+
+    color: var(--main-color);
+
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+
+/* SUMMARY */
+
+.estimate-summary {
+    max-width: 760px;
+    margin: 0 auto 28px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+
+.estimate-summary__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding: 20px 5px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+
+/* LEFT SIDE */
+
+.estimate-summary__info {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    text-align: left;
+}
+
+
+.estimate-summary__info strong {
+    color: var(--white);
+
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+
+.estimate-summary__info small {
+    color: var(--middle-gray);
+
+    font-size: 0.78rem;
+    font-weight: 300;
+}
+
+
+/* PRICE */
+
+.estimate-summary__price {
+    flex-shrink: 0;
+
+    color: var(--main-color);
+
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    text-align: right;
+}
+
+
+/* DISCLAIMER */
+
+.estimate-result__disclaimer {
+    max-width: 580px;
+
+    margin: 25px auto 25px;
+
+    color: var(--middle-gray);
+
+    font-size: 0.82rem;
+    font-weight: 300;
+    line-height: 1.6;
+
+    text-align: center;
+}
+
+
+/* BUTTON */
+
+.estimate-submit {
+    display: block;
+
+    margin: 0 auto;
+
+    padding: 14px 28px;
+
+    background: var(--main-color);
+    border: 0;
+    border-radius: 7px;
+
+    color: var(--white);
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.estimate-submit:hover {
+    background: var(--ligth-main-color);
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .estimate-result {
+        padding: 30px 22px;
+    }
+
+    .estimate-summary__item {
+        align-items: flex-start;
+
+        gap: 20px;
+
+        padding: 18px 0;
+    }
+
+    .estimate-summary__price {
+        font-size: 1rem;
+    }
+
+    .estimate-summary__info small {
+        font-size: 0.75rem;
+    }
+
+}
+
+.estimate-required {
+    color: var(--main-color);
+}
+
+/* =========================================
+   ESTIMATE NOTICES
+========================================= */
+
+.estimate-notice {
+    max-width: 700px;
+    margin: 0 auto 35px;
+    padding: 18px 20px;
+
+    border-radius: 10px;
+
+    text-align: center;
+}
+
+.estimate-notice strong {
+    display: block;
+    margin-bottom: 5px;
+
+    font-size: 1rem;
+}
+
+.estimate-notice p {
+    margin: 0;
+
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.estimate-notice--success {
+    background: rgba(244, 119, 33, 0.08);
+    border: 1px solid var(--main-color);
+}
+
+.estimate-notice--success strong {
+    color: var(--main-color);
+}
+
+.estimate-notice--error {
+    background: var(--ligth-gray);
+    border: 1px solid var(--middle-gray);
+}
