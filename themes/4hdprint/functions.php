@@ -1757,6 +1757,68 @@ add_action('template_redirect', function () {
         wp_die('Security verification failed.');
     }
 
+    /* =====================================
+   ANTI-SPAM
+===================================== */
+
+/*
+ * Honeypot.
+ * Real visitors should never fill this field.
+ */
+
+$honeypot = isset($_POST['fourhd_company_website'])
+    ? sanitize_text_field(
+        wp_unslash($_POST['fourhd_company_website'])
+    )
+    : '';
+
+if ($honeypot !== '') {
+
+    /*
+     * Pretend the request was accepted.
+     * This gives simple bots less information
+     * about why their submission failed.
+     */
+
+    wp_safe_redirect(
+        add_query_arg(
+            'estimate_status',
+            'success',
+            get_permalink()
+        )
+    );
+
+    exit;
+}
+
+
+        /*
+        * Minimum submission time.
+        */
+
+        $form_time = isset($_POST['fourhd_form_time'])
+            ? absint($_POST['fourhd_form_time'])
+            : 0;
+
+        $current_time = time();
+
+        if (
+            $form_time === 0 ||
+            $current_time < $form_time ||
+            ($current_time - $form_time) < 3
+        ) {
+
+            wp_safe_redirect(
+                add_query_arg(
+                    'estimate_status',
+                    'success',
+                    get_permalink()
+                )
+            );
+
+            exit;
+        }
+
 
     /* =====================================
        CUSTOMER INFORMATION
@@ -1847,6 +1909,128 @@ add_action('template_redirect', function () {
         );
 
     }
+
+    /* =====================================
+   SECURITY — ALLOWED VALUES
+===================================== */
+
+$allowed_packages = [
+    'starter',
+    'business',
+    'store',
+];
+
+$allowed_pages = [
+    '1',
+    '3',
+    '5',
+    '10',
+    '10plus',
+];
+
+$allowed_products = [
+    '10',
+    '25',
+    '50',
+    '100',
+    'custom',
+];
+
+$allowed_hosting = [
+    'existing',
+    'managed',
+    'unsure',
+];
+
+$allowed_maintenance = [
+    'self',
+    'care',
+    'care_plus',
+    'ecommerce',
+];
+
+$allowed_features = [
+    'contact',
+    'gallery',
+    'maps',
+    'social',
+    'blog',
+    'newsletter',
+    'multilingual',
+    'quote_form',
+    'employment_form',
+    'booking',
+    'calculator',
+    'upload',
+];
+
+
+/* -------------------------------------
+   VALIDATE PACKAGE
+------------------------------------- */
+
+if (!in_array($website_type, $allowed_packages, true)) {
+    wp_die('Invalid website package.');
+}
+
+
+/* -------------------------------------
+   VALIDATE PAGES
+------------------------------------- */
+
+if (!in_array($pages, $allowed_pages, true)) {
+    wp_die('Invalid page selection.');
+}
+
+
+/* -------------------------------------
+   VALIDATE STORE PRODUCTS
+------------------------------------- */
+
+if (
+    $website_type === 'store' &&
+    !in_array($products, $allowed_products, true)
+) {
+    wp_die('Invalid product selection.');
+}
+
+
+/* -------------------------------------
+   VALIDATE HOSTING
+------------------------------------- */
+
+if (
+    !empty($domain_hosting) &&
+    !in_array($domain_hosting, $allowed_hosting, true)
+) {
+    wp_die('Invalid hosting selection.');
+}
+
+
+/* -------------------------------------
+   VALIDATE MAINTENANCE
+------------------------------------- */
+
+if (
+    !empty($maintenance) &&
+    !in_array($maintenance, $allowed_maintenance, true)
+) {
+    wp_die('Invalid maintenance selection.');
+}
+
+
+/* -------------------------------------
+   REMOVE UNKNOWN FEATURES
+------------------------------------- */
+
+$features = array_values(
+    array_unique(
+        array_intersect(
+            $features,
+            $allowed_features
+        )
+    )
+);
 
 /* =====================================
    SERVER-SIDE PRICE CALCULATION
@@ -2170,12 +2354,7 @@ $estimate_label = $custom_quote
 $quote_id = wp_insert_post([
     'post_type'   => 'fourhd_web_quote',
     'post_status' => 'publish',
-
-    'post_title' => sprintf(
-        '%s — %s',
-        $name,
-        $package_label
-    ),
+    'post_title' => $name,
 ]);
 
 if (!is_wp_error($quote_id) && $quote_id) {

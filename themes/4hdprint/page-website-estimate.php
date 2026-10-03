@@ -71,6 +71,30 @@ $estimate_status = isset($_GET['estimate_status'])
             value="submit_estimate"
         >
 
+        <!-- Anti-spam: form creation time -->
+<input
+    type="hidden"
+    name="fourhd_form_time"
+    value="<?php echo esc_attr(time()); ?>"
+>
+
+<!-- Anti-spam: honeypot -->
+<div
+    class="fourhd-honeypot"
+    aria-hidden="true"
+>
+    <label>
+        Leave this field empty
+        <input
+            type="text"
+            name="fourhd_company_website"
+            value=""
+            tabindex="-1"
+            autocomplete="off"
+        >
+    </label>
+</div>
+
         <!-- =====================================
             STEP 1 — WEBSITE PACKAGE
         ====================================== -->
