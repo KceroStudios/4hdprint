@@ -2163,6 +2163,115 @@ $estimate_label = $custom_quote
     ? 'Custom Quote'
     : '$' . number_format($project_price);
 
+    /* =====================================
+   SAVE WEBSITE QUOTE
+===================================== */
+
+$quote_id = wp_insert_post([
+    'post_type'   => 'fourhd_web_quote',
+    'post_status' => 'publish',
+
+    'post_title' => sprintf(
+        '%s — %s',
+        $name,
+        $package_label
+    ),
+]);
+
+if (!is_wp_error($quote_id) && $quote_id) {
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_customer_name',
+        $name
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_business',
+        $business
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_email',
+        $email
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_phone',
+        $phone
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_current_website',
+        $current_website
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_website_type',
+        $website_type
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_pages',
+        $pages
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_products',
+        $products
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_features',
+        $features
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_domain_hosting',
+        $domain_hosting
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_maintenance',
+        $maintenance
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_description',
+        $description
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_project_price',
+        $project_price
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_custom_quote',
+        $custom_quote ? 'yes' : 'no'
+    );
+
+    update_post_meta(
+        $quote_id,
+        '_fourhd_status',
+        'new'
+    );
+}
+
+
    /* =====================================
    BUILD HTML EMAIL
 ===================================== */
@@ -2629,3 +2738,692 @@ $redirect_url = add_query_arg(
 wp_safe_redirect($redirect_url);
 exit;
 });
+
+/* =========================================
+   WEBSITE QUOTES — ADMIN
+========================================= */
+
+add_action('init', function () {
+
+    $labels = [
+        'name'               => 'Website Quotes',
+        'singular_name'      => 'Website Quote',
+        'menu_name'          => 'Website Quotes',
+        'add_new'            => 'Add Quote',
+        'add_new_item'       => 'Add Website Quote',
+        'edit_item'          => 'View Website Quote',
+        'new_item'           => 'New Website Quote',
+        'view_item'          => 'View Website Quote',
+        'search_items'       => 'Search Website Quotes',
+        'not_found'          => 'No website quotes found',
+        'not_found_in_trash' => 'No website quotes found in Trash',
+    ];
+
+    register_post_type('fourhd_web_quote', [
+
+        'labels' => $labels,
+
+        'public' => false,
+        'show_ui' => true,
+        'show_in_menu' => true,
+
+        'menu_icon' => 'dashicons-media-document',
+
+        'supports' => [
+            'title',
+        ],
+
+        'capability_type' => 'post',
+        'map_meta_cap' => true,
+
+        'has_archive' => false,
+        'rewrite' => false,
+        'query_var' => false,
+
+    ]);
+
+    /* =========================================
+   WEBSITE QUOTES — DETAILS
+========================================= */
+
+add_action('add_meta_boxes', function () {
+
+    add_meta_box(
+        'fourhd_web_quote_details',
+        'Quote Details',
+        'fourhd_render_web_quote_details',
+        'fourhd_web_quote',
+        'normal',
+        'high'
+    );
+
+});
+
+
+function fourhd_render_web_quote_details($post) {
+
+    $name = get_post_meta(
+        $post->ID,
+        '_fourhd_customer_name',
+        true
+    );
+
+    $business = get_post_meta(
+        $post->ID,
+        '_fourhd_business',
+        true
+    );
+
+    $email = get_post_meta(
+        $post->ID,
+        '_fourhd_email',
+        true
+    );
+
+    $phone = get_post_meta(
+        $post->ID,
+        '_fourhd_phone',
+        true
+    );
+
+    $current_website = get_post_meta(
+        $post->ID,
+        '_fourhd_current_website',
+        true
+    );
+
+    $website_type = get_post_meta(
+        $post->ID,
+        '_fourhd_website_type',
+        true
+    );
+
+    $pages = get_post_meta(
+        $post->ID,
+        '_fourhd_pages',
+        true
+    );
+
+    $products = get_post_meta(
+        $post->ID,
+        '_fourhd_products',
+        true
+    );
+
+    $features = get_post_meta(
+        $post->ID,
+        '_fourhd_features',
+        true
+    );
+
+    $domain_hosting = get_post_meta(
+        $post->ID,
+        '_fourhd_domain_hosting',
+        true
+    );
+
+    $maintenance = get_post_meta(
+        $post->ID,
+        '_fourhd_maintenance',
+        true
+    );
+
+    $description = get_post_meta(
+        $post->ID,
+        '_fourhd_description',
+        true
+    );
+
+    $project_price = get_post_meta(
+        $post->ID,
+        '_fourhd_project_price',
+        true
+    );
+
+    $custom_quote = get_post_meta(
+        $post->ID,
+        '_fourhd_custom_quote',
+        true
+    );
+
+
+    /* -------------------------------------
+       LABELS
+    ------------------------------------- */
+
+    $package_labels = [
+        'starter'  => 'Starter Website',
+        'business' => 'Business Website',
+        'store'    => 'Online Store',
+    ];
+
+    $page_labels = [
+        '1'      => '1 Page',
+        '3'      => '2–3 Pages',
+        '5'      => '4–5 Pages',
+        '10'     => '6–10 Pages',
+        '10plus' => '10+ Pages',
+    ];
+
+    $product_labels = [
+        '10'     => 'Up to 10 Products',
+        '25'     => '11–25 Products',
+        '50'     => '26–50 Products',
+        '100'    => '51–100 Products',
+        'custom' => '100+ Products',
+    ];
+
+    $feature_labels = [
+        'contact'         => 'Contact Form',
+        'gallery'         => 'Gallery / Portfolio',
+        'maps'            => 'Google Maps',
+        'social'          => 'Social Media Integration',
+        'blog'            => 'Blog',
+        'newsletter'      => 'Newsletter',
+        'multilingual'    => 'Multilingual Website',
+        'quote_form'      => 'Quote Request Form',
+        'employment_form' => 'Employment / Application Form',
+        'booking'         => 'Appointment Booking',
+        'calculator'      => 'Custom Calculator',
+        'upload'          => 'File Upload',
+    ];
+
+    $maintenance_labels = [
+        'self'      => 'Self Managed — $0 / month',
+        'care'      => 'Website Care — $49 / month',
+        'care_plus' => 'Website Care Plus — $99 / month',
+        'ecommerce' => 'E-Commerce Care — $149 / month',
+    ];
+
+    $hosting_labels = [
+        'existing' => 'Existing Domain & Hosting — $0 / year',
+        'managed'  => 'Domain + Secure Hosting — Starting at $199 / year',
+        'unsure'   => 'To Be Determined',
+    ];
+
+
+    /* -------------------------------------
+       DISPLAY
+    ------------------------------------- */
+
+    ?>
+
+    <div class="fourhd-quote-details">
+
+        <h3>Customer</h3>
+
+        <table class="widefat striped">
+
+            <tbody>
+
+                <tr>
+                    <td><strong>Name</strong></td>
+                    <td><?php echo esc_html($name); ?></td>
+                </tr>
+
+                <?php if ($business) : ?>
+                    <tr>
+                        <td><strong>Business</strong></td>
+                        <td><?php echo esc_html($business); ?></td>
+                    </tr>
+                <?php endif; ?>
+
+                <tr>
+                    <td><strong>Email</strong></td>
+                    <td>
+                        <a href="mailto:<?php echo esc_attr($email); ?>">
+                            <?php echo esc_html($email); ?>
+                        </a>
+                    </td>
+                </tr>
+
+                <?php if ($phone) : ?>
+                    <tr>
+                        <td><strong>Phone</strong></td>
+                        <td><?php echo esc_html($phone); ?></td>
+                    </tr>
+                <?php endif; ?>
+
+                <?php if ($current_website) : ?>
+                    <tr>
+                        <td><strong>Current Website</strong></td>
+                        <td>
+                            <a
+                                href="<?php echo esc_url($current_website); ?>"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <?php echo esc_html($current_website); ?>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+
+            </tbody>
+
+        </table>
+
+
+        <h3>Project</h3>
+
+        <table class="widefat striped">
+
+            <tbody>
+
+                <tr>
+                    <td><strong>Package</strong></td>
+                    <td>
+                        <?php
+                        echo esc_html(
+                            $package_labels[$website_type]
+                            ?? $website_type
+                        );
+                        ?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><strong>Pages</strong></td>
+                    <td>
+                        <?php
+                        echo esc_html(
+                            $page_labels[$pages]
+                            ?? $pages
+                        );
+                        ?>
+                    </td>
+                </tr>
+
+                <?php if ($website_type === 'store') : ?>
+
+                    <tr>
+                        <td><strong>Products</strong></td>
+                        <td>
+                            <?php
+                            echo esc_html(
+                                $product_labels[$products]
+                                ?? $products
+                            );
+                            ?>
+                        </td>
+                    </tr>
+
+                <?php endif; ?>
+
+            </tbody>
+
+        </table>
+
+
+        <h3>Features</h3>
+
+        <ul>
+
+            <?php if (!empty($features) && is_array($features)) : ?>
+
+                <?php foreach ($features as $feature) : ?>
+
+                    <?php
+                    if (!isset($feature_labels[$feature])) {
+                        continue;
+                    }
+                    ?>
+
+                    <li>
+                        ✓
+                        <?php
+                        echo esc_html(
+                            $feature_labels[$feature]
+                        );
+                        ?>
+                    </li>
+
+                <?php endforeach; ?>
+
+            <?php else : ?>
+
+                <li>No additional features selected.</li>
+
+            <?php endif; ?>
+
+        </ul>
+
+
+        <h3>Services</h3>
+
+        <table class="widefat striped">
+
+            <tbody>
+
+                <tr>
+                    <td><strong>Website Care</strong></td>
+                    <td>
+                        <?php
+                        echo esc_html(
+                            $maintenance_labels[$maintenance]
+                            ?? 'Not selected'
+                        );
+                        ?>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><strong>Domain + Hosting</strong></td>
+                    <td>
+                        <?php
+                        echo esc_html(
+                            $hosting_labels[$domain_hosting]
+                            ?? 'Not selected'
+                        );
+                        ?>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+
+        <h3>Project Estimate</h3>
+
+        <p style="
+            font-size:24px;
+            font-weight:600;
+            color:#f47721;
+        ">
+
+            <?php if ($custom_quote === 'yes') : ?>
+
+                Custom Quote
+
+            <?php else : ?>
+
+                $<?php echo esc_html(
+                    number_format((float) $project_price)
+                ); ?>
+
+            <?php endif; ?>
+
+        </p>
+
+
+        <h3>Project Description</h3>
+
+        <div style="
+            padding:15px;
+            background:#f6f7f7;
+            border-radius:4px;
+            line-height:1.6;
+        ">
+
+            <?php echo nl2br(
+                esc_html($description)
+            ); ?>
+
+        </div>
+
+    </div>
+
+    <?php
+}
+
+});
+
+/* =========================================
+   WEBSITE QUOTES — STATUS
+========================================= */
+
+add_action('add_meta_boxes', function () {
+
+    add_meta_box(
+        'fourhd_web_quote_status',
+        'Quote Status',
+        'fourhd_render_web_quote_status',
+        'fourhd_web_quote',
+        'side',
+        'high'
+    );
+
+});
+
+
+function fourhd_render_web_quote_status($post) {
+
+    $status = get_post_meta(
+        $post->ID,
+        '_fourhd_status',
+        true
+    );
+
+    if (empty($status)) {
+        $status = 'new';
+    }
+
+    wp_nonce_field(
+        'fourhd_save_quote_status',
+        'fourhd_quote_status_nonce'
+    );
+
+    $statuses = [
+        'new'       => 'New',
+        'contacted' => 'Contacted',
+        'quoted'    => 'Quoted',
+        'accepted'  => 'Accepted',
+        'closed'    => 'Closed',
+    ];
+
+    ?>
+
+    <p>
+        <label for="fourhd_quote_status">
+            <strong>Current Status</strong>
+        </label>
+    </p>
+
+    <select
+        name="fourhd_quote_status"
+        id="fourhd_quote_status"
+        style="width:100%;"
+    >
+
+        <?php foreach ($statuses as $value => $label) : ?>
+
+            <option
+                value="<?php echo esc_attr($value); ?>"
+                <?php selected($status, $value); ?>
+            >
+                <?php echo esc_html($label); ?>
+            </option>
+
+        <?php endforeach; ?>
+
+    </select>
+
+    <?php
+}
+
+
+/* =========================================
+   WEBSITE QUOTES — SAVE STATUS
+========================================= */
+
+add_action('save_post_fourhd_web_quote', function ($post_id) {
+
+    // Ignore WordPress autosaves.
+    if (
+        defined('DOING_AUTOSAVE') &&
+        DOING_AUTOSAVE
+    ) {
+        return;
+    }
+
+    // Verify our nonce.
+    if (
+        !isset($_POST['fourhd_quote_status_nonce']) ||
+        !wp_verify_nonce(
+            sanitize_text_field(
+                wp_unslash(
+                    $_POST['fourhd_quote_status_nonce']
+                )
+            ),
+            'fourhd_save_quote_status'
+        )
+    ) {
+        return;
+    }
+
+    // Make sure the user can edit this quote.
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    if (!isset($_POST['fourhd_quote_status'])) {
+        return;
+    }
+
+    $status = sanitize_key(
+        wp_unslash($_POST['fourhd_quote_status'])
+    );
+
+    $allowed_statuses = [
+        'new',
+        'contacted',
+        'quoted',
+        'accepted',
+        'closed',
+    ];
+
+    if (!in_array($status, $allowed_statuses, true)) {
+        return;
+    }
+
+    update_post_meta(
+        $post_id,
+        '_fourhd_status',
+        $status
+    );
+
+});
+
+/* =========================================
+   WEBSITE QUOTES — ADMIN COLUMNS
+========================================= */
+
+add_filter(
+    'manage_fourhd_web_quote_posts_columns',
+    function ($columns) {
+
+        return [
+            'cb'             => $columns['cb'],
+            'title'          => 'Customer',
+            'quote_package'  => 'Package',
+            'quote_estimate' => 'Estimate',
+            'quote_status'   => 'Status',
+            'date'           => 'Date',
+        ];
+    }
+);
+
+
+add_action(
+    'manage_fourhd_web_quote_posts_custom_column',
+    function ($column, $post_id) {
+
+        /* ---------------------------------
+           PACKAGE
+        --------------------------------- */
+
+        if ($column === 'quote_package') {
+
+            $website_type = get_post_meta(
+                $post_id,
+                '_fourhd_website_type',
+                true
+            );
+
+            $packages = [
+                'starter'  => 'Starter Website',
+                'business' => 'Business Website',
+                'store'    => 'Online Store',
+            ];
+
+            echo esc_html(
+                $packages[$website_type]
+                ?? '—'
+            );
+        }
+
+
+        /* ---------------------------------
+           ESTIMATE
+        --------------------------------- */
+
+        if ($column === 'quote_estimate') {
+
+            $project_price = get_post_meta(
+                $post_id,
+                '_fourhd_project_price',
+                true
+            );
+
+            $custom_quote = get_post_meta(
+                $post_id,
+                '_fourhd_custom_quote',
+                true
+            );
+
+            if ($custom_quote === 'yes') {
+
+                echo '<strong>Custom Quote</strong>';
+
+            } elseif ($project_price !== '') {
+
+                echo '<strong>$' .
+                    esc_html(
+                        number_format(
+                            (float) $project_price
+                        )
+                    ) .
+                    '</strong>';
+
+            } else {
+
+                echo '—';
+            }
+        }
+
+
+        /* ---------------------------------
+           STATUS
+        --------------------------------- */
+
+        if ($column === 'quote_status') {
+
+            $status = get_post_meta(
+                $post_id,
+                '_fourhd_status',
+                true
+            );
+
+            $statuses = [
+                'new'       => 'New',
+                'contacted' => 'Contacted',
+                'quoted'    => 'Quoted',
+                'accepted'  => 'Accepted',
+                'closed'    => 'Closed',
+            ];
+
+            if (empty($status)) {
+                $status = 'new';
+            }
+
+            echo esc_html(
+                $statuses[$status]
+                ?? 'New'
+            );
+        }
+
+    },
+    10,
+    2
+);
