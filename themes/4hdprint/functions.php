@@ -142,15 +142,44 @@ add_action('admin_menu', function () {
 /**
  * Homepage Banner - Settings
  */
-add_action('admin_init', function () {
+register_setting(
+    '4hd_homepage_banner_settings',
+    '4hd_homepage_banner',
+    [
+        'sanitize_callback' => 'four_hd_sanitize_homepage_banner',
+    ]
+);
 
-    register_setting(
-        '4hd_homepage_banner_settings',
-        '4hd_homepage_banner'
-    );
+function four_hd_sanitize_homepage_banner($input) {
 
-});
+    if (!is_array($input)) {
+        return [];
+    }
 
+    return [
+        'enabled' => !empty($input['enabled']) ? 1 : 0,
+
+        'image' => isset($input['image'])
+            ? absint($input['image'])
+            : 0,
+
+        'title' => isset($input['title'])
+            ? sanitize_text_field($input['title'])
+            : '',
+
+        'description' => isset($input['description'])
+            ? sanitize_textarea_field($input['description'])
+            : '',
+
+        'button_text' => isset($input['button_text'])
+            ? sanitize_text_field($input['button_text'])
+            : '',
+
+        'button_url' => isset($input['button_url'])
+            ? esc_url_raw($input['button_url'])
+            : '',
+    ];
+}
 
 /**
  * Homepage Banner - Admin Page HTML
@@ -457,14 +486,48 @@ add_action('admin_menu', function () {
 /**
  * Promotional Banner - Settings
  */
-add_action('admin_init', function () {
+register_setting(
+    '4hd_promotional_banner_settings',
+    '4hd_promotional_banner',
+    [
+        'sanitize_callback' => 'four_hd_sanitize_promotional_banner',
+    ]
+);
 
-    register_setting(
-        '4hd_promotional_banner_settings',
-        '4hd_promotional_banner'
-    );
+function four_hd_sanitize_promotional_banner($input) {
 
-});
+    if (!is_array($input)) {
+        return [];
+    }
+
+    return [
+        'enabled' => !empty($input['enabled']) ? 1 : 0,
+
+        'image' => isset($input['image'])
+            ? absint($input['image'])
+            : 0,
+
+        'title' => isset($input['title'])
+            ? sanitize_text_field($input['title'])
+            : '',
+
+        'description' => isset($input['description'])
+            ? sanitize_textarea_field($input['description'])
+            : '',
+
+        'offer' => isset($input['offer'])
+            ? sanitize_text_field($input['offer'])
+            : '',
+
+        'button_text' => isset($input['button_text'])
+            ? sanitize_text_field($input['button_text'])
+            : '',
+
+        'button_url' => isset($input['button_url'])
+            ? esc_url_raw($input['button_url'])
+            : '',
+    ];
+}
 
 
 /**
@@ -849,14 +912,44 @@ add_action('admin_menu', function () {
 /**
  * Client Logos - Settings
  */
-add_action('admin_init', function () {
+register_setting(
+    '4hd_client_logos_settings',
+    '4hd_client_logos',
+    [
+        'sanitize_callback' => 'four_hd_sanitize_client_logos',
+    ]
+);
 
-    register_setting(
-        '4hd_client_logos_settings',
-        '4hd_client_logos'
-    );
+function four_hd_sanitize_client_logos($input) {
 
-});
+    if (!is_array($input)) {
+        return [];
+    }
+
+    $clean_logos = [];
+
+    foreach ($input as $logo) {
+
+        if (
+            !is_array($logo) ||
+            empty($logo['image'])
+        ) {
+            continue;
+        }
+
+        $image_id = absint($logo['image']);
+
+        if (!$image_id) {
+            continue;
+        }
+
+        $clean_logos[] = [
+            'image' => $image_id,
+        ];
+    }
+
+    return $clean_logos;
+}
 
 
 /**
@@ -1228,15 +1321,36 @@ add_action('admin_menu', function () {
 /**
  * Homepage Video - Settings
  */
-add_action('admin_init', function () {
+register_setting(
+    '4hd_homepage_video_settings',
+    '4hd_homepage_video',
+    [
+        'sanitize_callback' => 'four_hd_sanitize_homepage_video',
+    ]
+);
 
-    register_setting(
-        '4hd_homepage_video_settings',
-        '4hd_homepage_video'
-    );
+function four_hd_sanitize_homepage_video($input) {
 
-});
+    if (!is_array($input)) {
+        return [];
+    }
 
+    return [
+        'enabled' => !empty($input['enabled']) ? 1 : 0,
+
+        'image' => isset($input['image'])
+            ? absint($input['image'])
+            : 0,
+
+        'url' => isset($input['url'])
+            ? esc_url_raw($input['url'])
+            : '',
+
+        'title' => isset($input['title'])
+            ? sanitize_text_field($input['title'])
+            : '',
+    ];
+}
 
 /**
  * Homepage Video - Admin Page
@@ -1653,6 +1767,12 @@ add_action('woocommerce_cart_totals_before_shipping', function () {
 
     ?>
     <tr class="fourhd-delivery-method">
+
+        <?php wp_nonce_field(
+            'fourhd_delivery_method_action',
+            'fourhd_delivery_method_nonce'
+        ); ?>
+
         <th>Delivery Method</th>
 
         <td data-title="Delivery Method">
@@ -1712,17 +1832,36 @@ add_filter('woocommerce_cart_ready_to_calc_shipping', function ($ready) {
 add_action('wp_loaded', function () {
 
     if (
-        isset($_POST['fourhd_delivery_method']) &&
-        WC()->session
+        !isset($_POST['fourhd_delivery_method']) ||
+        !WC()->session
     ) {
-        $method = sanitize_key(
-            wp_unslash($_POST['fourhd_delivery_method'])
-        );
-
-        if (in_array($method, ['pickup', 'shipping'], true)) {
-            WC()->session->set('fourhd_delivery_method', $method);
-        }
+        return;
     }
+
+    if (
+        !isset($_POST['fourhd_delivery_method_nonce']) ||
+        !wp_verify_nonce(
+            sanitize_text_field(
+                wp_unslash($_POST['fourhd_delivery_method_nonce'])
+            ),
+            'fourhd_delivery_method_action'
+        )
+    ) {
+        return;
+    }
+
+    $method = sanitize_key(
+        wp_unslash($_POST['fourhd_delivery_method'])
+    );
+
+    if (!in_array($method, ['pickup', 'shipping'], true)) {
+        return;
+    }
+
+    WC()->session->set(
+        'fourhd_delivery_method',
+        $method
+    );
 });
 
 /* =========================================
@@ -1821,35 +1960,74 @@ if ($honeypot !== '') {
 
 
     /* =====================================
-       CUSTOMER INFORMATION
+    CUSTOMER INFORMATION
     ===================================== */
 
-    $name = isset($_POST['name'])
-        ? sanitize_text_field(wp_unslash($_POST['name']))
-        : '';
+    $name =
+        isset($_POST['name']) &&
+        is_scalar($_POST['name'])
+            ? sanitize_text_field(
+                wp_unslash($_POST['name'])
+            )
+            : '';
 
-    $business = isset($_POST['business'])
-        ? sanitize_text_field(wp_unslash($_POST['business']))
-        : '';
+    $business =
+        isset($_POST['business']) &&
+        is_scalar($_POST['business'])
+            ? sanitize_text_field(
+                wp_unslash($_POST['business'])
+            )
+            : '';
 
-    $email = isset($_POST['email'])
-        ? sanitize_email(wp_unslash($_POST['email']))
-        : '';
+    $email =
+        isset($_POST['email']) &&
+        is_scalar($_POST['email'])
+            ? sanitize_email(
+                wp_unslash($_POST['email'])
+            )
+            : '';
 
-    $phone = isset($_POST['phone'])
-        ? sanitize_text_field(wp_unslash($_POST['phone']))
-        : '';
+    $phone =
+        isset($_POST['phone']) &&
+        is_scalar($_POST['phone'])
+            ? sanitize_text_field(
+                wp_unslash($_POST['phone'])
+            )
+            : '';
 
-    $current_website = isset($_POST['current_website'])
-        ? esc_url_raw(wp_unslash($_POST['current_website']))
-        : '';
+    $current_website =
+        isset($_POST['current_website']) &&
+        is_scalar($_POST['current_website'])
+            ? esc_url_raw(
+                wp_unslash($_POST['current_website'])
+            )
+            : '';
 
-    $description = isset($_POST['description'])
-        ? sanitize_textarea_field(
-            wp_unslash($_POST['description'])
-        )
-        : '';
+    $description =
+        isset($_POST['description']) &&
+        is_scalar($_POST['description'])
+            ? sanitize_textarea_field(
+                wp_unslash($_POST['description'])
+            )
+            : '';
 
+
+        /* =====================================
+        SECURITY — INPUT LENGTH LIMITS
+        ===================================== */
+
+        if (
+            mb_strlen($name) > 100 ||
+            mb_strlen($business) > 150 ||
+            mb_strlen($email) > 254 ||
+            mb_strlen($phone) > 50 ||
+            mb_strlen($current_website) > 500 ||
+            mb_strlen($description) > 5000
+        ) {
+            wp_die(
+                'One or more fields exceed the allowed length.'
+            );
+        }
 
     /* =====================================
        BASIC SERVER VALIDATION
@@ -1868,28 +2046,48 @@ if ($honeypot !== '') {
 
 
     /* =====================================
-       ESTIMATOR SELECTIONS
-    ===================================== */
+        ESTIMATOR SELECTIONS
+        ===================================== */
 
-    $website_type = isset($_POST['website_type'])
-        ? sanitize_key($_POST['website_type'])
-        : '';
+        $website_type =
+            isset($_POST['website_type']) &&
+            is_scalar($_POST['website_type'])
+                ? sanitize_key(
+                    wp_unslash($_POST['website_type'])
+                )
+                : '';
 
-    $pages = isset($_POST['pages'])
-        ? sanitize_key($_POST['pages'])
-        : '';
+        $pages =
+            isset($_POST['pages']) &&
+            is_scalar($_POST['pages'])
+                ? sanitize_key(
+                    wp_unslash($_POST['pages'])
+                )
+                : '';
 
-    $products = isset($_POST['products'])
-        ? sanitize_key($_POST['products'])
-        : '';
+        $products =
+            isset($_POST['products']) &&
+            is_scalar($_POST['products'])
+                ? sanitize_key(
+                    wp_unslash($_POST['products'])
+                )
+                : '';
 
-    $domain_hosting = isset($_POST['domain_hosting'])
-        ? sanitize_key($_POST['domain_hosting'])
-        : '';
+        $domain_hosting =
+            isset($_POST['domain_hosting']) &&
+            is_scalar($_POST['domain_hosting'])
+                ? sanitize_key(
+                    wp_unslash($_POST['domain_hosting'])
+                )
+                : '';
 
-    $maintenance = isset($_POST['maintenance'])
-        ? sanitize_key($_POST['maintenance'])
-        : '';
+        $maintenance =
+            isset($_POST['maintenance']) &&
+            is_scalar($_POST['maintenance'])
+                ? sanitize_key(
+                    wp_unslash($_POST['maintenance'])
+                )
+                : '';
 
 
     /* =====================================
@@ -2030,6 +2228,69 @@ $features = array_values(
             $allowed_features
         )
     )
+);
+
+/* =====================================
+   SECURITY — RATE LIMITING
+===================================== */
+
+/*
+ * Maximum 5 valid quote requests
+ * from the same IP every 15 minutes.
+ */
+
+$client_ip = '';
+
+if (!empty($_SERVER['REMOTE_ADDR'])) {
+    $client_ip = sanitize_text_field(
+        wp_unslash($_SERVER['REMOTE_ADDR'])
+    );
+}
+
+/*
+ * Create a non-reversible identifier instead
+ * of storing the visitor's IP in the transient key.
+ */
+$rate_key = 'fourhd_quote_rate_' . hash(
+    'sha256',
+    $client_ip
+);
+
+$rate_data = get_transient($rate_key);
+
+
+
+if (!is_array($rate_data)) {
+    $rate_data = [
+        'count' => 0,
+    ];
+}
+
+/*
+ * Block after 5 accepted submissions.
+ */
+if ($rate_data['count'] >= 5) {
+
+    wp_safe_redirect(
+        add_query_arg(
+            'estimate_status',
+            'success',
+            get_permalink()
+        )
+    );
+
+    exit;
+}
+
+/*
+ * Count this valid submission.
+ */
+$rate_data['count']++;
+
+set_transient(
+    $rate_key,
+    $rate_data,
+    15 * MINUTE_IN_SECONDS
 );
 
 /* =====================================
@@ -2952,8 +3213,24 @@ add_action('init', function () {
             'title',
         ],
 
-        'capability_type' => 'post',
-        'map_meta_cap' => true,
+        'capabilities' => [
+        'edit_post'              => 'manage_options',
+        'read_post'              => 'manage_options',
+        'delete_post'            => 'manage_options',
+        'edit_posts'             => 'manage_options',
+        'edit_others_posts'      => 'manage_options',
+        'publish_posts'          => 'manage_options',
+        'read_private_posts'     => 'manage_options',
+        'delete_posts'           => 'manage_options',
+        'delete_private_posts'   => 'manage_options',
+        'delete_published_posts' => 'manage_options',
+        'delete_others_posts'    => 'manage_options',
+        'edit_private_posts'     => 'manage_options',
+        'edit_published_posts'   => 'manage_options',
+        'create_posts'           => 'manage_options',
+    ],
+
+    'map_meta_cap' => false,
 
         'has_archive' => false,
         'rewrite' => false,
