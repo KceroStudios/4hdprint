@@ -17,8 +17,45 @@ The documentation is maintained progressively as each area of the website is rev
   - [Quote Storage & Administration](#quote-storage--administration)
   - [Security & Anti-Spam](#security--anti-spam)
 
+- [Homepage Banner](#homepage-banner)
+  - [Overview](#overview-1)
+  - [Main Files](#main-files-1)
+  - [Banner Settings](#banner-settings)
+  - [Background Styles](#background-styles)
+  - [Image Behavior](#image-behavior)
+  - [Data Handling](#data-handling)
+
+- [Our Services](#our-services)
+  - [Overview](#overview-2)
+  - [Main Files](#main-files-2)
+  - [Service Categories](#service-categories)
+  - [Responsive Behavior](#responsive-behavior)
+  
+- [Featured Products](#featured-products)
+  - [Overview](#overview-3)
+  - [Main Files](#main-files-3)
+  - [Product Selection](#product-selection)
+  - [Product Information](#product-information)
+  - [Responsive Behavior](#responsive-behavior-1)
+
+- [Promotional Banner](#promotional-banner)
+  - [Overview](#overview-4)
+  - [Main Files](#main-files-4)
+  - [Banner Settings](#banner-settings-1)
+  - [Display Behavior](#display-behavior)
+  - [Responsive Behavior](#responsive-behavior-2)
+
+- [Client Logos](#client-logos)
+  - [Overview](#overview-5)
+  - [Main Files](#main-files-5)
+  - [Carousel Behavior](#carousel-behavior)
+  - [Image Handling](#image-handling)
+  - [Responsive Behavior](#responsive-behavior-3)
+
+  
 ---
----
+
+
 
 # Website Estimator & Quote Management
 
@@ -537,3 +574,225 @@ Particular attention should be given to:
 - File upload restrictions if additional upload functionality is implemented.
 
 Security documentation should be updated whenever a new public form, upload mechanism, external integration, authentication feature, or sensitive-data workflow is added.
+
+## Homepage Banner
+
+### Overview
+
+The Homepage Banner is a configurable hero section displayed on the website homepage.
+
+Banner content and appearance can be managed from the WordPress administration area without modifying theme files.
+
+### Main Files
+
+- `front-page.php` — Renders the banner on the homepage.
+- `functions.php` — Registers the banner settings, admin interface, sanitization, and WordPress Media Library integration.
+- `assets/css/components/homepage.css` — Contains homepage-specific styles, including the Homepage Banner.
+
+### Banner Settings
+
+The administrator can configure:
+
+- Enable or disable the banner.
+- Banner title.
+- Banner description.
+- Button text and URL.
+- Main banner image.
+- Show or hide the main image.
+- Background style.
+- Background image.
+
+### Background Styles
+
+The banner supports predefined visual styles:
+
+- Dark
+- Orange
+- Light
+- Dark Gradient
+- Orange Gradient
+- Background Image
+
+Using predefined styles keeps the banner consistent with the theme's design system and CSS variables.
+
+When `Background Image` is selected, an independent image can be chosen through the WordPress Media Library.
+
+### Image Behavior
+
+The banner uses two independent image settings:
+
+**Main Image**
+
+Displayed as part of the banner content and can be enabled or disabled using the `Show Main Image` setting.
+
+**Background Image**
+
+Used as the background of the entire banner when the `Background Image` style is selected.
+
+The admin interface only displays the Background Image controls when they are relevant.
+
+### Data Handling
+
+Banner settings are stored in the WordPress option:
+
+`4hd_homepage_banner`
+
+Input values are sanitized before being stored.
+
+Background style values are restricted to an allowlist of supported styles, and image values are stored as WordPress attachment IDs.
+
+## Our Services
+
+### Overview
+
+The Our Services section provides direct access to the main service categories offered by 4HD PRINT.
+
+The section is currently defined directly in `front-page.php` and is not managed through a WordPress admin component.
+
+### Main Files
+
+- `front-page.php` — Contains the section structure and service category links.
+- `assets/css/components/homepage.css` — Contains the layout, card, hover, and responsive styles.
+
+### Service Categories
+
+The section currently displays:
+
+- Print Services
+- Promotional Products
+- Graphic Design
+- Web Solutions
+
+Theme images use `get_template_directory_uri()` instead of hardcoded local URLs, allowing the section to work correctly across development and production environments.
+
+### Responsive Behavior
+
+The section uses a responsive CSS Grid layout.
+
+- Desktop displays four service cards.
+- Tablet displays two columns while preserving the full card content.
+- Mobile displays a compact two-column layout with only the service icon and title.
+- On mobile, the entire service card is clickable.
+- Desktop and tablet use the `View More` button for navigation.
+
+## Featured Products
+
+### Overview
+
+The Featured Products section displays a selection of WooCommerce products marked as featured.
+
+Products are loaded dynamically from WooCommerce, allowing the store administrator to control which products appear on the homepage without modifying theme files.
+
+### Main Files
+
+- `front-page.php` — Queries and renders featured WooCommerce products.
+- `assets/css/components/homepage.css` — Contains the section layout, product cards, buttons, and responsive styles.
+
+### Product Selection
+
+The section uses a WordPress query to retrieve:
+
+- Published WooCommerce products.
+- Products marked as featured.
+- A maximum of four products.
+
+If no featured products are available, the section is not displayed.
+
+### Product Information
+
+Each product card displays:
+
+- Product image.
+- Product title.
+- WooCommerce price.
+- Link to the individual product page.
+
+A `View All Products` button links to the main WooCommerce Shop page.
+
+### Responsive Behavior
+
+The section uses a responsive CSS Grid layout.
+
+- Desktop displays four products per row.
+- Tablet displays two products per row.
+- Mobile maintains a compact two-column layout.
+- Product cards and controls are resized for smaller screens.
+
+## Promotional Banner
+
+### Overview
+
+The Promotional Banner is a configurable homepage section used to highlight promotions, special offers, or important marketing messages.
+
+The banner can be managed from the WordPress administration area without modifying theme files.
+
+### Main Files
+
+- `front-page.php` — Renders the Promotional Banner on the homepage.
+- `functions.php` — Handles the banner settings, administration interface, sanitization, and image selection.
+- `assets/css/components/homepage.css` — Contains the banner layout and responsive styles.
+
+### Banner Settings
+
+The administrator can configure:
+
+- Enable or disable the banner.
+- Banner image.
+- Title.
+- Description.
+- Promotional offer.
+- Button text.
+- Button URL.
+
+### Display Behavior
+
+The Promotional Banner is only rendered when it is enabled.
+
+Individual elements such as the title, description, offer, button, and image are only displayed when their corresponding values are available.
+
+### Responsive Behavior
+
+The banner uses a horizontal layout on larger screens, with promotional content and an image displayed side by side.
+
+On mobile devices, the layout changes to a vertical arrangement with the content displayed above the image.
+
+## Client Logos
+
+### Overview
+
+The Client Logos section displays a continuously scrolling carousel of client logos on the homepage.
+
+Logos are managed through WordPress and are rendered dynamically from the `4hd_client_logos` option.
+
+### Main Files
+
+- `front-page.php` — Retrieves and renders the client logos.
+- `functions.php` — Handles the administration and storage of client logo settings.
+- `assets/css/components/homepage.css` — Contains the carousel layout, animation, hover effects, and responsive styles.
+
+### Carousel Behavior
+
+The logo collection is rendered twice inside the carousel track to create a continuous scrolling animation.
+
+The carousel:
+
+- Scrolls automatically in a continuous loop.
+- Pauses when the user hovers over it.
+- Displays logos in grayscale by default.
+- Restores the original logo colors on hover.
+
+### Image Handling
+
+Logo images are stored as WordPress attachment IDs.
+
+Invalid or empty image entries are skipped before rendering.
+
+Images are generated using the WordPress attachment system rather than hardcoded image URLs.
+
+### Responsive Behavior
+
+On mobile devices:
+
+- The carousel uses the full available width.
+- Logo dimensions and spacing are reduced.
+- The section header uses a smaller font size.

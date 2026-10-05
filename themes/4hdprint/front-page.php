@@ -32,284 +32,307 @@ get_header();
 
             <?php
 
-            /*
-            * Validate background style
-            */
-            $background_style = in_array(
-                $banner['background_style'],
-                [
-                    'dark',
-                    'orange',
-                    'light',
-                    'dark-gradient',
-                    'orange-gradient',
-                    'image',
-                ],
-                true
-            )
-                ? $banner['background_style']
-                : 'dark';
+                /*
+                * Validate background style
+                */
+                $background_style = in_array(
+                    $banner['background_style'],
+                    [
+                        'dark',
+                        'orange',
+                        'light',
+                        'dark-gradient',
+                        'orange-gradient',
+                        'image',
+                    ],
+                    true
+                )
+                    ? $banner['background_style']
+                    : 'dark';
 
 
-            /*
-            * Get background image URL
-            */
-            $background_image_url = '';
+                /*
+                * Get background image URL
+                */
+                $background_image_url = '';
 
-            if (
-                $background_style === 'image' &&
-                !empty($banner['background_image'])
-            ) {
-                $background_image_url = wp_get_attachment_image_url(
-                    absint($banner['background_image']),
-                    'full'
-                );
-            }
-
-            ?>
-
-            <section
-                class="homepage-banner homepage-banner--<?php echo esc_attr($background_style); ?> <?php echo empty($banner['show_image']) ? 'homepage-banner--no-image' : ''; ?>"
-                <?php if ($background_image_url) : ?>
-                    style="background-image: url('<?php echo esc_url($background_image_url); ?>');"
-                <?php endif; ?>
-            >
-
-            <?php if (!empty($banner['show_image']) && !empty($banner['image'])) : ?>
-
-                <div class="homepage-banner__image">
-
-                    <?php
-                    echo wp_get_attachment_image(
-                        absint($banner['image']),
+                if (
+                    $background_style === 'image' &&
+                    !empty($banner['background_image'])
+                ) {
+                    $background_image_url = wp_get_attachment_image_url(
+                        absint($banner['background_image']),
                         'full'
                     );
-                    ?>
+                }
+
+                ?>
+
+                <section
+                    class="homepage-banner homepage-banner--<?php echo esc_attr($background_style); ?> <?php echo empty($banner['show_image']) ? 'homepage-banner--no-image' : ''; ?>"
+                    <?php if ($background_image_url) : ?>
+                        style="background-image: url('<?php echo esc_url($background_image_url); ?>');"
+                    <?php endif; ?>
+                >
+
+                <?php if (!empty($banner['show_image']) && !empty($banner['image'])) : ?>
+
+                    <div class="homepage-banner__image">
+
+                        <?php
+                        echo wp_get_attachment_image(
+                            absint($banner['image']),
+                            'full'
+                        );
+                        ?>
+
+                    </div>
+
+                <?php endif; ?>
+
+
+                <div class="homepage-banner__content">
+
+                    <?php if (!empty($banner['title'])) : ?>
+
+                        <h1>
+                            <?php echo esc_html($banner['title']); ?>
+                        </h1>
+
+                    <?php endif; ?>
+
+
+                    <?php if (!empty($banner['description'])) : ?>
+
+                        <p>
+                            <?php echo esc_html($banner['description']); ?>
+                        </p>
+
+                    <?php endif; ?>
+
+
+                    <?php if (!empty($banner['button_text']) && !empty($banner['button_url'])) : ?>
+
+                        <a
+                            href="<?php echo esc_url($banner['button_url']); ?>"
+                            class="homepage-banner__button"
+                        >
+                            <?php echo esc_html($banner['button_text']); ?>
+                        </a>
+
+                    <?php endif; ?>
 
                 </div>
 
-            <?php endif; ?>
+            </section>
+        <?php endif; ?>
 
 
-            <div class="homepage-banner__content">
 
-                <?php if (!empty($banner['title'])) : ?>
+        <div class="services_slide">
+            <h2>Our Services</h2>
+            <h3>Personalized Solutions, Made for You</h3>
 
-                    <h1>
-                        <?php echo esc_html($banner['title']); ?>
-                    </h1>
+            <div class="center_container slide">
 
-                <?php endif; ?>
-
-
-                <?php if (!empty($banner['description'])) : ?>
-
-                    <p>
-                        <?php echo esc_html($banner['description']); ?>
-                    </p>
-
-                <?php endif; ?>
-
-
-                <?php if (!empty($banner['button_text']) && !empty($banner['button_url'])) : ?>
-
-                    <a
-                        href="<?php echo esc_url($banner['button_url']); ?>"
-                        class="homepage-banner__button"
+                <div
+                    class="card"
+                    data-url="/product-category/print-services/"
+                > 
+                    <img
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/print.png'); ?>"
+                        alt="Print Services"
                     >
-                        <?php echo esc_html($banner['button_text']); ?>
+                    <h3>Print Services</h3>
+                    <p>High-quality custom printing for your business</p>
+                    <a class="featured-products__shop-button" href="/product-category/print-services/">
+                        View More
                     </a>
+                </div>
+                    
+                <div
+                    class="card"
+                    data-url="/product-category/promotional-products/"
+                > 
+                    <img
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/custom.png'); ?>"
+                        alt="Promotional Products"
+                    >
+                    <h3>Promotional Products</h3>
+                    <p>Custom products designed especially just for you</p>
+                    <a class="featured-products__shop-button" href="/product-category/promotional-products/">
+                        View More
+                    </a>
+                </div>
 
-                <?php endif; ?>
+                <div
+                    class="card"
+                    data-url="/product-category/graphic-design/"
+                >
+                   <img
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/design.png'); ?>"
+                        alt="Graphic Design"
+                    >
+                    <h3>Graphic Design</h3>
+                    <p>Creative solutions to bring your ideas to life.</p>
+                    <a class="featured-products__shop-button" href="/product-category/graphic-design/">
+                        View More
+                    </a>
+                </div> 
+
+                <div
+                    class="card"
+                    data-url="/product-category/web-solutions/"
+                > 
+                    <img
+                        src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/web.png'); ?>"
+                        alt="Web Solutions"
+                    >
+                    <h3>Web Solutions</h3>
+                    <p>Modern web design for growing businesses</p>
+                    <a class="featured-products__shop-button" href="/product-category/web-solutions/">
+                        View More
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    <?php
+    
+/**
+ * Featured Products
+ */
+
+    $featured_products = new WP_Query([
+        'post_type'      => 'product',
+        'posts_per_page' => 4,
+        'post_status'    => 'publish',
+        'tax_query'      => [
+            [
+                'taxonomy' => 'product_visibility',
+                'field'    => 'name',
+                'terms'    => 'featured',
+            ],
+        ],
+    ]);
+    ?>
+
+    <?php if ( $featured_products->have_posts() ) : ?>
+
+        <section class="featured-products">
+
+            <div class="featured__header">
+
+                <h2>Featured Products</h2>
+
+                <p>
+                    Discover some of our most popular products.
+                </p>
+
+            </div>
+
+
+            <div class="featured-products__grid">
+
+                <?php while ( $featured_products->have_posts() ) : ?>
+
+                    <?php $featured_products->the_post(); ?>
+
+                    <?php
+                    $product = wc_get_product( get_the_ID() );
+                    ?>
+
+                    <article class="featured-product">
+
+                        <a
+                            href="<?php the_permalink(); ?>"
+                            class="featured-product__image"
+                        >
+
+                            <?php
+                            if ( has_post_thumbnail() ) {
+                                the_post_thumbnail('woocommerce_thumbnail');
+                            }
+                            ?>
+
+                        </a>
+
+
+                        <div class="featured-product__info">
+
+                            <h3>
+
+                                <a href="<?php the_permalink(); ?>">
+
+                                    <?php the_title(); ?>
+
+                                </a>
+
+                            </h3>
+
+
+                            <?php if ( $product ) : ?>
+
+                                <div class="featured-product__price">
+
+                                    <?php echo wp_kses_post( $product->get_price_html() ); ?>
+
+                                </div>
+
+                            <?php endif; ?>
+
+
+                            <a
+                                href="<?php the_permalink(); ?>"
+                                class="featured-product__button"
+                            >
+                                View Product
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                <?php endwhile; ?>
+
+            </div>
+
+
+            <div class="featured-products__footer">
+
+                <a
+                    href="<?php echo esc_url( wc_get_page_permalink('shop') ); ?>"
+                    class="featured-products__shop-button"
+                >
+                    View All Products
+                </a>
 
             </div>
 
         </section>
 
-
-
-<div class="services_slide">
-    <div class="featured__header"></div>
-
-    <h2>Our Services</h2>
-    <h3>Personalized Solutions, Made for You</h3>
-
-    <div class="center_container slide">
-
-        <div class="card"> 
-            <img src="https://4hdprint.local/wp-content/themes/4hdprint/assets/images/print.png" alt="Print Services">
-            <h3>Print Services</h3>
-            <p>High-quality custom printing for your business</p>
-            <a class="featured-products__shop-button" href="/product-category/print-services/">
-                View All Products
-            </a>
-        </div>
-            
-        <div class="card"> 
-            <img src="https://4hdprint.local/wp-content/themes/4hdprint/assets/images/custom.png" alt="Promotional Products">
-            <h3>Promotional Products</h3>
-            <p>Custom products designed especially just for you</p>
-            <a class="featured-products__shop-button" href="/product-category/promotional-products/">
-                View All Products
-            </a>
-        </div>
-
-        <div class="card"> 
-            <img src="https://4hdprint.local/wp-content/themes/4hdprint/assets/images/design.png" alt="Graphic Design">
-            <h3>Graphic Design</h3>
-            <p>Creative solutions to bring your ideas to life.</p>
-            <a class="featured-products__shop-button" href="/product-category/graphic-design/">
-                View All Products
-            </a>
-        </div> 
-
-        <div class="card"> 
-            <img src="https://4hdprint.local/wp-content/themes/4hdprint/assets/images/web.png" alt="Web Solutions">
-            <h3>Web Solutions</h3>
-            <p>Modern web design for growing businesses</p>
-            <a class="featured-products__shop-button" href="/product-category/web-solutions/">
-                View All Products
-            </a>
-        </div>
-
-    </div>
-</div>
-
-
     <?php endif; ?>
 
-
-    <?php
-/**
- * Featured Products
- */
-
-$featured_products = new WP_Query([
-    'post_type'      => 'product',
-    'posts_per_page' => 4,
-    'post_status'    => 'publish',
-    'tax_query'      => [
-        [
-            'taxonomy' => 'product_visibility',
-            'field'    => 'name',
-            'terms'    => 'featured',
-        ],
-    ],
-]);
-?>
-
-<?php if ( $featured_products->have_posts() ) : ?>
-
-    <section class="featured-products">
-
-        <div class="featured__header">
-
-            <h2>Featured Products</h2>
-
-            <p>
-                Discover some of our most popular products.
-            </p>
-
-        </div>
-
-
-        <div class="featured-products__grid">
-
-            <?php while ( $featured_products->have_posts() ) : ?>
-
-                <?php $featured_products->the_post(); ?>
-
-                <?php
-                $product = wc_get_product( get_the_ID() );
-                ?>
-
-                <article class="featured-product">
-
-                    <a
-                        href="<?php the_permalink(); ?>"
-                        class="featured-product__image"
-                    >
-
-                        <?php
-                        if ( has_post_thumbnail() ) {
-                            the_post_thumbnail('woocommerce_thumbnail');
-                        }
-                        ?>
-
-                    </a>
-
-
-                    <div class="featured-product__info">
-
-                        <h3>
-
-                            <a href="<?php the_permalink(); ?>">
-
-                                <?php the_title(); ?>
-
-                            </a>
-
-                        </h3>
-
-
-                        <?php if ( $product ) : ?>
-
-                            <div class="featured-product__price">
-
-                                <?php echo wp_kses_post( $product->get_price_html() ); ?>
-
-                            </div>
-
-                        <?php endif; ?>
-
-
-                        <a
-                            href="<?php the_permalink(); ?>"
-                            class="featured-product__button"
-                        >
-                            View Product
-                        </a>
-
-                    </div>
-
-                </article>
-
-            <?php endwhile; ?>
-
-        </div>
-
-
-        <div class="featured-products__footer">
-
-            <a
-                href="<?php echo esc_url( wc_get_page_permalink('shop') ); ?>"
-                class="featured-products__shop-button"
-            >
-                View All Products
-            </a>
-
-        </div>
-
-    </section>
-
-<?php endif; ?>
-
-<?php wp_reset_postdata(); ?>
+    <?php wp_reset_postdata(); ?>
 
 <?php
+
 /**
  * Promotional Banner
  */
 
-$promo = get_option('4hd_promotional_banner', [
-    'enabled'     => 0,
-    'image'       => '',
-    'title'       => '',
-    'description' => '',
-    'offer'       => '',
-    'button_text' => '',
-    'button_url'  => '',
-]);
+    $promo = wp_parse_args(
+        get_option('4hd_promotional_banner', []),
+        [
+            'enabled'     => 0,
+            'image'       => 0,
+            'title'       => '',
+            'description' => '',
+            'offer'       => '',
+            'button_text' => '',
+            'button_url'  => '',
+        ]
+    );
 ?>
 
 <?php if ( ! empty($promo['enabled']) ) : ?>
@@ -382,6 +405,7 @@ $promo = get_option('4hd_promotional_banner', [
 <?php endif; ?>
 
 <?php
+
 /**
  * Client Logos
  */

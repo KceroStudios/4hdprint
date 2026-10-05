@@ -606,3 +606,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
+document.querySelectorAll('.services_slide .card[data-url]').forEach((card) => {
+
+    card.addEventListener('click', (event) => {
+
+        if (window.innerWidth > 600) {
+            return;
+        }
+
+        const url = card.dataset.url;
+
+        if (url) {
+            window.location.href = url;
+        }
+
+    });
+
+});
