@@ -52,6 +52,12 @@ The documentation is maintained progressively as each area of the website is rev
   - [Image Handling](#image-handling)
   - [Responsive Behavior](#responsive-behavior-3)
 
+- [Homepage Banner](#homepage-banner)
+  - [Our Services](#our-services)
+  - [Featured Products](#featured-products)
+  - [Promotional Banner](#promotional-banner)
+  - [Client Logos](#client-logos)
+  - [Homepage Pre-Footer & Contact Form](#homepage-pre-footer--contact-form)
   
 ---
 
@@ -796,3 +802,76 @@ On mobile devices:
 - The carousel uses the full available width.
 - Logo dimensions and spacing are reduced.
 - The section header uses a smaller font size.
+
+## Homepage Pre-Footer & Contact Form
+
+The homepage includes a custom pre-footer section rendered from `footer.php`. This section is displayed only on the front page and contains:
+
+- Latest Video
+- Social Media links
+- Information links
+- Contact Form
+
+### Contact Form
+
+The contact form is a custom theme component and does not depend on WPForms.
+
+The form collects:
+
+- Name
+- Email
+- Phone
+- Service
+- Message
+
+Form submissions are processed by the theme through `four_hd_handle_contact_form()`.
+
+### Recipient Email
+
+The recipient email can be configured from:
+
+**WordPress Admin → Appearance → Contact Form**
+
+The setting is stored in the `4hd_contact_form_settings` WordPress option.
+
+If no recipient email is configured, the WordPress administration email is used as a fallback.
+
+### Security
+
+The contact form includes:
+
+- WordPress nonce verification
+- Honeypot spam protection
+- Input sanitization
+- Required field validation
+- Email validation
+- Service allowlist validation
+- Input length limits
+- Rate limiting
+- Post/Redirect/Get behavior after submission
+
+Rate limiting currently allows a maximum of **5 valid submissions per IP address within 15 minutes**.
+
+### Email Delivery
+
+Messages are sent using WordPress `wp_mail()`.
+
+The visitor's email address is added as the `Reply-To` address so the recipient can reply directly to the customer.
+
+A successful `wp_mail()` result indicates that WordPress accepted the message for delivery. Actual delivery depends on the server's mail configuration.
+
+### Front-End Feedback
+
+After submission, the visitor is redirected back to the contact section using the `#contact` anchor.
+
+The form can display:
+
+- Successful submission
+- Email sending error
+- Rate limit warning
+
+### Styling
+
+Homepage pre-footer and contact form styles are located in:
+
+`assets/css/components/homepage.css`

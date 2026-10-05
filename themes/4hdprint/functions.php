@@ -1961,6 +1961,339 @@ function four_hd_homepage_video_page() {
     <?php
 }
 
+/**
+ * Contact Form - Admin Page
+ */
+add_action('admin_menu', function () {
+
+    add_theme_page(
+        'Contact Form',
+        'Contact Form',
+        'manage_options',
+        '4hd-contact-form',
+        'four_hd_contact_form_page'
+    );
+
+});
+
+
+/**
+ * Contact Form - Settings
+ */
+register_setting(
+    '4hd_contact_form_settings',
+    '4hd_contact_form_settings',
+    [
+        'sanitize_callback' => 'four_hd_sanitize_contact_form_settings',
+    ]
+);
+
+
+function four_hd_sanitize_contact_form_settings($input) {
+
+    if (!is_array($input)) {
+        return [];
+    }
+
+    return [
+        'recipient_email' => isset($input['recipient_email'])
+            ? sanitize_email($input['recipient_email'])
+            : '',
+    ];
+}
+
+
+/**
+ * Contact Form - Admin Page
+ */
+function four_hd_contact_form_page() {
+
+    $settings = get_option(
+        '4hd_contact_form_settings',
+        [
+            'recipient_email' => get_option('admin_email'),
+        ]
+    );
+
+    ?>
+
+    <div class="wrap">
+
+        <h1>4HD PRINT — Contact Form</h1>
+
+        <form method="post" action="options.php">
+
+            <?php settings_fields('4hd_contact_form_settings'); ?>
+
+            <table class="form-table">
+
+                <tr>
+
+                    <th scope="row">
+                        Recipient Email
+                    </th>
+
+                    <td>
+
+                        <input
+                            type="email"
+                            name="4hd_contact_form_settings[recipient_email]"
+                            value="<?php echo esc_attr($settings['recipient_email']); ?>"
+                            class="regular-text"
+                        >
+
+                        <p class="description">
+                            Contact form messages will be sent to this email address.
+                        </p>
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <?php submit_button('Save Contact Form Settings'); ?>
+
+        </form>
+
+    </div>
+
+    <?php
+}
+
+/**
+ * Handle Homepage Contact Form
+ */
+function four_hd_handle_contact_form() {
+
+    if (
+        $_SERVER['REQUEST_METHOD'] !== 'POST' ||
+        empty($_POST['4hd_contact_form'])
+    ) {
+        return;
+    }
+
+    /*
+     * Verify nonce
+     */
+    if (
+        empty($_POST['4hd_contact_nonce']) ||
+        ! wp_verify_nonce(
+            sanitize_text_field(
+                wp_unslash($_POST['4hd_contact_nonce'])
+            ),
+            '4hd_contact_form'
+        )
+    ) {
+        return;
+    }
+
+    /*
+     * Honeypot
+     */
+    if (! empty($_POST['contact_website'])) {
+        return;
+    }
+
+    /*
+ * Rate limiting
+ * Maximum 5 submissions every 15 minutes per IP.
+    */
+    $ip_address = isset($_SERVER['REMOTE_ADDR'])
+        ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']))
+        : '';
+
+    $rate_limit_key = '4hd_contact_' . md5($ip_address);
+
+    $submission_count = (int) get_transient($rate_limit_key);
+
+    if ($submission_count >= 5) {
+
+        $redirect_url = add_query_arg(
+            'contact',
+            'rate-limit',
+            home_url('/')
+        );
+
+        wp_safe_redirect(
+            $redirect_url . '#contact'
+        );
+
+        exit;
+    }
+
+    /*
+     * Get and sanitize fields
+     */
+    $name = isset($_POST['contact_name'])
+        ? sanitize_text_field(wp_unslash($_POST['contact_name']))
+        : '';
+
+    $email = isset($_POST['contact_email'])
+        ? sanitize_email(wp_unslash($_POST['contact_email']))
+        : '';
+
+    $phone = isset($_POST['contact_phone'])
+        ? sanitize_text_field(wp_unslash($_POST['contact_phone']))
+        : '';
+
+    $service = isset($_POST['contact_service'])
+        ? sanitize_key(wp_unslash($_POST['contact_service']))
+        : '';
+
+    $message = isset($_POST['contact_message'])
+        ? sanitize_textarea_field(wp_unslash($_POST['contact_message']))
+        : '';
+
+    /*
+     * Required fields
+     */
+    if (
+        $name === '' ||
+        $email === '' ||
+        $message === ''
+    ) {
+        return;
+    }
+
+    /*
+     * Validate email
+     */
+    if (! is_email($email)) {
+        return;
+    }
+
+    /*
+     * Validate service
+     */
+    $allowed_services = [
+        '',
+        'print-services',
+        'promotional-products',
+        'graphic-design',
+        'web-solutions',
+        'other',
+    ];
+
+    if (! in_array($service, $allowed_services, true)) {
+        return;
+    }
+
+    /*
+ * Field length limits
+    */
+    if (
+        mb_strlen($name) > 100 ||
+        mb_strlen($email) > 254 ||
+        mb_strlen($phone) > 40 ||
+        mb_strlen($message) > 3000
+    ) {
+        return;
+    }
+
+
+    /*
+    * Service labels
+    */
+    $service_labels = [
+        'print-services'       => 'Print Services',
+        'promotional-products' => 'Promotional Products',
+        'graphic-design'       => 'Graphic Design',
+        'web-solutions'        => 'Web Solutions',
+        'other'                => 'Other',
+    ];
+
+    $service_label = isset($service_labels[$service])
+        ? $service_labels[$service]
+        : 'Not specified';
+
+
+    /*
+    * Email recipient
+    */
+   $contact_settings = get_option(
+    '4hd_contact_form_settings',
+    []
+);
+
+$to = ! empty($contact_settings['recipient_email'])
+    ? sanitize_email($contact_settings['recipient_email'])
+    : get_option('admin_email');
+
+    $subject = sprintf(
+        'Website Contact: %s',
+        $name
+    );
+
+
+    /*
+    * Email message
+    */
+    $email_message  = "New contact request from 4HD PRINT website\n\n";
+
+    $email_message .= "Name: {$name}\n";
+    $email_message .= "Email: {$email}\n";
+    $email_message .= "Phone: {$phone}\n";
+    $email_message .= "Service: {$service_label}\n\n";
+
+    $email_message .= "Message:\n";
+    $email_message .= $message;
+
+
+    /*
+    * Email headers
+    */
+    $headers = [
+        'Content-Type: text/plain; charset=UTF-8',
+        sprintf(
+            'Reply-To: %s <%s>',
+            $name,
+            $email
+        ),
+    ];
+
+/*
+ * Register submission for rate limiting
+ */
+    set_transient(
+        $rate_limit_key,
+        $submission_count + 1,
+        15 * MINUTE_IN_SECONDS
+    );
+
+    /*
+    * Send email
+    */
+    $mail_sent = wp_mail(
+        $to,
+        $subject,
+        $email_message,
+        $headers
+    );
+
+
+    /*
+    * Redirect after submission
+    */
+    $status = $mail_sent
+        ? 'success'
+        : 'error';
+
+    $redirect_url = add_query_arg(
+        'contact',
+        $status,
+        home_url('/')
+    );
+
+    wp_safe_redirect(
+        $redirect_url . '#contact'
+    );
+
+    exit;
+
+}
+add_action('template_redirect', 'four_hd_handle_contact_form');
+
 
 /**
  * Homepage Video - Media Library
