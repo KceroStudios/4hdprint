@@ -1,0 +1,213 @@
+/* ==================================================
+   Homepage Banner
+================================================== */
+
+.homepage-banner {
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    color: var(--white);
+}
+
+/* ==================================================
+   Homepage Banner — Background Styles
+================================================== */
+
+.homepage-banner--dark {
+    background: var(--dark-gray);
+    color: var(--white);
+}
+
+.homepage-banner--orange {
+    background: var(--main-color);
+    color: var(--white);
+}
+
+.homepage-banner--light {
+    background: var(--ligth-gray);
+    color: var(--black);
+}
+
+.homepage-banner--dark-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--black),
+        var(--dark-gray)
+    );
+
+    color: var(--white);
+}
+
+.homepage-banner--orange-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--main-color),
+        var(--ligth-main-color)
+    );
+
+    color: var(--white);
+}
+
+/**/
+
+.homepage-banner__content {
+    width: 50%;
+    max-width: 700px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    padding: 60px;
+
+    text-align: left;
+
+    opacity: 0;
+    transform: translateX(50px);
+
+    background-color: var(--trans-2);
+
+    animation: bannerContentIn 0.8s ease-out 0.05s forwards;
+}
+
+.homepage-banner h1 {
+    font-size: 48px;
+    line-height: 1.2;
+    font-weight: bold;
+}
+
+.homepage-banner p {
+    margin-bottom: 30px;
+    font-size: 20px;
+}
+
+.homepage-banner__button {
+    display: inline-block;
+
+    padding: 10px 20px;
+
+    background: var(--main-color);
+    border-radius: 10px;
+
+    color: var(--white);
+
+    transition: 0.5s;
+}
+
+.homepage-banner__button:hover {
+    background: var(--main-color);
+    color: var(--white);
+
+    transform: scale(1.1);
+}
+
+
+
+.homepage-banner__image {
+    width: 50%;
+    overflow: hidden;
+
+    border-radius: 7px;
+
+    opacity: 0;
+    transform: translateX(-50px);
+
+    animation: bannerImageIn 0.8s ease-out 0.15s forwards;
+}
+
+.homepage-banner--image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    color: var(--white);
+}
+
+.homepage-banner__image img {
+    display: block;
+
+    width: auto;
+    max-width: calc(100% - 80px);
+    height: 360px;
+
+    margin: 40px;
+
+    object-fit: contain;
+
+    border-radius: 7px;
+
+    transition: 0.5s;
+}
+
+.homepage-banner__image img:hover {
+    transform: scale(1.2);
+}
+
+/* Banner without main image */
+
+.homepage-banner--no-image {
+    justify-content: flex-end;
+}
+
+.homepage-banner--no-image .homepage-banner__content {
+    width: 50%;
+}
+
+
+/* ==================================================
+   Homepage Banner — Entrance Animation
+================================================== */
+
+@keyframes bannerImageIn {
+
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes bannerContentIn {
+
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+/* ==================================================
+   Homepage Banner — Responsive
+================================================== */
+
+@media (max-width: 768px) {
+
+    .homepage-banner {
+        flex-direction: column;
+    }
+
+    .homepage-banner__content {
+        width: 100%;
+        padding: 50px 25px;
+    }
+
+    .homepage-banner__image {
+        width: 100%;
+        min-height: 300px;
+    }
+}

@@ -62,6 +62,18 @@
 
     }
 
+    if (is_front_page()) {
+
+    wp_enqueue_style(
+        'homepage-style',
+        get_template_directory_uri() . '/assets/css/components/homepage.css',
+        ['main-style'],
+        filemtime(
+            get_template_directory() . '/assets/css/components/homepage.css'
+        )
+    );
+}
+
 });
     // JavaScript principal del tema
 add_action('wp_enqueue_scripts', function () {
@@ -123,6 +135,8 @@ $item->title = sprintf(
 
 }, 10, 2);
 
+
+
 /**
  * Homepage Banner - Admin Page
  */
@@ -150,6 +164,7 @@ register_setting(
     ]
 );
 
+
 function four_hd_sanitize_homepage_banner($input) {
 
     if (!is_array($input)) {
@@ -161,6 +176,30 @@ function four_hd_sanitize_homepage_banner($input) {
 
         'image' => isset($input['image'])
             ? absint($input['image'])
+            : 0,
+
+        'show_image' => !empty($input['show_image']) ? 1 : 0,
+
+        'background_style' => (
+            isset($input['background_style']) &&
+            in_array(
+                $input['background_style'],
+                [
+                    'dark',
+                    'orange',
+                    'light',
+                    'dark-gradient',
+                    'orange-gradient',
+                    'image',
+                ],
+                true
+            )
+        )
+            ? $input['background_style']
+            : 'dark',
+
+        'background_image' => isset($input['background_image'])
+            ? absint($input['background_image'])
             : 0,
 
         'title' => isset($input['title'])
@@ -186,14 +225,20 @@ function four_hd_sanitize_homepage_banner($input) {
  */
 function four_hd_homepage_banner_page() {
 
-    $banner = get_option('4hd_homepage_banner', [
-        'enabled'     => 1,
-        'image'       => '',
-        'title'       => '',
-        'description' => '',
-        'button_text' => '',
-        'button_url'  => '',
-    ]);
+    $banner = wp_parse_args(
+        get_option('4hd_homepage_banner', []),
+        [
+            'enabled'          => 1,
+            'image'            => 0,
+            'show_image'       => 1,
+            'background_style' => 'dark',
+            'background_image' => 0,
+            'title'            => '',
+            'description'      => '',
+            'button_text'      => '',
+            'button_url'       => '',
+        ]
+    );
 
     ?>
 
@@ -215,7 +260,6 @@ function four_hd_homepage_banner_page() {
                     </th>
 
                     <td>
-
                         <label>
                             <input
                                 type="checkbox"
@@ -225,143 +269,279 @@ function four_hd_homepage_banner_page() {
                             >
 
                             Show banner on homepage
-
                         </label>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th scope="row">
+                        Banner Image
+                    </th>
+
+                    <td>
+
+                        <?php
+                        $image_id = !empty($banner['image'])
+                            ? absint($banner['image'])
+                            : 0;
+                        ?>
+
+                        <input
+                            type="hidden"
+                            id="4hd_banner_image"
+                            name="4hd_homepage_banner[image]"
+                            value="<?php echo esc_attr($image_id); ?>"
+                        >
+
+                        <div id="4hd_banner_preview">
+
+                            <?php
+                            if ($image_id) {
+                                echo wp_get_attachment_image(
+                                    $image_id,
+                                    'medium'
+                                );
+                            }
+                            ?>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button"
+                            id="4hd_banner_select_image"
+                        >
+                            Select Image
+                        </button>
+
+                        <button
+                            type="button"
+                            class="button"
+                            id="4hd_banner_remove_image"
+                            <?php echo $image_id ? '' : 'style="display:none;"'; ?>
+                        >
+                            Remove Image
+                        </button>
 
                     </td>
                 </tr>
 
 
                 <tr>
+                    <th scope="row">
+                        Show Main Image
+                    </th>
 
-    <th scope="row">
-        Banner Image
-    </th>
+                    <td>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="4hd_homepage_banner[show_image]"
+                                value="1"
+                                <?php checked($banner['show_image'], 1); ?>
+                            >
 
-    <td>
-
-        <?php
-        $image_id = ! empty($banner['image']) ? absint($banner['image']) : 0;
-        ?>
-
-        <input
-            type="hidden"
-            id="4hd_banner_image"
-            name="4hd_homepage_banner[image]"
-            value="<?php echo esc_attr($image_id); ?>"
-        >
-
-        <div id="4hd_banner_preview">
-
-            <?php
-            if ($image_id) {
-                echo wp_get_attachment_image(
-                    $image_id,
-                    'medium'
-                );
-            }
-            ?>
-
-        </div>
-
-        <button
-            type="button"
-            class="button"
-            id="4hd_banner_select_image"
-        >
-            Select Image
-        </button>
-
-        <button
-            type="button"
-            class="button"
-            id="4hd_banner_remove_image"
-            <?php echo $image_id ? '' : 'style="display:none;"'; ?>
-        >
-            Remove Image
-        </button>
-
-    </td>
-
-</tr>
+                            Display the banner image on the homepage
+                        </label>
+                    </td>
+                </tr>
 
 
                 <tr>
+                    <th scope="row">
+                        Background Style
+                    </th>
 
+                    <td>
+                        <select
+                            id="4hd_banner_background_style"
+                            name="4hd_homepage_banner[background_style]"
+                        >
+
+                            <option
+                                value="dark"
+                                <?php selected($banner['background_style'], 'dark'); ?>
+                            >
+                                Dark
+                            </option>
+
+                            <option
+                                value="orange"
+                                <?php selected($banner['background_style'], 'orange'); ?>
+                            >
+                                Orange
+                            </option>
+
+                            <option
+                                value="light"
+                                <?php selected($banner['background_style'], 'light'); ?>
+                            >
+                                Light
+                            </option>
+
+                            <option
+                                value="dark-gradient"
+                                <?php selected($banner['background_style'], 'dark-gradient'); ?>
+                            >
+                                Dark Gradient
+                            </option>
+
+                            <option
+                                value="orange-gradient"
+                                <?php selected($banner['background_style'], 'orange-gradient'); ?>
+                            >
+                                Orange Gradient
+                            </option>
+
+                            <option
+                                value="image"
+                                <?php selected($banner['background_style'], 'image'); ?>
+                            >
+                                Background Image
+                            </option>
+
+                        </select>
+
+                        <p class="description">
+                            Choose the background style for the homepage banner.
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">
+                        Background Image
+                    </th>
+
+                    <td>
+
+                        <?php
+                        $background_image_id = !empty($banner['background_image'])
+                            ? absint($banner['background_image'])
+                            : 0;
+                        ?>
+
+                        <input
+                            type="hidden"
+                            id="4hd_banner_background_image"
+                            name="4hd_homepage_banner[background_image]"
+                            value="<?php echo esc_attr($background_image_id); ?>"
+                        >
+
+                        <div id="4hd_banner_background_preview">
+
+                            <?php
+                            if ($background_image_id) {
+                                echo wp_get_attachment_image(
+                                    $background_image_id,
+                                    'medium'
+                                );
+                            }
+                            ?>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button"
+                            id="4hd_banner_select_background"
+                        >
+                            Select Background Image
+                        </button>
+
+                        <button
+                            type="button"
+                            class="button"
+                            id="4hd_banner_remove_background"
+                            <?php echo $background_image_id ? '' : 'style="display:none;"'; ?>
+                        >
+                            Remove Background Image
+                        </button>
+
+                        <p class="description">
+                            Used when Background Style is set to Background Image.
+                        </p>
+
+                    </td>
+                </tr>
+
+
+                    <td>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="4hd_homepage_banner[show_image]"
+                                value="1"
+                                <?php checked($banner['show_image'], 1); ?>
+                            >
+
+                            Display the banner image on the homepage
+                        </label>
+                    </td>
+                </tr>
+
+
+                <tr>
                     <th scope="row">
                         Title
                     </th>
 
                     <td>
-
                         <input
                             type="text"
                             name="4hd_homepage_banner[title]"
                             value="<?php echo esc_attr($banner['title']); ?>"
                             class="regular-text"
                         >
-
                     </td>
-
                 </tr>
 
 
                 <tr>
-
                     <th scope="row">
                         Description
                     </th>
 
                     <td>
-
                         <textarea
                             name="4hd_homepage_banner[description]"
                             rows="4"
                             class="large-text"
                         ><?php echo esc_textarea($banner['description']); ?></textarea>
-
                     </td>
-
                 </tr>
 
 
                 <tr>
-
                     <th scope="row">
                         Button Text
                     </th>
 
                     <td>
-
                         <input
                             type="text"
                             name="4hd_homepage_banner[button_text]"
                             value="<?php echo esc_attr($banner['button_text']); ?>"
                             class="regular-text"
                         >
-
                     </td>
-
                 </tr>
 
 
                 <tr>
-
                     <th scope="row">
                         Button URL
                     </th>
 
                     <td>
-
-                       <input
-    type="text"
-    name="4hd_homepage_banner[button_url]"
-    value="<?php echo esc_attr($banner['button_url']); ?>"
-    class="regular-text"
->
-
+                        <input
+                            type="text"
+                            name="4hd_homepage_banner[button_url]"
+                            value="<?php echo esc_attr($banner['button_url']); ?>"
+                            class="regular-text"
+                        >
                     </td>
-
                 </tr>
 
             </table>
@@ -374,6 +554,7 @@ function four_hd_homepage_banner_page() {
 
     <?php
 }
+
 
 /**
  * Homepage Banner - Media Library
@@ -395,28 +576,56 @@ add_action('admin_footer', function () {
 
     $screen = get_current_screen();
 
-    if (!$screen || $screen->id !== 'appearance_page_4hd-homepage-banner') {
+    if (
+        !$screen ||
+        $screen->id !== 'appearance_page_4hd-homepage-banner'
+    ) {
         return;
     }
 
     ?>
 
     <script>
-
         jQuery(document).ready(function ($) {
 
-            let mediaFrame;
+            let mainImageFrame;
+            let backgroundImageFrame;
 
+            /**
+             * Toggle Background Image controls
+             */
+            function toggleBackgroundImageControls() {
+
+                const backgroundStyle = $('#4hd_banner_background_style').val();
+                const backgroundRow = $('#4hd_banner_background_image').closest('tr');
+
+                if (backgroundStyle === 'image') {
+                    backgroundRow.show();
+                } else {
+                    backgroundRow.hide();
+                }
+            }
+
+            toggleBackgroundImageControls();
+
+            $('#4hd_banner_background_style').on('change', function () {
+                toggleBackgroundImageControls();
+            });
+
+
+            /**
+             * Main Banner Image
+             */
             $('#4hd_banner_select_image').on('click', function (event) {
 
                 event.preventDefault();
 
-                if (mediaFrame) {
-                    mediaFrame.open();
+                if (mainImageFrame) {
+                    mainImageFrame.open();
                     return;
                 }
 
-                mediaFrame = wp.media({
+                mainImageFrame = wp.media({
                     title: 'Select Banner Image',
                     button: {
                         text: 'Use this image'
@@ -424,9 +633,9 @@ add_action('admin_footer', function () {
                     multiple: false
                 });
 
-                mediaFrame.on('select', function () {
+                mainImageFrame.on('select', function () {
 
-                    const attachment = mediaFrame
+                    const attachment = mainImageFrame
                         .state()
                         .get('selection')
                         .first()
@@ -442,11 +651,14 @@ add_action('admin_footer', function () {
 
                 });
 
-                mediaFrame.open();
+                mainImageFrame.open();
 
             });
 
 
+            /**
+             * Remove Main Banner Image
+             */
             $('#4hd_banner_remove_image').on('click', function (event) {
 
                 event.preventDefault();
@@ -459,13 +671,73 @@ add_action('admin_footer', function () {
 
             });
 
-        });
 
+            /**
+             * Background Image
+             */
+            $('#4hd_banner_select_background').on('click', function (event) {
+
+                event.preventDefault();
+
+                if (backgroundImageFrame) {
+                    backgroundImageFrame.open();
+                    return;
+                }
+
+                backgroundImageFrame = wp.media({
+                    title: 'Select Background Image',
+                    button: {
+                        text: 'Use as background'
+                    },
+                    multiple: false
+                });
+
+                backgroundImageFrame.on('select', function () {
+
+                    const attachment = backgroundImageFrame
+                        .state()
+                        .get('selection')
+                        .first()
+                        .toJSON();
+
+                    $('#4hd_banner_background_image').val(attachment.id);
+
+                    $('#4hd_banner_background_preview').html(
+                        '<img src="' + attachment.url + '" style="max-width:400px;height:auto;">'
+                    );
+
+                    $('#4hd_banner_remove_background').show();
+
+                });
+
+                backgroundImageFrame.open();
+
+            });
+
+
+            /**
+             * Remove Background Image
+             */
+            $('#4hd_banner_remove_background').on('click', function (event) {
+
+                event.preventDefault();
+
+                $('#4hd_banner_background_image').val('');
+
+                $('#4hd_banner_background_preview').html('');
+
+                $(this).hide();
+
+            });
+
+        });
     </script>
 
     <?php
 
 });
+
+
 
 /**
  * Promotional Banner - Admin Page
@@ -544,6 +816,19 @@ function four_hd_promotional_banner_page() {
         'button_text' => '',
         'button_url'  => '',
     ]);
+
+    $banner = wp_parse_args(
+        $banner,
+        [
+            'enabled'     => 1,
+            'image'       => '',
+            'show_image'  => 1,
+            'title'       => '',
+            'description' => '',
+            'button_text' => '',
+            'button_url'  => '',
+        ]
+    );
 
     ?>
 
@@ -859,6 +1144,58 @@ add_action('admin_footer', function () {
 
                     $('#4hd_promotional_remove_image')
                         .show();
+
+                    $('#4hd_banner_select_background').on('click', function (event) {
+
+                        event.preventDefault();
+
+                        if (backgroundImageFrame) {
+                            backgroundImageFrame.open();
+                            return;
+                        }
+
+                        backgroundImageFrame = wp.media({
+                            title: 'Select Background Image',
+                            button: {
+                                text: 'Use as background'
+                            },
+                            multiple: false
+                        });
+
+                        backgroundImageFrame.on('select', function () {
+
+                            const attachment = backgroundImageFrame
+                                .state()
+                                .get('selection')
+                                .first()
+                                .toJSON();
+
+                            $('#4hd_banner_background_image').val(attachment.id);
+
+                            $('#4hd_banner_background_preview').html(
+                                '<img src="' + attachment.url + '" style="max-width:400px;height:auto;">'
+                            );
+
+                            $('#4hd_banner_remove_background').show();
+
+                        });
+
+                        backgroundImageFrame.open();
+
+                    });
+
+
+                    $('#4hd_banner_remove_background').on('click', function (event) {
+
+                        event.preventDefault();
+
+                        $('#4hd_banner_background_image').val('');
+
+                        $('#4hd_banner_background_preview').html('');
+
+                        $(this).hide();
+
+                    });
 
                 });
 

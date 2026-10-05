@@ -6,79 +6,127 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 
-/*
+            /*
  * Homepage Banner
  */
-$banner = get_option(
-    '4hd_homepage_banner',
-    [
-        'enabled'     => 1,
-        'image'       => '',
-        'title'       => '',
-        'description' => '',
-        'button_text' => '',
-        'button_url'  => '',
-    ]
-);
+    $banner = wp_parse_args(
+        get_option('4hd_homepage_banner', []),
+        [
+            'enabled'          => 1,
+            'image'            => 0,
+            'show_image'       => 1,
+            'background_style' => 'dark',
+            'background_image' => 0,
+            'title'            => '',
+            'description'      => '',
+            'button_text'      => '',
+            'button_url'       => '',
+        ]
+    );
 
-?>
+    ?>
 
-<main id="primary" class="site-main">
+    <main id="primary" class="site-main">
 
-    <?php if ( ! empty( $banner['enabled'] ) ) : ?>
-
-        <section class="homepage-banner">
-
-    <?php if ( ! empty( $banner['image'] ) ) : ?>
-
-        <div class="homepage-banner__image">
+        <?php if (!empty($banner['enabled'])) : ?>
 
             <?php
-            echo wp_get_attachment_image(
-                absint( $banner['image'] ),
-                'full'
-            );
+
+            /*
+            * Validate background style
+            */
+            $background_style = in_array(
+                $banner['background_style'],
+                [
+                    'dark',
+                    'orange',
+                    'light',
+                    'dark-gradient',
+                    'orange-gradient',
+                    'image',
+                ],
+                true
+            )
+                ? $banner['background_style']
+                : 'dark';
+
+
+            /*
+            * Get background image URL
+            */
+            $background_image_url = '';
+
+            if (
+                $background_style === 'image' &&
+                !empty($banner['background_image'])
+            ) {
+                $background_image_url = wp_get_attachment_image_url(
+                    absint($banner['background_image']),
+                    'full'
+                );
+            }
+
             ?>
 
-        </div>
-
-    <?php endif; ?>
-
-
-    <div class="homepage-banner__content">
-
-        <?php if ( ! empty( $banner['title'] ) ) : ?>
-
-            <h1>
-                <?php echo esc_html( $banner['title'] ); ?>
-            </h1>
-
-        <?php endif; ?>
-
-
-        <?php if ( ! empty( $banner['description'] ) ) : ?>
-
-            <p>
-                <?php echo esc_html( $banner['description'] ); ?>
-            </p>
-
-        <?php endif; ?>
-
-
-        <?php if ( ! empty( $banner['button_text'] ) && ! empty( $banner['button_url'] ) ) : ?>
-
-            <a
-                href="<?php echo esc_url( $banner['button_url'] ); ?>"
-                class="homepage-banner__button"
+            <section
+                class="homepage-banner homepage-banner--<?php echo esc_attr($background_style); ?> <?php echo empty($banner['show_image']) ? 'homepage-banner--no-image' : ''; ?>"
+                <?php if ($background_image_url) : ?>
+                    style="background-image: url('<?php echo esc_url($background_image_url); ?>');"
+                <?php endif; ?>
             >
-                <?php echo esc_html( $banner['button_text'] ); ?>
-            </a>
 
-        <?php endif; ?>
+            <?php if (!empty($banner['show_image']) && !empty($banner['image'])) : ?>
 
-    </div>
+                <div class="homepage-banner__image">
 
-</section>
+                    <?php
+                    echo wp_get_attachment_image(
+                        absint($banner['image']),
+                        'full'
+                    );
+                    ?>
+
+                </div>
+
+            <?php endif; ?>
+
+
+            <div class="homepage-banner__content">
+
+                <?php if (!empty($banner['title'])) : ?>
+
+                    <h1>
+                        <?php echo esc_html($banner['title']); ?>
+                    </h1>
+
+                <?php endif; ?>
+
+
+                <?php if (!empty($banner['description'])) : ?>
+
+                    <p>
+                        <?php echo esc_html($banner['description']); ?>
+                    </p>
+
+                <?php endif; ?>
+
+
+                <?php if (!empty($banner['button_text']) && !empty($banner['button_url'])) : ?>
+
+                    <a
+                        href="<?php echo esc_url($banner['button_url']); ?>"
+                        class="homepage-banner__button"
+                    >
+                        <?php echo esc_html($banner['button_text']); ?>
+                    </a>
+
+                <?php endif; ?>
+
+            </div>
+
+        </section>
+
+
 
 <div class="services_slide">
     <div class="featured__header"></div>
