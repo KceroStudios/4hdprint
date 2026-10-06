@@ -17,6 +17,15 @@ The documentation is maintained progressively as each area of the website is rev
   - [Quote Storage & Administration](#quote-storage--administration)
   - [Security & Anti-Spam](#security--anti-spam)
 
+- [Header](#header)
+  - [Overview](#header-overview)
+  - [Main Files](#header-main-files)
+  - [Top Bar](#top-bar)
+  - [Main Navigation](#main-navigation)
+  - [Account Menu](#account-menu)
+  - [Sticky Navigation](#sticky-navigation)
+  - [Mobile Navigation](#mobile-navigation)
+
 - [Homepage Banner](#homepage-banner)
   - [Overview](#overview-1)
   - [Main Files](#main-files-1)
@@ -30,7 +39,7 @@ The documentation is maintained progressively as each area of the website is rev
   - [Main Files](#main-files-2)
   - [Service Categories](#service-categories)
   - [Responsive Behavior](#responsive-behavior)
-  
+
 - [Featured Products](#featured-products)
   - [Overview](#overview-3)
   - [Main Files](#main-files-3)
@@ -52,15 +61,9 @@ The documentation is maintained progressively as each area of the website is rev
   - [Image Handling](#image-handling)
   - [Responsive Behavior](#responsive-behavior-3)
 
-- [Homepage Banner](#homepage-banner)
-  - [Our Services](#our-services)
-  - [Featured Products](#featured-products)
-  - [Promotional Banner](#promotional-banner)
-  - [Client Logos](#client-logos)
-  - [Homepage Pre-Footer & Contact Form](#homepage-pre-footer--contact-form)
-  
----
+- [Homepage Pre-Footer & Contact Form](#homepage-pre-footer--contact-form)
 
+---
 
 
 # Website Estimator & Quote Management
@@ -580,6 +583,104 @@ Particular attention should be given to:
 - File upload restrictions if additional upload functionality is implemented.
 
 Security documentation should be updated whenever a new public form, upload mechanism, external integration, authentication feature, or sensitive-data workflow is added.
+
+# Header
+
+## Header Overview
+
+The site header is a global theme component displayed across the website. It provides quick contact and social links, primary site navigation, WooCommerce account access, cart access, sticky navigation behavior, and responsive mobile navigation.
+
+The header is divided into two primary areas:
+
+1. A top bar containing social, contact, location, phone, and customer account controls.
+2. A main navigation bar containing the site logo, WordPress navigation menu, and WooCommerce cart access.
+
+The component adapts its behavior for desktop, scrolling, and mobile layouts.
+
+## Header Main Files
+
+The header component is primarily implemented through:
+
+- `header.php` — Header markup, top bar, WordPress navigation, WooCommerce account menu, and site logo.
+- `assets/css/components/header.css` — Header-specific layout, top bar, account dropdown, navigation, sticky state, and mobile styles.
+- `assets/js/main.js` — Responsive header behavior, sticky navigation, mobile menu toggle, and account dropdown interaction.
+- `functions.php` — Loads the global header stylesheet and other theme assets.
+
+Global variables, typography, shared containers, and other site-wide styles remain in `assets/css/main.css`.
+
+## Top Bar
+
+The top bar provides quick access to:
+
+- Instagram
+- Facebook
+- Email
+- Business location
+- WhatsApp
+- Phone
+- Customer account
+
+All top-bar controls use the shared `.social-item` structure to maintain consistent icon sizing, spacing, hover behavior, and alignment.
+
+Spacing between controls is managed by the parent `.social_container` using `gap`, rather than individual icon margins. This prevents neighboring controls from shifting when icon hover animations are applied.
+
+## Main Navigation
+
+The main navigation contains the 4HD PRINT logo and the WordPress menu assigned to the `main_menu` theme location.
+
+The logo uses theme image assets and changes appearance on hover.
+
+WooCommerce cart access is included as part of the main navigation and receives dedicated styling for desktop and mobile layouts.
+
+## Account Menu
+
+The top bar includes a customer account control integrated with WooCommerce.
+
+For authenticated customers, the dropdown provides access to:
+
+- Dashboard
+- Orders
+- Downloads
+- Addresses
+- Account Details
+- Log Out
+
+For visitors who are not authenticated, the dropdown provides:
+
+- Log In
+- Create Account
+
+WooCommerce account URLs are generated dynamically instead of being hard-coded. The logout URL is also generated dynamically by WooCommerce so the required WordPress security nonce is included.
+
+JavaScript controls the dropdown state by adding or removing the `.is-open` class. The menu can be closed by clicking outside the account component or by pressing the `Escape` key.
+
+Customer accounts are optional. The site is intended to continue supporting WooCommerce guest checkout.
+
+## Sticky Navigation
+
+The main navigation becomes fixed after the visitor scrolls approximately 110 pixels down the page.
+
+JavaScript adds the `.scroll-menu` class to `.menu_container` when the scroll threshold is reached and removes it when the visitor returns above the threshold.
+
+While the sticky state is active, the logo is slightly reduced in size to create a more compact navigation bar.
+
+## Mobile Navigation
+
+For viewport widths below 600 pixels, JavaScript adds the `.mobile` class to `.menu_container`.
+
+The desktop navigation is then presented as a mobile off-canvas menu controlled by the hamburger button.
+
+The mobile panel:
+
+- Uses a dark background consistent with the site header.
+- Slides into view from the right.
+- Uses vertically arranged navigation links.
+- Provides mobile-specific cart styling.
+- Keeps the logo and menu toggle aligned within the main navigation bar.
+
+The `.open` class controls whether the mobile navigation panel is visible.
+
+---
 
 ## Homepage Banner
 

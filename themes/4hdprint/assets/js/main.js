@@ -624,3 +624,40 @@ document.querySelectorAll('.services_slide .card[data-url]').forEach((card) => {
     });
 
 });
+
+/* =========================================
+   ACCOUNT MENU
+========================================= */
+
+const accountMenu = document.querySelector(".account-menu");
+
+if (accountMenu) {
+    const accountButton = accountMenu.querySelector(".account-menu__button");
+    const accountDropdown = accountMenu.querySelector(".account-menu__dropdown");
+
+    accountButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+
+        const isOpen = accountDropdown.classList.toggle("is-open");
+
+        accountButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!accountMenu.contains(event.target)) {
+            accountDropdown.classList.remove("is-open");
+            accountButton.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            accountDropdown.classList.remove("is-open");
+            accountButton.setAttribute("aria-expanded", "false");
+            accountButton.focus();
+        }
+    });
+}

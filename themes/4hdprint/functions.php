@@ -42,6 +42,14 @@
         filemtime(get_template_directory() . '/assets/css/main.css')
     );
 
+    // Header CSS
+        wp_enqueue_style(
+            'header-style',
+            get_template_directory_uri() . '/assets/css/components/header.css',
+            ['main-style'],
+            filemtime(get_template_directory() . '/assets/css/components/header.css')
+        );
+
     // Website Estimate CSS
     if (is_page('website-estimate')) {
 
