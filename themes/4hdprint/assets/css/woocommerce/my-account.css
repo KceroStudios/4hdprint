@@ -1,0 +1,272 @@
+/* =========================================
+   WOOCOMMERCE - MY ACCOUNT
+========================================= */
+
+
+/* =========================================
+   LOGIN / REGISTER LAYOUT
+========================================= */
+
+.woocommerce-account .woocommerce {
+    width: 80%;
+    max-width: var(--max-width);
+    margin: 40px auto 60px;
+}
+
+.woocommerce-account .woocommerce h2 {
+    margin: 0 0 20px;
+
+    color: var(--dark-gray);
+
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.2;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   LOGIN / REGISTER EQUAL HEIGHT
+========================================= */
+
+.woocommerce-account #customer_login {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.woocommerce-account #customer_login > .col-1,
+.woocommerce-account #customer_login > .col-2 {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.woocommerce-account #customer_login form.login,
+.woocommerce-account #customer_login form.register {
+    flex: 1;
+    margin-top: 0;
+}
+
+
+/* =========================================
+   LOGIN / REGISTER FORMS
+========================================= */
+
+.woocommerce-account form.login,
+.woocommerce-account form.register {
+    padding: 30px;
+
+    background: var(--white);
+    border: 1px solid var(--middle-gray);
+    border-radius: var(--border-radius);
+}
+
+
+/* Form rows */
+
+.woocommerce-account .woocommerce-form-row,
+.woocommerce-account .form-row {
+    margin-bottom: 18px;
+}
+
+
+/* Labels */
+
+.woocommerce-account form label {
+    display: block;
+    margin-bottom: 7px;
+
+    color: var(--dark-gray);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+
+/* =========================================
+   FORM FIELDS
+========================================= */
+
+.woocommerce-account form input[type="text"],
+.woocommerce-account form input[type="email"],
+.woocommerce-account form input[type="password"] {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 11px 12px;
+
+    color: var(--black);
+    background: var(--white);
+
+    border: 1px solid var(--middle-gray);
+    border-radius: 5px;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.woocommerce-account form input[type="text"]:focus,
+.woocommerce-account form input[type="email"]:focus,
+.woocommerce-account form input[type="password"]:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 2px rgba(244, 119, 33, 0.12);
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.woocommerce-account .woocommerce button.button {
+    padding: 10px 18px;
+
+    color: var(--white);
+    background: var(--main-color);
+
+    border: 1px solid var(--main-color);
+    border-radius: 5px;
+
+    font-family: inherit;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.woocommerce-account .woocommerce button.button:hover {
+    color: var(--white);
+    background: var(--ligth-main-color);
+    border-color: var(--ligth-main-color);
+}
+
+
+/* =========================================
+   LOGIN OPTIONS
+========================================= */
+
+.woocommerce-account .woocommerce-form-login__rememberme {
+    margin-left: 10px;
+}
+
+.woocommerce-account .lost_password {
+    margin-top: 12px;
+}
+
+.woocommerce-account .lost_password a {
+    color: var(--gray);
+    font-size: 14px;
+}
+
+.woocommerce-account .lost_password a:hover {
+    color: var(--main-color);
+}
+
+
+/* =========================================
+   REGISTER INFORMATION
+========================================= */
+
+.woocommerce-account .woocommerce-privacy-policy-text {
+    margin-bottom: 20px;
+}
+
+.woocommerce-account .woocommerce-privacy-policy-text p {
+    color: var(--gray);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .woocommerce-account .woocommerce {
+        width: 90%;
+        margin-top: 30px;
+    }
+
+    .woocommerce-account form.login,
+    .woocommerce-account form.register {
+        padding: 20px;
+    }
+
+    .woocommerce-account #customer_login {
+    display: block;
+    }
+
+    .woocommerce-account #customer_login > .col-1,
+    .woocommerce-account #customer_login > .col-2 {
+        display: block;
+    }
+}
+
+/* =========================================
+   LOGIN ACTIONS
+========================================= */
+
+.woocommerce-account .woocommerce-form-login > .form-row:not(.form-row-wide) {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+/* Log in button */
+
+.woocommerce-account .woocommerce-form-login__submit {
+    order: 1;
+    margin: 0;
+}
+
+/* Remember me */
+
+.woocommerce-account .woocommerce-form-login__rememberme {
+    order: 2;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    margin: 0;
+
+    color: var(--gray);
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+.woocommerce-account .woocommerce-form-login__rememberme input {
+    margin: 0;
+    accent-color: var(--main-color);
+}
+
+/* Lost password */
+
+.woocommerce-account .lost_password {
+    margin: 16px 0 0;
+}
+
+.woocommerce-account .lost_password a {
+    color: var(--gray);
+    font-size: 14px;
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.woocommerce-account .lost_password a:hover {
+    color: var(--main-color);
+}

@@ -58,6 +58,7 @@
 .homepage-banner__content {
     width: 50%;
     max-width: 700px;
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
@@ -73,7 +74,7 @@
 
     background-color: var(--trans-2);
 
-    animation: bannerContentIn 0.8s ease-out 0.05s forwards;
+    animation: bannerContentIn 0.8s ease-out 0.05s forwards;  
 }
 
 .homepage-banner h1 {
@@ -201,17 +202,20 @@
         flex-direction: column;
     }
 
+    .homepage-banner--image {
+        min-height: 0;
+        height: auto;
+    }
+
     .homepage-banner__content {
         width: 100%;
         padding: 50px 25px;
     }
 
     .homepage-banner__image {
-        width: 100%;
-        min-height: 300px;
+        display: none;
     }
 }
-
 
 
 /* =========================================================
@@ -758,21 +762,32 @@
 
     .promotional-banner {
         flex-direction: column;
+        min-height: 0;
         margin: 20px;
     }
 
     .promotional-banner__content {
         width: 100%;
-        padding: 40px 25px;
+        box-sizing: border-box;
+        padding: 30px 25px 20px;
+    }
+
+    .promotional-banner__description,
+    .promotional-banner__offer {
+        display: none;
     }
 
     .promotional-banner__image {
         width: 100%;
-        min-height: 250px;
+        min-height: 0;
     }
 
+    .promotional-banner__image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
 }
-
 
 /* =========================================
    Client Logos
@@ -921,8 +936,11 @@
 
 .homepage-bottom {
     width: 100%;
+    box-sizing: border-box;
+
     padding: 80px 0;
-    border-top: 1px solid rgba(0,0,0,0.08);
+
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
     background: var(--dark-gray);
     color: var(--white);
 }

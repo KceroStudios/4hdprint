@@ -50,6 +50,17 @@
             filemtime(get_template_directory() . '/assets/css/components/header.css')
         );
 
+        // WooCommerce My Account CSS
+        if ( function_exists('is_account_page') && is_account_page() ) {
+
+            wp_enqueue_style(
+                'my-account-style',
+                get_template_directory_uri() . '/assets/css/woocommerce/my-account.css',
+                ['main-style'],
+                filemtime(get_template_directory() . '/assets/css/woocommerce/my-account.css')
+            );
+        }
+
     // Website Estimate CSS
     if (is_page('website-estimate')) {
 

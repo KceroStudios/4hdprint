@@ -311,31 +311,56 @@ $video = get_option('4hd_homepage_video', [
 
     <div class="site-footer__inner">
 
-        <!-- Brand -->
+        <!-- Footer Main Content -->
 
-        <div class="site-footer__brand">
+        <div class="site-footer__main">
 
-            <a
-                href="<?php echo esc_url( home_url('/') ); ?>"
-                class="site-footer__logo"
-                aria-label="4HD PRINT Home"
-            >
+            <!-- Brand -->
 
-                <img
-                    src="<?php echo esc_url(
-                        get_template_directory_uri() . '/assets/images/whitelogo.png'
-                    ); ?>"
-                    alt="4HD PRINT"
+            <div class="site-footer__brand">
+
+                <a
+                    href="<?php echo esc_url( home_url('/') ); ?>"
+                    class="site-footer__logo"
+                    aria-label="4HD PRINT Home"
                 >
+                    <img
+                        src="<?php echo esc_url(
+                            get_template_directory_uri() . '/assets/images/whitelogo.png'
+                        ); ?>"
+                        alt="4HD PRINT"
+                    >
+                </a>
 
-            </a>
+            </div>
+
+
+            <!-- Contact Information -->
+
+           <div class="site-footer__contact">
+
+                <p class="site-footer__contact-item">
+                    <span class="dashicons dashicons-location" aria-hidden="true"></span>
+                    <span>344 Union Avenue, Rutherford, NJ 07070</span>
+                </p>
+
+                <p class="site-footer__contact-item">
+                    <span class="dashicons dashicons-phone" aria-hidden="true"></span>
+                    <a href="tel:+12018939132">
+                        +1 (201) 893-9132
+                    </a>
+                </p>
+
+                <p class="site-footer__contact-item">
+                    <span class="dashicons dashicons-email" aria-hidden="true"></span>
+                    <a href="mailto:info@4hdprint.com">
+                        info@4hdprint.com
+                    </a>
+                </p>
+
+            </div>
 
         </div>
-
-
-        <!-- Legal Navigation -->
-
-       
 
 
         <!-- Copyright -->

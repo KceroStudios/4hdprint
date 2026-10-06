@@ -1,7 +1,7 @@
 // alert('hola mundo');
 
 function ajustarElementos() {
-    if (window.innerWidth < 600) {
+   if (window.matchMedia('(max-width: 768px)').matches) {
         document.querySelector('.menu_container')?.classList.add('mobile');
          //document.querySelector('.ejemplo2')?.classList.add('show');
 
@@ -12,10 +12,10 @@ function ajustarElementos() {
     }
 }
 
-// Ejecutar cuando cargue la página
-ajustarElementos();
+// Apply responsive layout after the DOM is ready
+document.addEventListener('DOMContentLoaded', ajustarElementos);
 
-// Escuchar cambios de tamaño en la ventana
+// Update responsive layout when viewport size changes
 window.addEventListener('resize', ajustarElementos);
 
 //////////////////////////////////////////////////////////

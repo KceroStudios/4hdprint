@@ -121,11 +121,7 @@
                           <?php else : ?>
 
                               <a href="<?php echo esc_url( wc_get_page_permalink('myaccount') ); ?>">
-                                  Log In
-                              </a>
-
-                              <a href="<?php echo esc_url( wc_get_page_permalink('myaccount') ); ?>">
-                                  Create Account
+                                  My Account
                               </a>
 
                           <?php endif; ?>
