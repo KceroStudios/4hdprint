@@ -1,0 +1,130 @@
+/* =========================================
+   PRODUCTS CATALOG PAGE
+========================================= */
+
+.products-page {
+    width: 100%;
+}
+
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.products-page__header {
+    padding: 70px 20px 40px;
+    text-align: center;
+}
+
+.products-page__header h1 {
+    margin: 0 0 15px;
+}
+
+.products-page__header p {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+
+/* =========================================
+   PRODUCTS CATALOG
+========================================= */
+
+.products-catalog {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 70px;
+}
+
+.products-catalog__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 25px;
+}
+
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.products-catalog__pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 50px;
+}
+
+.products-catalog__pagination .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+
+    color: var(--black);
+    text-decoration: none;
+
+    border: 1px solid var(--middle-gray);
+    border-radius: 6px;
+
+    transition:
+        color .3s ease,
+        background .3s ease,
+        border-color .3s ease;
+}
+
+.products-catalog__pagination .page-numbers:hover,
+.products-catalog__pagination .page-numbers.current {
+    color: var(--white);
+    background: var(--main-color);
+    border-color: var(--main-color);
+}
+
+
+/* =========================================
+   EMPTY CATALOG
+========================================= */
+
+.products-catalog__empty {
+    text-align: center;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .products-page__header {
+        padding: 50px 20px 30px;
+    }
+
+    .products-catalog {
+        padding: 30px 20px 50px;
+    }
+
+    .products-catalog__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .products-catalog__content {
+        padding: 16px;
+    }
+
+    .products-catalog__button {
+        width: 100%;
+        padding: 10px 8px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .products-catalog__pagination {
+        flex-wrap: wrap;
+        margin-top: 35px;
+    }
+}

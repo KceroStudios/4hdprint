@@ -65,7 +65,7 @@ get_header();
         <div class="shop-featured-categories__grid">
 
 
-            <!-- Custom Products -->
+            <!-- Promotional Products -->
 
             <a
                 href="<?php echo esc_url(get_term_link($custom_products)); ?>"
@@ -171,97 +171,73 @@ get_header();
 
     <!-- =========================================
      ALL CATEGORIES
-========================================== -->
+    ========================================== -->
 
-<section class="shop-all-categories">
+    <section class="shop-all-categories">
 
-  <div class="shop-section-header">
+    <div class="shop-section-header">
 
-    <h2>Explore All Categories</h2>
+        <h2>Explore All Categories</h2>
 
-    <p>
-        Browse our complete selection of products.
-    </p>
+        <p>
+            Browse our complete selection of products.
+        </p>
 
-</div>
+    </div>
 
 
 <?php
 
-/*
- * Main categories
- * These are displayed first in a controlled order.
- */
-
-$main_category_slugs = [
-    'promotional-products',
-    'print-services',
-    'graphic-design',
-    'web-solutions',
-];
-
-
-/*
- * Get all product categories.
- */
-
-$product_categories = get_terms([
-    'taxonomy'   => 'product_cat',
-    'hide_empty' => true,
-]);
+    /*
+    * Categories already displayed in the
+    * Featured Categories section.
+    */
+    $featured_category_slugs = [
+        'promotional-products',
+        'print-services',
+        'graphic-design',
+        'web-solutions',
+    ];
 
 
-/*
- * Separate main categories from the rest.
- */
-
-$main_categories  = [];
-$other_categories = [];
-
-
-if ( ! empty($product_categories) && ! is_wp_error($product_categories) ) {
-
-    foreach ($product_categories as $category) {
-
-        /*
-         * Ignore WooCommerce default category.
-         */
-
-        if ($category->slug === 'uncategorized') {
-            continue;
-        }
+    /*
+    * Get all product categories.
+    */
+    $product_categories = get_terms([
+        'taxonomy'   => 'product_cat',
+        'hide_empty' => true,
+    ]);
 
 
-        /*
-         * Main categories.
-         */
+    /*
+    * Build the secondary category collection.
+    */
+    $other_categories = [];
 
-        if (in_array($category->slug, $main_category_slugs, true)) {
+    if ( ! empty($product_categories) && ! is_wp_error($product_categories) ) {
 
-            $main_categories[$category->slug] = $category;
-
-        } else {
+        foreach ($product_categories as $category) {
 
             /*
-             * Everything else:
-             * subcategories + additional categories.
-             */
+            * Ignore the WooCommerce default category.
+            */
+            if ($category->slug === 'uncategorized') {
+                continue;
+            }
+
+            /*
+            * Skip categories already displayed
+            * in the Featured Categories section.
+            */
+            if (in_array($category->slug, $featured_category_slugs, true)) {
+                continue;
+            }
 
             $other_categories[] = $category;
-
         }
     }
-}
 
 ?>
-
-
-<!-- =========================================
-     MAIN CATEGORIES
-========================================== -->
-
-
-
 
 <!-- =========================================
      OTHER CATEGORIES
@@ -436,15 +412,13 @@ if ( ! empty($product_categories) && ! is_wp_error($product_categories) ) {
         </div>
 
 
-        <div class="shop-featured-products__action">
-
+       <div class="shop-featured-products__action">
             <a
-                href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>"
+                href="<?php echo esc_url(home_url('/products/')); ?>"
                 class="shop-view-all"
             >
                 View All Products →
             </a>
-
         </div>
 
 

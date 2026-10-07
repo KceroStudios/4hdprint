@@ -88,6 +88,50 @@
             );
         }
 
+        /*
+        * Reusable WooCommerce product cards.
+        * Used by Shop and the complete Products catalog.
+        */
+        if (is_shop() || is_page('products')) {
+            wp_enqueue_style(
+                'product-cards-style',
+                get_template_directory_uri() . '/assets/css/woocommerce/product-cards.css',
+                ['main-style'],
+                filemtime(
+                    get_template_directory() . '/assets/css/woocommerce/product-cards.css'
+                )
+            );
+        }
+
+        /*
+        * Complete Products catalog page.
+        */
+        if (is_page('products')) {
+            wp_enqueue_style(
+                'products-style',
+                get_template_directory_uri() . '/assets/css/woocommerce/products.css',
+                ['product-cards-style'],
+                filemtime(
+                    get_template_directory() . '/assets/css/woocommerce/products.css'
+                )
+            );
+        }
+
+        /*
+        * Shop page styles.
+        */
+        if (is_shop()) {
+            wp_enqueue_style(
+                'shop-style',
+                get_template_directory_uri() . '/assets/css/woocommerce/shop.css',
+                ['product-cards-style'],
+                filemtime(
+                    get_template_directory() . '/assets/css/woocommerce/shop.css'
+                )
+            );
+        }
+
+
     // Website Estimate CSS
     if (is_page('website-estimate')) {
 
