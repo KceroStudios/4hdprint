@@ -6,65 +6,6 @@ This document describes the architecture, custom functionality, implementation d
 
 The documentation is maintained progressively as each area of the website is reviewed and finalized.
 
-## Table of Contents
-
-- [Website Estimator & Quote Management](#website-estimator--quote-management)
-  - [Overview](#overview)
-  - [Main Components](#main-components)
-  - [Main Files](#main-files)
-  - [Estimator Workflow](#estimator-workflow)
-  - [Packages & Pricing Logic](#packages--pricing-logic)
-  - [Quote Storage & Administration](#quote-storage--administration)
-  - [Security & Anti-Spam](#security--anti-spam)
-
-- [Header](#header)
-  - [Overview](#header-overview)
-  - [Main Files](#header-main-files)
-  - [Top Bar](#top-bar)
-  - [Main Navigation](#main-navigation)
-  - [Account Menu](#account-menu)
-  - [Sticky Navigation](#sticky-navigation)
-  - [Mobile Navigation](#mobile-navigation)
-
-- [Homepage Banner](#homepage-banner)
-  - [Overview](#overview-1)
-  - [Main Files](#main-files-1)
-  - [Banner Settings](#banner-settings)
-  - [Background Styles](#background-styles)
-  - [Image Behavior](#image-behavior)
-  - [Data Handling](#data-handling)
-
-- [Our Services](#our-services)
-  - [Overview](#overview-2)
-  - [Main Files](#main-files-2)
-  - [Service Categories](#service-categories)
-  - [Responsive Behavior](#responsive-behavior)
-
-- [Featured Products](#featured-products)
-  - [Overview](#overview-3)
-  - [Main Files](#main-files-3)
-  - [Product Selection](#product-selection)
-  - [Product Information](#product-information)
-  - [Responsive Behavior](#responsive-behavior-1)
-
-- [Promotional Banner](#promotional-banner)
-  - [Overview](#overview-4)
-  - [Main Files](#main-files-4)
-  - [Banner Settings](#banner-settings-1)
-  - [Display Behavior](#display-behavior)
-  - [Responsive Behavior](#responsive-behavior-2)
-
-- [Client Logos](#client-logos)
-  - [Overview](#overview-5)
-  - [Main Files](#main-files-5)
-  - [Carousel Behavior](#carousel-behavior)
-  - [Image Handling](#image-handling)
-  - [Responsive Behavior](#responsive-behavior-3)
-
-- [Homepage Pre-Footer & Contact Form](#homepage-pre-footer--contact-form)
-
----
-
 
 # Website Estimator & Quote Management
 
@@ -584,6 +525,11 @@ Particular attention should be given to:
 
 Security documentation should be updated whenever a new public form, upload mechanism, external integration, authentication feature, or sensitive-data workflow is added.
 
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
+
+
 # Header
 
 ## Header Overview
@@ -666,7 +612,7 @@ While the sticky state is active, the logo is slightly reduced in size to create
 
 ## Mobile Navigation
 
-For viewport widths below 600 pixels, JavaScript adds the `.mobile` class to `.menu_container`.
+For viewport widths up to 768 pixels, JavaScript adds the `.mobile` class to `.menu_container`.
 
 The desktop navigation is then presented as a mobile off-canvas menu controlled by the hamburger button.
 
@@ -680,7 +626,9 @@ The mobile panel:
 
 The `.open` class controls whether the mobile navigation panel is visible.
 
----
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
 
 ## Homepage Banner
 
@@ -748,6 +696,11 @@ Input values are sanitized before being stored.
 
 Background style values are restricted to an allowlist of supported styles, and image values are stored as WordPress attachment IDs.
 
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
+
+
 ## Our Services
 
 ### Overview
@@ -781,6 +734,10 @@ The section uses a responsive CSS Grid layout.
 - Mobile displays a compact two-column layout with only the service icon and title.
 - On mobile, the entire service card is clickable.
 - Desktop and tablet use the `View More` button for navigation.
+
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
 
 ## Featured Products
 
@@ -825,6 +782,10 @@ The section uses a responsive CSS Grid layout.
 - Mobile maintains a compact two-column layout.
 - Product cards and controls are resized for smaller screens.
 
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
+
 ## Promotional Banner
 
 ### Overview
@@ -863,6 +824,10 @@ The banner uses a horizontal layout on larger screens, with promotional content 
 
 On mobile devices, the layout changes to a vertical arrangement with the content displayed above the image.
 
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
+
 ## Client Logos
 
 ### Overview
@@ -876,6 +841,7 @@ Logos are managed through WordPress and are rendered dynamically from the `4hd_c
 - `front-page.php` — Retrieves and renders the client logos.
 - `functions.php` — Handles the administration and storage of client logo settings.
 - `assets/css/components/homepage.css` — Contains the carousel layout, animation, hover effects, and responsive styles.
+
 
 ### Carousel Behavior
 
@@ -904,18 +870,92 @@ On mobile devices:
 - Logo dimensions and spacing are reduced.
 - The section header uses a smaller font size.
 
-## Homepage Pre-Footer & Contact Form
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
 
-The homepage includes a custom pre-footer section rendered from `footer.php`. This section is displayed only on the front page and contains:
+## Homepage Pre-Footer
+
+The homepage includes a custom pre-footer section rendered from `footer.php`.
+
+This section is displayed only on the front page and contains:
 
 - Latest Video
 - Social Media links
 - Information links
 - Contact Form
 
-### Contact Form
+The Contact Form is implemented as a shared theme component and is also used on the Contact Us page.
 
-The contact form is a custom theme component and does not depend on WPForms.
+See the Contact Form section for implementation, security, email delivery, and styling details.
+
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
+
+## About Us Page
+
+### Overview
+
+The About Us page presents the company introduction, philosophy, and team information.
+
+### Main Files
+
+- `page-about-us.php` — Page template and content structure.
+- `assets/css/components/about-us.css` — Page-specific styles and responsive layout.
+
+### Structure
+
+The page is divided into three main sections:
+
+- **Introduction** — Company overview with an image integrated into the text.
+- **Our Philosophy** — Mission, Vision, and company Values.
+- **Our Team** — Team member cards with short biographies and background/skill tags.
+
+### Responsive Behavior
+
+The About Us layout adapts for mobile devices:
+
+- The introduction image moves above the text.
+- Mission and Vision change from two columns to a single-column layout.
+- Values change to a single-column list.
+- Team cards stack vertically.
+
+### Stylesheet Loading
+
+`about-us.css` is loaded only on the `about-us` page using the WordPress conditional `is_page('about-us')`.
+
+
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
+
+
+## Contact Form
+
+The contact form is a reusable custom theme component shared by the Homepage and Contact Us page. It does not depend on WPForms.
+
+### Main Files
+
+- `template-parts/contact-form.php` — Shared contact form markup.
+- `assets/css/components/contact-form.css` — Shared contact form styles.
+- `assets/css/components/contact.css` — Contact Us page-specific layout and form variations.
+- `functions.php` — Form processing, validation, security, email delivery, settings, and stylesheet loading.
+
+### Usage
+
+The shared form is loaded using:
+
+`get_template_part('template-parts/contact-form');`
+
+It is currently used on:
+
+- Homepage
+- Contact Us
+
+The Contact Us page provides its own visual layout, responsive behavior, and Google Maps section while reusing the same form processing system.
+
+### Form Fields
 
 The form collects:
 
@@ -939,7 +979,7 @@ If no recipient email is configured, the WordPress administration email is used 
 
 ### Security
 
-The contact form includes:
+The shared form includes:
 
 - WordPress nonce verification
 - Honeypot spam protection
@@ -949,7 +989,7 @@ The contact form includes:
 - Service allowlist validation
 - Input length limits
 - Rate limiting
-- Post/Redirect/Get behavior after submission
+- Post/Redirect/Get behavior
 
 Rate limiting currently allows a maximum of **5 valid submissions per IP address within 15 minutes**.
 
@@ -963,8 +1003,6 @@ A successful `wp_mail()` result indicates that WordPress accepted the message fo
 
 ### Front-End Feedback
 
-After submission, the visitor is redirected back to the contact section using the `#contact` anchor.
-
 The form can display:
 
 - Successful submission
@@ -973,6 +1011,67 @@ The form can display:
 
 ### Styling
 
-Homepage pre-footer and contact form styles are located in:
+Shared contact form styles are located in:
+
+`assets/css/components/contact-form.css`
+
+Contact Us page-specific layout and form variations are located in:
+
+`assets/css/components/contact.css`
+
+Homepage-specific layout remains in:
 
 `assets/css/components/homepage.css`
+
+---------------------------------------------------
+---------------------------------------------------
+---------------------------------------------------
+
+## Contact Us Page
+
+### Overview
+
+The Contact Us page provides a dedicated contact experience for visitors who want to ask questions, discuss a project, or request information about 4HD PRINT services.
+
+The page reuses the shared Contact Form component instead of maintaining a separate form implementation.
+
+### Main Files
+
+- `page-contact-us.php` — Contact Us page structure and Google Maps embed.
+- `assets/css/components/contact.css` — Contact Us page-specific layout and responsive styles.
+- `template-parts/contact-form.php` — Shared contact form markup.
+- `assets/css/components/contact-form.css` — Shared contact form styles.
+- `functions.php` — Loads the Contact Us stylesheet and handles contact form processing.
+
+### Page Structure
+
+The page contains three primary elements:
+
+- Visual panel using the 4HD PRINT contact artwork.
+- Shared Contact Form.
+- Embedded Google Map.
+
+The visual panel uses:
+
+`assets/images/contact.png`
+
+The Contact Us page applies its own visual treatment to the shared form without modifying the form styles used on the Homepage.
+
+### Responsive Behavior
+
+On larger screens, the visual panel and contact form are displayed side by side.
+
+On mobile devices:
+
+- The visual panel and form stack vertically.
+- Form fields use a single-column layout.
+- The Google Map remains contained within the shared site width.
+- Page spacing and typography are adjusted for smaller screens.
+
+### Stylesheet Loading
+
+`contact.css` is loaded only on the Contact Us page using:
+
+`is_page('contact-us')`
+
+The shared `contact-form.css` stylesheet remains available wherever the reusable Contact Form component is displayed.

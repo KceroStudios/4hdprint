@@ -50,6 +50,13 @@
             filemtime(get_template_directory() . '/assets/css/components/header.css')
         );
 
+        wp_enqueue_style(
+            'contact-form-style',
+            get_template_directory_uri() . '/assets/css/components/contact-form.css',
+            ['main-style'],
+            filemtime(get_template_directory() . '/assets/css/components/contact-form.css')
+        );
+
         if ( is_page( 'about-us' ) ) {
             wp_enqueue_style(
                 'about-us-style',
@@ -58,6 +65,17 @@
                 filemtime( get_template_directory() . '/assets/css/components/about-us.css' )
             );
         }
+
+        // Contact Us CSS
+            if (is_page('contact-us')) {
+
+                wp_enqueue_style(
+                    'contact-style',
+                    get_template_directory_uri() . '/assets/css/components/contact.css',
+                    ['main-style'],
+                    filemtime(get_template_directory() . '/assets/css/components/contact.css')
+                );
+            }
 
         // WooCommerce My Account CSS
         if ( function_exists('is_account_page') && is_account_page() ) {
