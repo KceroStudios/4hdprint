@@ -1,0 +1,264 @@
+/* About us *************************************************/
+
+.about-us{
+    margin: 20px 0;
+}
+
+.about-us h1, .about-us h2{
+    font-size: 1.5em;
+    color: var(--gray);
+    text-align: center;
+    margin: 30px 0;
+    font-weight: 300;
+    border-bottom: 1px dotted var(--gray);
+    padding-bottom: 20px;
+}
+
+.about-us p {
+    line-height: 1.7;
+    text-justify: inter-word;
+}
+
+.about-intro p::first-letter {
+    font-size: 3em;
+    float: left;
+    line-height: 1;
+    margin-right: 8px;
+}
+
+
+.about-us .col{
+ 
+    max-width: 100%;
+    width: 100%;
+}
+
+/* Philosophy */
+.philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 45px 60px;
+}
+
+.philosophy-item {
+    padding: 25px 30px;
+    background: var(--ligth-gray);
+    border-radius: 12px;
+}
+
+.philosophy h3 {
+    margin: 0 0 15px;
+    color: var(--dark-gray);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.philosophy-item p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.7;
+}
+
+.philosophy-values {
+    grid-column: 1 / -1;
+}
+
+.philosophy-values h3 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.philosophy-values ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px 40px;
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.philosophy-values li {
+    margin: 0;
+    padding-left: 18px;
+    border-left: 3px solid var(--main-color);
+}
+
+.philosophy-values strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--dark-gray);
+    font-size: 1rem;
+}
+
+.philosophy-values span {
+    display: block;
+    line-height: 1.5;
+}
+
+.team_card {
+    margin: 8px;
+    padding: 24px 20px;
+
+    background: var(--white);
+    border: 1px solid var(--ligth-gray);
+    border-radius: 16px;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    transition: transform 0.25s ease, 
+                box-shadow 0.25s ease, 
+                border-color 0.25s ease;
+}
+
+.team_card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.09);
+    border-color: rgba(250, 134, 38, 0.25);
+}
+
+.team_card img{
+    width: 100%;
+    border-radius: 4px;
+}
+
+
+.about-intro {
+    margin-top: 30px;
+}
+
+.about-intro__image {
+    float: right;
+    width: 48%;
+    max-width: 520px;
+    height: auto;
+    margin: 0 0 25px 40px;
+}
+
+.about-intro p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.about-intro::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.team-credentials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.team-credentials span {
+    padding: 6px 11px;
+    border: 1px solid var(--middle-gray);
+    border-radius: 20px;
+    background: var(--ligth-gray);
+    color: var(--gray);
+    font-size: 0.72rem;
+    line-height: 1;
+    letter-spacing: 0.2px;
+}
+
+.team_card p {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--gray);
+}
+
+@media (max-width: 700px) {
+
+    .about-intro {
+        margin-top: 20px;
+    }
+
+    .about-intro__image {
+        float: none;
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 25px;
+    }
+
+    .about-intro p {
+        width: 100%;
+        padding: 0;
+    }
+
+    /* Philosophy */
+    .philosophy-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .philosophy-item {
+        padding: 25px;
+    }
+
+    .philosophy-values {
+        grid-column: auto;
+        margin-top: 15px;
+    }
+
+    .philosophy-values h3 {
+        margin-bottom: 25px;
+    }
+
+    .philosophy-values ul {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .philosophy-values li {
+        padding-left: 15px;
+    }
+
+    /* Team */
+    .team > .row {
+        display: block;
+    }
+
+    .team_card {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 25px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .team_card img {
+        width: 100%;
+        height: auto;
+    }
+
+    .team_card h3 {
+        margin: 18px 0 5px;
+        text-align: center;
+    }
+
+    .team_card small {
+        display: block;
+        text-align: center;
+    }
+
+    .team_card p {
+        margin-top: 15px;
+        text-align: left;
+    }
+
+    .team-credentials {
+        margin-top: 20px;
+    }
+}

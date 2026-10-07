@@ -50,6 +50,15 @@
             filemtime(get_template_directory() . '/assets/css/components/header.css')
         );
 
+        if ( is_page( 'about-us' ) ) {
+            wp_enqueue_style(
+                'about-us-style',
+                get_template_directory_uri() . '/assets/css/components/about-us.css',
+                ['main-style'],
+                filemtime( get_template_directory() . '/assets/css/components/about-us.css' )
+            );
+        }
+
         // WooCommerce My Account CSS
         if ( function_exists('is_account_page') && is_account_page() ) {
 
