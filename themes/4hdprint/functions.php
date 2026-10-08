@@ -131,6 +131,20 @@
             );
         }
 
+        /*
+        * WooCommerce Product Category Styles
+        */
+        if (function_exists('is_product_category') && is_product_category()) {
+            wp_enqueue_style(
+                'product-category-style',
+                get_template_directory_uri() . '/assets/css/woocommerce/product-category.css',
+                ['main-style'],
+                filemtime(
+                    get_template_directory() . '/assets/css/woocommerce/product-category.css'
+                )
+            );
+        }
+
 
     // Website Estimate CSS
     if (is_page('website-estimate')) {

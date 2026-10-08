@@ -19,16 +19,48 @@ $category = get_queried_object();
          CATEGORY HEADER
     ========================================== -->
     <section class="product-category-hero">
+    <nav class="product-category-breadcrumb"
+         aria-label="Product category breadcrumb">
 
-        <div class="product-category-hero__content">
+        <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>">
+            Shop
+        </a>
 
-            <p class="product-category-hero__label">
-                Shop | <?php echo esc_html($category->name); ?> 
-            </p>
+        <?php
+        $ancestors = array_reverse(
+            get_ancestors($category->term_id, 'product_cat', 'taxonomy')
+        );
 
-        </div>
+        foreach ($ancestors as $ancestor_id) :
+            $ancestor = get_term($ancestor_id, 'product_cat');
 
-    </section>
+            if (!$ancestor || is_wp_error($ancestor)) {
+                continue;
+            }
+
+            $ancestor_url = get_term_link($ancestor);
+            if (is_wp_error($ancestor_url)) {
+                continue;
+            }
+        ?>
+            <span class="product-category-breadcrumb__separator"
+                  aria-hidden="true">›</span>
+
+            <a href="<?php echo esc_url($ancestor_url); ?>">
+                <?php echo esc_html($ancestor->name); ?>
+            </a>
+        <?php endforeach; ?>
+
+        <span class="product-category-breadcrumb__separator"
+              aria-hidden="true">›</span>
+
+        <span class="product-category-breadcrumb__current"
+              aria-current="page">
+            <?php echo esc_html($category->name); ?>
+        </span>
+
+    </nav>
+</section>
 
 
     <!-- =========================================
