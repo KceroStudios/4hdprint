@@ -68,7 +68,7 @@ get_header();
             <!-- Promotional Products -->
 
             <a
-                href="<?php echo esc_url(get_term_link($custom_products)); ?>"
+                href="<?php echo !empty($custom_products) && !is_wp_error($custom_products) && !is_wp_error(get_term_link($custom_products)) ? esc_url(get_term_link($custom_products)) : '#'; ?>"
                 class="shop-category-card shop-category-card--custom"
             >
 
@@ -93,7 +93,7 @@ get_header();
             <!-- Print Products -->
 
            <a
-                href="<?php echo esc_url(get_term_link($print_products)); ?>"
+               href="<?php echo !empty($print_products) && !is_wp_error($print_products) && !is_wp_error(get_term_link($print_products)) ? esc_url(get_term_link($print_products)) : '#'; ?>"
                 class="shop-category-card shop-category-card--print"
             >
 
@@ -118,7 +118,7 @@ get_header();
             <!-- Graphic Design -->
 
             <a
-                href="<?php echo esc_url(get_term_link($graphic_design)); ?>"
+                href="<?php echo !empty($graphic_design) && !is_wp_error($graphic_design) && !is_wp_error(get_term_link($graphic_design)) ? esc_url(get_term_link($graphic_design)) : '#'; ?>"
                 class="shop-category-card shop-category-card--design"
             >
 
@@ -143,7 +143,7 @@ get_header();
             <!-- Web Solutions -->
 
            <a
-                href="<?php echo esc_url(get_term_link($web_solutions)); ?>"
+                href="<?php echo !empty($web_solutions) && !is_wp_error($web_solutions) && !is_wp_error(get_term_link($web_solutions)) ? esc_url(get_term_link($web_solutions)) : '#'; ?>"
                 class="shop-category-card shop-category-card--web"
             >
 

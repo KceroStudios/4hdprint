@@ -1,0 +1,2644 @@
+/* =========================================
+   SINGLE PRODUCT
+========================================= */
+
+
+.single-product-page {
+
+    width: 100%;
+
+}
+
+
+/* =========================================
+
+   MAIN PRODUCT AREA
+
+========================================= */
+
+
+.single-product-main {
+
+    width: 80%;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns: 1.1fr 0.9fr;
+
+    gap: 70px;
+
+    align-items: start;
+
+}
+
+
+/* =========================================
+
+   PRODUCT GALLERY
+
+========================================= */
+
+
+.single-product-gallery {
+
+    min-width: 0;
+
+}
+
+
+.single-product-gallery .woocommerce-product-gallery {
+
+    width: 100% !important;
+
+    margin: 0 !important;
+
+}
+
+
+.single-product-gallery
+
+.woocommerce-product-gallery__image img {
+
+    width: 100%;
+
+    height: auto;
+
+    display: block;
+
+
+    border-radius: 10px;
+
+}
+
+
+/* =========================================
+
+   PRODUCT SUMMARY
+
+========================================= */
+
+
+.single-product-summary {
+
+    min-width: 0;
+
+}
+
+
+.single-product-summary .product_title {
+
+    margin: 0 0 15px;
+
+
+    font-size: 34px;
+
+    line-height: 1.2;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================
+
+   PRICE
+
+========================================= */
+
+
+.woocommerce div.product .single-product-summary p.price,
+
+.woocommerce div.product .single-product-summary span.price {
+
+    margin: 0 0 25px;
+
+    font-size: 24px;
+
+    font-weight: 700;
+
+    color: var(--main-color);
+
+}
+
+
+/* =========================================
+
+   SHORT DESCRIPTION
+
+========================================= */
+
+
+.single-product-summary
+
+.woocommerce-product-details__short-description {
+
+    margin-bottom: 30px;
+
+}
+
+
+.single-product-summary
+
+.woocommerce-product-details__short-description p {
+
+    font-size: 16px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =========================================
+
+   ADD TO CART
+
+========================================= */
+
+
+.single-product-summary
+
+.cart {
+
+    margin-top: 25px;
+
+}
+
+
+.single-product-summary
+
+.quantity input {
+
+    min-height: 42px;
+
+    border: 1px solid #ddd;
+
+}
+
+
+.single-product-summary
+
+.single_add_to_cart_button {
+
+    min-height: 42px;
+
+
+    padding: 10px 28px;
+
+
+    background: var(--main-color);
+
+    color: var(--white);
+
+
+    border: 1px solid var(--main-color);
+
+    border-radius: 6px;
+
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+
+    cursor: pointer;
+
+
+    transition:
+
+        background .25s ease,
+
+        transform .25s ease;
+
+}
+
+
+.single-product-summary
+
+.single_add_to_cart_button:hover {
+
+    background: var(--black);
+
+    border-color: var(--black);
+
+
+    color: var(--white);
+
+
+    transform: translateY(-2px);
+
+}
+
+
+/* =========================================
+
+   PRODUCT DESCRIPTION
+
+========================================= */
+
+
+.single-product-description
+
+.woocommerce-tabs {
+
+    margin-top: 30px;
+
+}
+
+
+/* =========================================
+
+   MOBILE
+
+========================================= */
+
+
+@media (max-width: 768px) {
+
+
+    .single-product-main {
+
+        grid-template-columns: 1fr;
+
+
+        gap: 40px;
+
+
+        padding: 50px 20px;
+
+    }
+
+
+    .single-product-summary .product_title {
+
+        font-size: 28px;
+
+    }
+
+
+    .single-product-summary .price {
+
+        font-size: 22px;
+
+    }
+
+
+}
+
+
+/* =========================================
+
+   PRODUCT DESIGN UPLOAD
+
+========================================= */
+
+
+.fourhd-design-upload {
+
+    margin: 25px 0;
+
+    padding: 20px;
+
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 10px;
+
+
+    background: #fafafa;
+
+}
+
+
+/* Label */
+
+
+.fourhd-design-upload__label {
+
+    display: block;
+
+
+    margin-bottom: 6px;
+
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+}
+
+
+.fourhd-required {
+
+    color: var(--main-color);
+
+}
+
+
+/* Description */
+
+
+.fourhd-design-upload__description {
+
+    margin-bottom: 14px;
+
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+
+    color: var(--gray);
+
+}
+
+
+/* File input */
+
+
+.fourhd-design-upload input[type="file"] {
+
+    display: block;
+
+
+    width: 100%;
+
+
+    margin-bottom: 10px;
+
+
+    padding: 10px;
+
+
+    border: 1px solid #ddd;
+
+    border-radius: 6px;
+
+
+    background: var(--white);
+
+
+    cursor: pointer;
+
+}
+
+
+/* File button */
+
+
+.fourhd-design-upload input[type="file"]::file-selector-button {
+
+    margin-right: 12px;
+
+
+    padding: 8px 14px;
+
+
+    border: none;
+
+    border-radius: 5px;
+
+
+    background: var(--black);
+
+    color: var(--white);
+
+
+    font-size: 13px;
+
+
+    cursor: pointer;
+
+
+    transition: background .25s ease;
+
+}
+
+
+.fourhd-design-upload input[type="file"]::file-selector-button:hover {
+
+    background: var(--main-color);
+
+}
+
+
+/* Formats */
+
+
+.fourhd-design-upload__formats {
+
+    margin: 0 0 16px;
+
+
+    font-size: 12px;
+
+
+    color: var(--gray);
+
+}
+
+
+/* =========================================
+
+   MOCKUP OPTION
+
+========================================= */
+
+
+.fourhd-mockup-option {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+
+    padding-top: 14px;
+
+
+    border-top: 1px solid #e5e5e5;
+
+
+    font-size: 14px;
+
+
+    cursor: pointer;
+
+}
+
+
+.fourhd-mockup-option input[type="checkbox"] {
+
+    width: 18px;
+
+    height: 18px;
+
+
+    margin: 0;
+
+
+    accent-color: var(--main-color);
+
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================
+
+   DESIGN PREVIEW
+
+========================================= */
+
+
+.fourhd-design-preview {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+
+    margin: 12px 0;
+
+    padding: 10px;
+
+
+    background: var(--white);
+
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 6px;
+
+}
+
+
+/* Important: respect the HTML hidden attribute */
+
+
+.fourhd-design-preview img {
+
+    width: 65px;
+
+    height: 65px;
+
+
+    object-fit: contain;
+
+
+    background: #f5f5f5;
+
+
+    border: 1px solid #eee;
+
+    border-radius: 5px;
+
+}
+
+
+.fourhd-design-preview__info {
+
+    display: flex;
+
+    flex-direction: column;
+
+
+    min-width: 0;
+
+}
+
+
+.fourhd-design-preview__info span {
+
+    font-size: 12px;
+
+    color: var(--gray);
+
+}
+
+
+.fourhd-design-preview__info strong {
+
+    max-width: 250px;
+
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+.fourhd-design-preview[hidden] {
+
+    display: none;
+
+}
+
+
+/* =========================================
+
+   SIZE SWATCHES
+
+========================================= */
+
+
+.fourhd-size-swatches {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+}
+
+
+.fourhd-size-swatch {
+
+    min-width: 42px;
+
+    height: 42px;
+
+
+    padding: 0 10px;
+
+
+    border: 1px solid #ddd;
+
+    border-radius: 5px;
+
+
+    background: var(--white);
+
+    color: var(--black);
+
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+
+    cursor: pointer;
+
+
+    transition:
+
+        border-color .2s ease,
+
+        background .2s ease,
+
+        color .2s ease;
+
+}
+
+
+.fourhd-size-swatch:hover {
+
+    border-color: var(--main-color);
+
+}
+
+
+.fourhd-size-swatch.is-selected {
+
+    border-color: var(--main-color);
+
+
+    background: var(--main-color);
+
+    color: var(--white);
+
+}
+
+
+select[name="attribute_size"] {
+
+    display: none;
+
+}
+
+
+/* =========================================
+
+   COLOR SWATCHES
+
+========================================= */
+
+
+.fourhd-color-swatches {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+
+    margin-top: 10px;
+
+}
+
+
+.fourhd-color-swatch {
+
+    width: 34px;
+
+    height: 34px;
+
+
+    padding: 0;
+
+
+    border: 2px solid #ddd;
+
+    border-radius: 50%;
+
+
+    background: var(--swatch-color);
+
+
+    cursor: pointer;
+
+
+    transition:
+
+        transform .2s ease,
+
+        border-color .2s ease,
+
+        box-shadow .2s ease;
+
+}
+
+
+.fourhd-color-swatch:hover {
+
+    transform: scale(1.08);
+
+}
+
+
+.fourhd-color-swatch.is-selected {
+
+    border-color: var(--main-color);
+
+
+    box-shadow:
+
+        0 0 0 2px #fff,
+
+        0 0 0 4px var(--main-color);
+
+}
+
+
+select[name="attribute_color"] {
+
+    display: none;
+
+}
+
+
+/* =========================================
+
+   PRODUCT BREADCRUMB
+
+========================================= */
+
+
+.woocommerce .woocommerce-breadcrumb {
+
+    width: 80%;
+
+    max-width: 1200px;
+
+    margin: 0 auto 30px;
+
+    padding: 15px 0;
+
+    box-sizing: border-box;
+
+    border-bottom: 1px solid var(--middle-gray);
+
+}
+
+
+@media (max-width: 768px) {
+
+    .woocommerce .woocommerce-breadcrumb {
+
+        width: auto;
+
+        margin: 0 20px 25px;
+
+        padding: 12px 0;
+
+    }
+
+}
+
+
+.flex-control-nav {
+
+    display: flex;
+
+    flex-direction: row;
+
+    list-style: none;
+
+    padding: 0;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+}
+
+
+.flex-control-nav li{
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    padding: 5px;
+
+}
+
+
+.flex-control-nav li:hover{
+
+    border: 1px solid var(--main-color);
+
+    cursor: pointer;
+
+
+}
+
+
+.woocommerce-product-gallery__trigger .emoji{
+
+    font-size: x-large;
+
+}
+
+
+.variations label {
+
+    font-size: 17px;
+
+    font-weight: 400;
+
+    margin-right: 10px;
+
+    border-right: 3px dotted #fa8626;
+
+    padding-right: 10px;
+
+}
+
+
+.quantity{
+
+    margin-bottom: 10px;
+
+}
+
+
+/* =========================================
+
+   PRODUCT QUANTITY
+
+========================================= */
+
+
+.fourhd-quantity-label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: var(--black);
+
+}
+
+
+.single-product .quantity {
+
+    margin-bottom: 15px;
+
+}
+
+
+/* =========================================
+
+   LOCATION UPLOADS
+
+========================================= */
+
+
+/* =========================================
+
+   DESIGN UPLOADS
+
+========================================= */
+
+
+.fourhd-location-uploads {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+
+    margin: 25px 0;
+
+}
+
+
+/* Shared print-location and premium sticker upload cards */
+
+
+.fourhd-location-upload,
+.fourhd-sticker-upload {
+
+    padding: 18px;
+
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 10px;
+
+
+    background: #fafafa;
+
+}
+
+
+.fourhd-location-upload[hidden],
+.fourhd-sticker-upload[hidden] {
+
+    display: none;
+
+}
+
+
+/* Label */
+
+
+.fourhd-design-upload__label {
+
+    display: block;
+
+
+    margin-bottom: 10px;
+
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+
+    color: var(--black);
+
+}
+
+
+.fourhd-required {
+
+    color: var(--main-color);
+
+}
+
+
+/* =========================================
+
+   FILE INPUT
+
+========================================= */
+
+
+.fourhd-location-upload input[type="file"],
+.fourhd-sticker-upload input[type="file"] {
+
+    width: 100%;
+
+
+    padding: 8px;
+
+
+    box-sizing: border-box;
+
+
+    border: 1px dashed #ccc;
+
+    border-radius: 7px;
+
+
+    background: #fff;
+
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+
+    cursor: pointer;
+
+}
+
+
+/* Native file button */
+
+
+.fourhd-location-upload input[type="file"]::file-selector-button,
+.fourhd-sticker-upload input[type="file"]::file-selector-button {
+
+    margin-right: 12px;
+
+    padding: 9px 14px;
+
+
+    border: 0;
+
+    border-radius: 5px;
+
+
+    background: var(--black);
+
+    color: #fff;
+
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+
+    cursor: pointer;
+
+
+    transition:
+
+        background .2s ease,
+
+        color .2s ease;
+
+}
+
+
+.fourhd-location-upload
+
+input[type="file"]::file-selector-button:hover {
+
+    background: var(--main-color);
+
+}
+
+
+/* =========================================
+
+   DESIGN PREVIEW
+
+========================================= */
+
+
+.fourhd-design-preview {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+
+    margin-top: 12px;
+
+    padding-top: 12px;
+
+
+    border-top: 1px solid #e5e5e5;
+
+}
+
+
+.fourhd-design-preview[hidden] {
+
+    display: none;
+
+}
+
+
+.fourhd-design-preview img {
+
+    width: 55px;
+
+    height: 55px;
+
+
+    flex: 0 0 55px;
+
+
+    object-fit: contain;
+
+
+    border: 1px solid #ddd;
+
+    border-radius: 6px;
+
+
+    background: #fff;
+
+}
+
+
+.fourhd-design-preview__filename {
+
+    min-width: 0;
+
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================
+
+   MOBILE
+
+========================================= */
+
+
+@media (max-width: 600px) {
+
+
+    .fourhd-location-upload,
+.fourhd-sticker-upload {
+
+        padding: 14px;
+
+    }
+
+
+    .fourhd-location-upload input[type="file"],
+.fourhd-sticker-upload input[type="file"] {
+
+        font-size: 12px;
+
+    }
+
+
+}
+
+
+/* =========================================
+
+   T-SHIRT CUSTOMIZER
+
+========================================= */
+
+
+.fourhd-product-customizer {
+
+    margin: 30px 0;
+
+    padding: 25px;
+
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 12px;
+
+
+    background: #fff;
+
+}
+
+
+.fourhd-product-customizer > h3 {
+
+    margin: 0 0 25px;
+
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================
+
+   PRINT SECTIONS
+
+========================================= */
+
+
+.fourhd-print-section {
+
+    margin-bottom: 28px;
+
+}
+
+
+.fourhd-print-section h4 {
+
+    margin: 0 0 5px;
+
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+}
+
+
+.fourhd-print-section > p {
+
+    margin: 0 0 14px;
+
+
+    font-size: 13px;
+
+    color: var(--gray);
+
+}
+
+
+/* =========================================
+
+   INCLUDED LOCATION
+
+========================================= */
+
+
+.fourhd-location-options {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: stretch;
+
+    gap: 8px;
+
+}
+
+
+.fourhd-location-option {
+
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: stretch;
+
+    margin: 0;
+
+    padding: 0;
+
+    cursor: pointer;
+
+}
+
+
+/* Hide native radio */
+
+.fourhd-location-option input[type="radio"] {
+
+    position: absolute;
+
+    width: 1px;
+
+    height: 1px;
+
+    margin: 0;
+
+    padding: 0;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+}
+
+
+.fourhd-location-option span {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+
+    min-height: 48px;
+
+    padding: 10px 15px;
+
+
+    border: 1px solid #ddd;
+
+    border-radius: 7px;
+
+
+    background: #fff;
+
+    color: var(--black);
+
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+
+    transition:
+
+        border-color .2s ease,
+
+        background .2s ease,
+
+        color .2s ease;
+
+}
+
+
+.fourhd-location-option:hover span {
+
+    border-color: var(--main-color);
+
+}
+
+
+.fourhd-location-option input[type="radio"]:checked + span {
+
+    border-color: var(--main-color);
+
+    background: var(--main-color);
+
+    color: #fff;
+
+}
+
+
+.fourhd-location-option input[type="radio"]:focus-visible + span {
+
+    outline: 2px solid var(--main-color);
+
+    outline-offset: 3px;
+
+}
+
+
+/* =========================================
+
+   ADDITIONAL LOCATIONS
+
+========================================= */
+
+
+.fourhd-extra-locations {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+}
+
+
+.fourhd-extra-location {
+
+    position: relative;
+
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+
+    min-height: 40px;
+
+    padding: 8px 14px;
+
+
+    border: 1px solid #ddd;
+
+    border-radius: 7px;
+
+
+    background: #fff;
+
+
+    cursor: pointer;
+
+
+    font-size: 13px;
+
+
+    transition:
+
+        border-color .2s ease,
+
+        background .2s ease,
+
+        color .2s ease;
+
+}
+
+
+/* Hide native checkbox */
+
+
+.fourhd-extra-location input {
+
+    position: absolute;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+}
+
+
+.fourhd-extra-location:hover {
+
+    border-color: var(--main-color);
+
+}
+
+
+/* Selected */
+
+
+.fourhd-extra-location:has(input:checked) {
+
+    border-color: var(--main-color);
+
+
+    background: var(--main-color);
+
+    color: #fff;
+
+}
+
+
+/* Extra price */
+
+
+.fourhd-extra-location__price {
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+
+    opacity: .75;
+
+}
+
+
+/* Disabled because it's the included location */
+
+
+.fourhd-extra-location.is-disabled {
+
+    opacity: .3;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================
+
+   MOBILE
+
+========================================= */
+
+
+@media (max-width: 600px) {
+
+
+    .fourhd-product-customizer {
+
+        padding: 20px 15px;
+
+    }
+
+
+    .fourhd-location-option,
+
+    .fourhd-extra-location {
+
+        flex: 1 1 calc(50% - 8px);
+
+    }
+
+
+    .fourhd-location-option span {
+
+        width: 100%;
+
+        box-sizing: border-box;
+
+    }
+
+
+}
+
+
+/* =========================================
+
+   PRODUCT TABS
+
+========================================= */
+
+
+.single-product-description {
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 20px 20px 80px;
+
+}
+
+
+.single-product-description .woocommerce-tabs {
+
+    width: 100%;
+
+}
+
+
+/* =========================================
+
+   TAB NAVIGATION
+
+========================================= */
+
+
+.single-product-description .wc-tabs {
+
+    display: flex !important;
+
+    align-items: flex-end;
+
+    gap: 30px;
+
+
+    margin: 0 0 35px !important;
+
+    padding: 0 !important;
+
+
+    list-style: none !important;
+
+
+    border-bottom: 1px solid #ddd !important;
+
+}
+
+
+/* Remove WooCommerce decorations */
+
+
+.single-product-description .wc-tabs::before,
+
+.single-product-description .wc-tabs::after,
+
+.single-product-description .wc-tabs li::before,
+
+.single-product-description .wc-tabs li::after {
+
+    display: none !important;
+
+    content: none !important;
+
+}
+
+
+.single-product-description .wc-tabs li {
+
+    position: relative !important;
+
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+
+    border: none !important;
+
+    border-radius: 0 !important;
+
+
+    background: transparent !important;
+
+}
+
+
+.single-product-description .wc-tabs li a {
+
+    display: block !important;
+
+
+    padding: 12px 0 !important;
+
+
+    border: none !important;
+
+    border-bottom: 3px solid transparent !important;
+
+
+    background: transparent !important;
+
+
+    color: var(--gray) !important;
+
+
+    font-size: 14px !important;
+
+    font-weight: 500 !important;
+
+
+    text-decoration: none !important;
+
+
+    transition:
+
+        color .2s ease,
+
+        border-color .2s ease;
+
+}
+
+
+/* Hover */
+
+
+.single-product-description .wc-tabs li a:hover {
+
+    color: var(--main-color) !important;
+
+}
+
+
+/* Active */
+
+
+.single-product-description .wc-tabs li.active a {
+
+    color: var(--black) !important;
+
+
+    border-bottom-color: var(--main-color) !important;
+
+}
+
+
+/* =========================================
+
+   TAB PANELS
+
+========================================= */
+
+
+.single-product-description .woocommerce-Tabs-panel {
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+
+    border: none !important;
+
+    background: transparent !important;
+
+}
+
+
+.single-product-description .woocommerce-Tabs-panel > h2 {
+
+    margin: 0 0 25px;
+
+
+    text-align: left;
+
+
+    font-size: 24px;
+
+    font-weight: 600;
+
+}
+
+
+/* Description */
+
+
+.single-product-description
+
+.woocommerce-Tabs-panel--description {
+
+    max-width: 900px;
+
+}
+
+
+.single-product-description
+
+.woocommerce-Tabs-panel--description h3 {
+
+    margin: 20px 0 15px;
+
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+}
+
+
+.single-product-description
+
+.woocommerce-Tabs-panel--description ul {
+
+    margin: 0;
+
+    padding-left: 22px;
+
+}
+
+
+.single-product-description
+
+.woocommerce-Tabs-panel--description li {
+
+    margin-bottom: 12px;
+
+
+    font-size: 14px;
+
+    line-height: 1.65;
+
+}
+
+
+/* =========================================
+
+   ADDITIONAL INFORMATION
+
+========================================= */
+
+
+.single-product-description .shop_attributes {
+
+    width: 100%;
+
+
+    border-collapse: collapse !important;
+
+}
+
+
+.single-product-description .shop_attributes th,
+
+.single-product-description .shop_attributes td {
+
+    padding: 14px 16px !important;
+
+
+    border: none !important;
+
+    border-bottom: 1px solid #eee !important;
+
+
+    background: transparent !important;
+
+
+    text-align: left !important;
+
+}
+
+
+.single-product-description .shop_attributes th {
+
+    width: 180px;
+
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+.single-product-description .shop_attributes td p {
+
+    margin: 0 !important;
+
+
+    font-size: 14px;
+
+}
+
+
+/* =========================================
+
+   REVIEWS
+
+========================================= */
+
+
+.single-product-description .woocommerce-noreviews {
+
+    margin: 15px 0 30px;
+
+
+    font-size: 14px;
+
+    color: var(--gray);
+
+}
+
+
+.single-product-description .comment-reply-title {
+
+    display: block;
+
+
+    margin: 25px 0 20px;
+
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+}
+
+
+.single-product-description .comment-form-rating label,
+
+.single-product-description .comment-form-comment label {
+
+    display: block;
+
+
+    margin-bottom: 8px;
+
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+.single-product-description .comment-form-comment textarea {
+
+    width: 100%;
+
+    max-width: 650px;
+
+
+    padding: 12px;
+
+
+    border: 1px solid #ddd;
+
+    border-radius: 6px;
+
+
+    font-family: inherit;
+
+
+    resize: vertical;
+
+}
+
+
+.single-product-description .form-submit .submit {
+
+    padding: 10px 22px;
+
+
+    border: none;
+
+    border-radius: 6px;
+
+
+    background: var(--black);
+
+    color: #fff;
+
+
+    font-family: inherit;
+
+    font-weight: 600;
+
+
+    cursor: pointer;
+
+}
+
+
+.single-product-description .form-submit .submit:hover {
+
+    background: var(--main-color);
+
+}
+
+
+/* =========================================
+
+   MOBILE
+
+========================================= */
+
+
+@media (max-width: 650px) {
+
+
+    .single-product-description .wc-tabs {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 0;
+
+
+        border-bottom: none !important;
+
+    }
+
+
+    .single-product-description .wc-tabs li {
+
+        border-bottom: 1px solid #eee !important;
+
+    }
+
+
+    .single-product-description .wc-tabs li a {
+
+        padding: 12px 5px !important;
+
+
+        border-bottom: none !important;
+
+        border-left: 3px solid transparent !important;
+
+    }
+
+
+    .single-product-description .wc-tabs li.active a {
+
+        border-left-color: var(--main-color) !important;
+
+    }
+
+
+}
+
+
+/* =========================================
+
+   REVIEW RATING STARS
+
+========================================= */
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars {
+
+    margin: 8px 0 20px;
+
+}
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars span {
+
+    display: inline-flex;
+
+    gap: 5px;
+
+}
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars a {
+
+    position: relative;
+
+
+    display: inline-block;
+
+
+    width: 28px;
+
+    height: 28px;
+
+
+    font-size: 0;
+
+
+    color: #ccc;
+
+
+    text-decoration: none;
+
+}
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars a::before {
+
+    content: "★";
+
+
+    position: absolute;
+
+    inset: 0;
+
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+
+    font-size: 24px;
+
+    line-height: 1;
+
+
+    color: currentColor;
+
+
+    transition:
+
+        color .2s ease,
+
+        transform .2s ease;
+
+}
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars a:hover::before {
+
+    transform: scale(1.1);
+
+}
+
+
+/* Hover: fill previous stars too */
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars:hover a {
+
+    color: var(--main-color);
+
+}
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars a:hover ~ a {
+
+    color: #ccc;
+
+}
+
+
+/* Selected rating */
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars.selected a {
+
+    color: var(--main-color);
+
+}
+
+
+.single-product-description
+
+.comment-form-rating
+
+.stars.selected a.active ~ a {
+
+    color: #ccc;
+
+}
+
+
+/* =========================================
+
+   EXISTING PRODUCT REVIEWS
+
+========================================= */
+
+
+.single-product-description
+
+.woocommerce-Reviews
+
+.commentlist {
+
+    margin: 25px 0 40px;
+
+    padding: 0;
+
+
+    list-style: none;
+
+}
+
+
+.single-product-description
+
+.woocommerce-Reviews
+
+.commentlist > li {
+
+    margin-bottom: 18px;
+
+}
+
+
+/* Review card */
+
+
+.single-product-description
+
+.comment_container {
+
+    display: grid;
+
+    grid-template-columns: 52px 1fr;
+
+    gap: 16px;
+
+
+    padding: 18px;
+
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 10px;
+
+
+    background: #fff;
+
+}
+
+
+/* Avatar */
+
+
+.single-product-description
+
+.comment_container .avatar {
+
+    width: 52px;
+
+    height: 52px;
+
+
+    border-radius: 50%;
+
+
+    object-fit: cover;
+
+}
+
+
+/* Review content */
+
+
+.single-product-description
+
+.comment-text {
+
+    min-width: 0;
+
+}
+
+
+/* =========================================
+
+   REVIEW META
+
+========================================= */
+
+
+.single-product-description
+
+.comment-text .meta {
+
+    margin: 5px 0 10px;
+
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+
+    color: var(--gray);
+
+}
+
+
+.single-product-description
+
+.woocommerce-review__author {
+
+    color: var(--black);
+
+
+    font-weight: 600;
+
+}
+
+
+.single-product-description
+
+.woocommerce-review__verified {
+
+    margin-left: 5px;
+
+
+    color: var(--main-color);
+
+
+    font-size: 12px;
+
+    font-style: normal;
+
+}
+
+
+.single-product-description
+
+.woocommerce-review__published-date {
+
+    color: var(--gray);
+
+}
+
+
+/* =========================================
+
+   REVIEW TEXT
+
+========================================= */
+
+
+.single-product-description
+
+.comment-text .description p {
+
+    margin: 0;
+
+
+    font-size: 14px;
+
+    line-height: 1.65;
+
+}
+
+
+/* =========================================
+
+   EXISTING REVIEW STARS
+
+========================================= */
+
+
+.single-product-description
+
+.comment-text
+
+.star-rating {
+
+    position: relative;
+
+
+    width: 95px;
+
+    height: 20px;
+
+
+    overflow: hidden;
+
+
+    font-size: 0;
+
+}
+
+
+/* Empty stars */
+
+
+.single-product-description
+
+.comment-text
+
+.star-rating::before {
+
+    content: "★★★★★";
+
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+
+    color: #ddd;
+
+
+    font-size: 18px;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* Filled stars */
+
+
+.single-product-description
+
+.comment-text
+
+.star-rating span {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+
+    height: 20px;
+
+
+    overflow: hidden;
+
+
+    font-size: 0;
+
+}
+
+
+.single-product-description
+
+.comment-text
+
+.star-rating span::before {
+
+    content: "★★★★★";
+
+
+    color: var(--main-color);
+
+
+    font-size: 18px;
+
+    letter-spacing: 1px;
+
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================
+
+   REVIEWS TITLE
+
+========================================= */
+
+
+.single-product-description
+
+.woocommerce-Reviews-title {
+
+    margin: 0 0 20px;
+
+
+    text-align: left;
+
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================
+
+   MOBILE
+
+========================================= */
+
+
+@media (max-width: 600px) {
+
+
+    .single-product-description
+
+    .comment_container {
+
+        grid-template-columns: 42px 1fr;
+
+
+        gap: 12px;
+
+
+        padding: 14px;
+
+    }
+
+
+    .single-product-description
+
+    .comment_container .avatar {
+
+        width: 42px;
+
+        height: 42px;
+
+    }
+
+
+}
+
+
+/* Hide native variation dropdowns */
+
+.woocommerce div.product form.cart select.fourhd-native-select-hidden {
+
+    display: none !important;
+
+}
+
+
+/* =========================================
+
+   ADD TO CART — WOOCOMMERCE OVERRIDE
+
+========================================= */
+
+
+.woocommerce div.product .single-product-summary button.single_add_to_cart_button {
+
+    background-color: var(--main-color);
+
+    border-color: var(--main-color);
+
+    color: var(--white);
+
+}
+
+
+.woocommerce div.product .single-product-summary button.single_add_to_cart_button:hover:not(:disabled) {
+
+    background-color: var(--black);
+
+    border-color: var(--black);
+
+    color: var(--white);
+
+}
+
+
+/* Disabled state */
+
+.woocommerce div.product .single-product-summary button.single_add_to_cart_button:disabled,
+
+.woocommerce div.product .single-product-summary button.single_add_to_cart_button.disabled {
+
+    background-color: var(--main-color);
+
+    border-color: var(--main-color);
+
+    color: var(--white);
+
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =========================================
+
+   ESTIMATED TOTAL
+
+========================================= */
+
+
+.fourhd-product-customizer .fourhd-estimated-total {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+}
+
+
+/* =========================================
+
+   PRODUCT REVIEWS — LAYOUT FIX
+
+========================================= */
+
+
+.single-product-description
+
+.woocommerce-Reviews .commentlist li .comment_container {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 16px;
+
+}
+
+
+.single-product-description
+
+.woocommerce-Reviews .commentlist li .comment_container .avatar {
+
+    position: static;
+
+    float: none;
+
+    flex: 0 0 52px;
+
+    width: 52px;
+
+    height: 52px;
+
+}
+
+
+.single-product-description
+
+.woocommerce-Reviews .commentlist li .comment-text {
+
+    flex: 1;
+
+    width: auto;
+
+    min-width: 0;
+
+    margin: 0;
+
+    padding: 0;
+
+    border: none;
+
+}
+
+
+.single-product-description
+
+.woocommerce-Reviews .commentlist li .star-rating {
+
+    float: none;
+
+    margin-bottom: 10px;
+
+}
+
+
+
+/* Premium sticker upload: reuse the same card and file-input styles */
+.fourhd-sticker-upload {
+    margin-top: 12px;
+}
+
+.fourhd-sticker-upload > label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+}

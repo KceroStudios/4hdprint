@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'afterend',
         wrapper
     );
+    sizeSelect.classList.add('fourhd-native-select-hidden');
 
 });
 
@@ -199,13 +200,58 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const colorMap = {
-        black: '#000000',
-        white: '#ffffff',
-        red: '#d62828',
-        blue: '#2563eb',
-        yellow: '#f4d03f'
-    };
+   const colorMap = {
+    // Solid colors
+    black: '#000000',
+    white: '#ffffff',
+    navy: '#172B4D',
+    red: '#d62828',
+    blue: '#2563eb',
+    yellow: '#f4d03f',
+    green: '#228B45',
+    'royal-blue': '#2563eb',
+    'sport-gray': '#b7b7b7',
+
+    // Two-tone caps
+    'white-blue': 'linear-gradient(90deg, #ffffff 50%, #2563eb 50%)',
+    'white-red': 'linear-gradient(90deg, #ffffff 50%, #d62828 50%)',
+    'white-black': 'linear-gradient(90deg, #ffffff 50%, #000000 50%)'
+};
+
+    function getSwatchColor(value) {
+
+        const normalized = value
+            .toLowerCase()
+            .trim()
+            .replace(/\s*\/\s*/g, '-')
+            .replace(/\s+/g, '-');
+
+        // Solid color
+        if (colorMap[normalized]) {
+            return colorMap[normalized];
+        }
+
+        // Two-tone color
+        const parts = value.split('/').map(color =>
+            color.toLowerCase().trim().replace(/\s+/g, '-')
+        );
+
+        if (parts.length === 2) {
+            const firstColor = colorMap[parts[0]];
+            const secondColor = colorMap[parts[1]];
+
+            if (
+                firstColor &&
+                secondColor &&
+                !firstColor.startsWith('linear-gradient') &&
+                !secondColor.startsWith('linear-gradient')
+            ) {
+                return `linear-gradient(90deg, ${firstColor} 50%, ${secondColor} 50%)`;
+            }
+        }
+
+        return '#cccccc';
+    }
 
     const wrapper = document.createElement('div');
     wrapper.className = 'fourhd-color-swatches';
@@ -222,11 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
         button.className = 'fourhd-color-swatch';
         button.dataset.value = option.value;
 
-        const normalizedColor = option.value.toLowerCase();
-
         button.style.setProperty(
             '--swatch-color',
-            colorMap[normalizedColor] || '#cccccc'
+            getSwatchColor(option.value)
         );
 
         button.setAttribute(
@@ -265,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'afterend',
         wrapper
     );
+    colorSelect.classList.add('fourhd-native-select-hidden');
 
 });
 // =========================================
@@ -320,87 +365,110 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPrimaryLocation() {
 
         const selected = customizer.querySelector(
-            'input[name="fourhd_primary_location"]:checked'
+            'input[name="fourhd_primary_location"]:checked, ' +
+            'input[name="fourhd_primary_location"][type="hidden"]'
         );
 
-        return selected
-            ? selected.value
-            : null;
-
+        return selected ? selected.value : null;
     }
-
 
     function updateExtraLocations() {
 
-        const primaryLocation = getPrimaryLocation();
+    const primaryLocation = getPrimaryLocation();
 
+    const isMultipleCap = (
+        customizer.querySelector(
+            'input[name="fourhd_primary_location"][value="front_left"]'
+        ) !== null
+    );
 
-        extraOptions.forEach(input => {
+    const selectedExtras = Array.from(extraOptions)
+        .filter(input => input.checked)
+        .map(input => input.value);
 
-            const wrapper = input.closest(
-                '.fourhd-extra-location'
+    const frontSelected =
+        primaryLocation === 'front' ||
+        selectedExtras.includes('front');
+
+    const pocketSelected =
+        primaryLocation === 'pocket' ||
+        selectedExtras.includes('pocket');
+
+    extraOptions.forEach(input => {
+
+        const wrapper = input.closest('.fourhd-extra-location');
+
+        if (!wrapper) return;
+
+        const sameAsPrimary = input.value === primaryLocation;
+
+        let incompatible = false;
+
+        if (isMultipleCap) {
+
+            // Front Center cannot coexist with Front Left or Front Right.
+            incompatible = (
+                (
+                    input.value === 'front' &&
+                    (
+                        selectedExtras.includes('front_left') ||
+                        selectedExtras.includes('front_right') ||
+                        primaryLocation === 'front_left' ||
+                        primaryLocation === 'front_right'
+                    )
+                ) ||
+                (
+                    ['front_left', 'front_right'].includes(input.value) &&
+                    frontSelected
+                )
             );
 
-            if (!wrapper) {
-                return;
-            }
+        } else {
 
-
-            if (
-                primaryLocation &&
-                input.value === primaryLocation
-            ) {
-
-                input.checked = false;
-                input.disabled = true;
-
-                wrapper.classList.add(
-                    'is-disabled'
-                );
-
-            } else {
-
-                input.disabled = false;
-
-                wrapper.classList.remove(
-                    'is-disabled'
-                );
-
-            }
-
-        });
-
-    }
-
-
-    function updatePrice() {
-
-        let total = basePrice;
-
-
-        extraOptions.forEach(input => {
-
-            if (
-                input.checked &&
-                !input.disabled
-            ) {
-
-                total += parseFloat(
-                    input.dataset.price || '0'
-                );
-
-            }
-
-        });
-
-
-        if (totalElement) {
-            totalElement.textContent =
-                formatPrice(total);
+            // Preserve the existing Apparel restriction.
+            incompatible = (
+                (input.value === 'front' && pocketSelected) ||
+                (input.value === 'pocket' && frontSelected)
+            );
         }
 
+        const shouldDisable = sameAsPrimary || incompatible;
+
+        if (shouldDisable) {
+            input.checked = false;
+        }
+
+        input.disabled = shouldDisable;
+
+        wrapper.classList.toggle('is-disabled', shouldDisable);
+    });
+}
+
+
+function updatePrice() {
+    let total = basePrice;
+
+    // Additional print locations
+    extraOptions.forEach(input => {
+        if (input.checked && !input.disabled) {
+            total += parseFloat(input.dataset.price || '0');
+        }
+    });
+
+    // Premium Brim Sticker
+    const sticker = customizer.querySelector(
+        'input[name="fourhd_brim_sticker"]'
+    );
+
+    if (sticker && sticker.checked) {
+        total += parseFloat(sticker.dataset.price || '0');
     }
 
+    // Estimated Total
+    if (totalElement) {
+        totalElement.textContent = formatPrice(total);
+    }
+}
 
     function updateUploadFields() {
 
@@ -569,6 +637,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
+
+
+    const brimStickerInput = customizer.querySelector(
+        'input[name="fourhd_brim_sticker"]'
+    );
+
+    const brimStickerUpload = customizer.querySelector(
+        '.fourhd-sticker-upload'
+    );
+
+    const brimStickerFile = customizer.querySelector(
+        '#fourhd_brim_sticker_design'
+    );
+
+    function updateBrimSticker() {
+        if (!brimStickerInput || !brimStickerUpload || !brimStickerFile) {
+            return;
+        }
+
+        const selected = brimStickerInput.checked;
+
+        brimStickerUpload.hidden = !selected;
+        brimStickerFile.required = selected;
+
+        if (!selected) {
+            brimStickerFile.value = '';
+
+            const preview = brimStickerUpload.querySelector(
+                '.fourhd-design-preview'
+            );
+
+            if (preview) {
+                preview.hidden = true;
+            }
+        }
+    }
+
+    if (brimStickerInput) {
+        brimStickerInput.addEventListener('change', function () {
+            updateBrimSticker();
+            updatePrice();
+        });
+    }
+
+    updateBrimSticker();
 
     // Initial state
 

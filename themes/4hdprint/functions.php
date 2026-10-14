@@ -115,6 +115,22 @@
                     get_template_directory() . '/assets/css/woocommerce/products.css'
                 )
             );
+
+            
+        }
+
+        /*
+        * Single WooCommerce product pages.
+        */
+        if (is_product()) {
+            wp_enqueue_style(
+                'single-product-style',
+                get_template_directory_uri() . '/assets/css/woocommerce/single-product.css',
+                [],
+                filemtime(
+                    get_template_directory() . '/assets/css/woocommerce/single-product.css'
+                )
+            );
         }
 
         /*
@@ -168,15 +184,60 @@
 
     if (is_front_page()) {
 
-    wp_enqueue_style(
-        'homepage-style',
-        get_template_directory_uri() . '/assets/css/components/homepage.css',
-        ['main-style'],
-        filemtime(
-            get_template_directory() . '/assets/css/components/homepage.css'
-        )
-    );
-}
+        wp_enqueue_style(
+            'homepage-style',
+            get_template_directory_uri() . '/assets/css/components/homepage.css',
+            ['main-style'],
+            filemtime(
+                get_template_directory() . '/assets/css/components/homepage.css'
+            )
+        );
+    }
+
+    /*
+    * WooCommerce Checkout Styles
+    */
+    if (function_exists('is_checkout') && is_checkout() && !is_order_received_page()) {
+        wp_enqueue_style(
+            'checkout-style',
+            get_template_directory_uri() . '/assets/css/woocommerce/checkout.css',
+            ['main-style'],
+            filemtime(
+                get_template_directory() . '/assets/css/woocommerce/checkout.css'
+            )
+        );
+    }
+
+    /*
+    * WooCommerce Cart Styles
+    */
+    if (function_exists('is_cart') && is_cart()) {
+        wp_enqueue_style(
+            'cart-style',
+            get_template_directory_uri() . '/assets/css/woocommerce/cart.css',
+            ['main-style'],
+            filemtime(
+                get_template_directory() . '/assets/css/woocommerce/cart.css'
+            )
+        );
+    }
+
+    /*
+    * WooCommerce Order Received Styles
+    */
+    if (
+        function_exists('is_order_received_page') &&
+        is_order_received_page()
+    ) {
+        wp_enqueue_style(
+            'order-received-style',
+            get_template_directory_uri() . '/assets/css/woocommerce/order-received.css',
+            ['main-style'],
+            filemtime(
+                get_template_directory() . '/assets/css/woocommerce/order-received.css'
+            )
+        );
+    }
 
 });
     // JavaScript principal del tema

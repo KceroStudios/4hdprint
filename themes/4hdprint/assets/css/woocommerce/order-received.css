@@ -1,0 +1,562 @@
+
+/* =========================================
+   ORDER CONFIRMATION
+========================================= */
+
+.wp-block-woocommerce-order-confirmation {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px 80px;
+}
+
+
+/* Status / Thank you */
+
+.wc-block-order-confirmation-status {
+    margin-bottom: 35px;
+    padding: 28px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+
+    background: #fafafa;
+}
+
+.wc-block-order-confirmation-status h1 {
+    margin: 0 0 10px;
+
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.wc-block-order-confirmation-status p {
+    margin: 0;
+
+    font-size: 15px;
+    color: var(--gray);
+}
+
+
+/* =========================================
+   ORDER SUMMARY
+========================================= */
+
+.wc-block-order-confirmation-summary {
+    margin-bottom: 30px;
+
+    padding: 22px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+
+    background: #fff;
+}
+
+
+/* =========================================
+   ORDER DETAILS
+========================================= */
+
+.wc-block-order-confirmation-totals {
+    margin-top: 30px;
+
+    padding: 24px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+
+    background: #fff;
+}
+
+
+/* =========================================
+   ADDRESSES
+========================================= */
+
+.wc-block-order-confirmation-billing-address,
+.wc-block-order-confirmation-shipping-address {
+    margin-top: 25px;
+    padding: 22px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+
+    background: #fafafa;
+}
+
+
+/* =========================================
+   CUSTOM ACTION BUTTONS
+========================================= */
+
+.fourhd-order-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 35px 0 0;
+}
+
+.fourhd-order-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+    padding: 10px 18px;
+
+    border: 1px solid var(--black);
+    border-radius: 7px;
+
+    background: #fff;
+    color: var(--black);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease;
+    
+}
+
+.fourhd-order-actions a:hover {
+    border-color: var(--main-color);
+    background: var(--main-color);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.fourhd-order-actions .fourhd-order-actions__primary {
+    background: var(--main-color);
+    border-color: var(--main-color);
+    color: #fff;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .wp-block-woocommerce-order-confirmation {
+        padding: 40px 15px 60px;
+    }
+
+    .fourhd-order-actions {
+        flex-direction: column;
+    }
+
+    .fourhd-order-actions a {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+}
+
+/* =========================================
+   ORDER RECEIVED / THANK YOU PAGE
+========================================= */
+
+.woocommerce-order {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px 80px;
+}
+
+
+/* =========================================
+   SUCCESS MESSAGE
+========================================= */
+
+.woocommerce-thankyou-order-received {
+    margin: 0 0 30px;
+    padding: 20px 24px;
+
+    border: 1px solid #dfe8df;
+    border-left: 4px solid #46a758;
+    border-radius: 10px;
+
+    background: #f7faf7;
+
+    color: var(--black);
+
+    font-size: 18px;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   ORDER OVERVIEW
+========================================= */
+
+.woocommerce-order-overview {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+
+    margin: 0 0 30px !important;
+    padding: 0 !important;
+
+    list-style: none !important;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    background: #fff;
+}
+
+.woocommerce-order-overview li {
+    margin: 0 !important;
+    padding: 18px !important;
+
+    border-right: 1px solid #e5e5e5;
+
+    font-size: 12px;
+    color: var(--gray);
+}
+
+.woocommerce-order-overview li:last-child {
+    border-right: none;
+}
+
+.woocommerce-order-overview li strong {
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: var(--black);
+}
+
+
+/* =========================================
+   PAYMENT MESSAGE
+========================================= */
+
+.woocommerce-order > p {
+    margin: 0 0 30px;
+
+    font-size: 14px;
+    color: var(--gray);
+}
+
+
+/* =========================================
+   ORDER DETAILS
+========================================= */
+
+.woocommerce-order-details {
+    margin-top: 35px;
+}
+
+.woocommerce-order-details__title {
+    margin: 0 0 20px;
+
+    text-align: left;
+
+    font-size: 24px;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   ORDER TABLE
+========================================= */
+
+.woocommerce-table--order-details {
+    width: 100%;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    background: #fff;
+}
+
+.woocommerce-table--order-details thead th {
+    padding: 14px 16px;
+
+    background: #f7f7f7;
+
+    border-bottom: 1px solid #e5e5e5;
+
+    text-align: left;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.woocommerce-table--order-details td,
+.woocommerce-table--order-details tfoot th {
+    padding: 16px;
+
+    border-bottom: 1px solid #eee;
+
+    text-align: left;
+
+    font-size: 14px;
+}
+
+.woocommerce-table--order-details
+.product-total {
+    text-align: right;
+}
+
+
+/* Product title */
+
+.woocommerce-table--order-details
+.product-name > a {
+    color: var(--black);
+
+    font-weight: 600;
+}
+
+.woocommerce-table--order-details
+.product-name > a:hover {
+    color: var(--main-color);
+}
+
+
+/* =========================================
+   ITEM META
+========================================= */
+
+.woocommerce-table--order-details
+.wc-item-meta {
+    margin: 12px 0 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.woocommerce-table--order-details
+.wc-item-meta li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    margin-bottom: 5px;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    color: var(--gray);
+}
+
+.woocommerce-table--order-details
+.wc-item-meta-label {
+    color: var(--black);
+    font-weight: 600;
+}
+
+.woocommerce-table--order-details
+.wc-item-meta p {
+    margin: 0;
+}
+
+
+/* File links */
+
+.woocommerce-table--order-details
+.wc-item-meta a {
+    color: var(--main-color);
+
+    word-break: break-all;
+}
+
+
+/* =========================================
+   TOTALS
+========================================= */
+
+.woocommerce-table--order-details tfoot tr:last-child th,
+.woocommerce-table--order-details tfoot tr:last-child td {
+    border-bottom: none;
+}
+
+.woocommerce-table--order-details tfoot td {
+    text-align: right;
+
+    font-weight: 600;
+}
+
+.woocommerce-table--order-details
+.woocommerce-Price-amount {
+    font-weight: 700;
+}
+
+.woocommerce-table--order-details
+tfoot tr:nth-last-child(2) td {
+    color: var(--main-color);
+}
+
+
+/* =========================================
+   CUSTOMER ADDRESSES
+========================================= */
+
+.woocommerce-customer-details {
+    margin-top: 40px;
+}
+
+.woocommerce-columns--addresses {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+}
+
+/* Remove WooCommerce clearfix from Grid */
+.woocommerce-columns--addresses::before,
+.woocommerce-columns--addresses::after {
+    content: none !important;
+    display: none !important;
+}
+
+.woocommerce-columns--addresses > .woocommerce-column {
+    float: none !important;
+    clear: none !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    grid-column: auto !important;
+    grid-row: auto !important;
+}
+
+.woocommerce-column--billing-address,
+.woocommerce-column--shipping-address {
+    padding: 22px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+
+    background: #fafafa;
+}
+
+.woocommerce-column__title {
+    margin: 0 0 15px;
+
+    text-align: left;
+
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.woocommerce-customer-details address {
+    font-style: normal;
+
+    font-size: 14px;
+    line-height: 1.7;
+
+    color: var(--gray);
+}
+
+.woocommerce-customer-details address p {
+    margin: 8px 0 0;
+
+    font-size: 14px;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 850px) {
+
+    .woocommerce-order-overview {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .woocommerce-order-overview li {
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .woocommerce-columns--addresses {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .woocommerce-order {
+        padding: 40px 15px 60px;
+    }
+
+    .woocommerce-order-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .woocommerce-order-overview li {
+        border-right: none;
+    }
+
+    .woocommerce-table--order-details {
+        font-size: 13px;
+    }
+
+}
+
+.fourhd-order-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+    padding: 10px 18px;
+
+    border: 1px solid var(--black);
+    border-radius: 7px;
+
+    background: var(--main-color);
+    color: #fff;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+.fourhd-order-actions button:hover {
+    background: var(--black);
+    border-color: var(--black);
+
+    transform: translateY(-1px);
+}
+
+@media print {
+
+    .main_header,
+    .site-footer,
+    .fourhd-order-actions,
+    .back-to-top {
+        display: none !important;
+    }
+
+    .woocommerce-order {
+        max-width: 100%;
+        padding: 0;
+    }
+
+}

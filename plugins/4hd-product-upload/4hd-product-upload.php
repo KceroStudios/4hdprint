@@ -143,14 +143,87 @@ add_action('woocommerce_product_options_general_product_data', function () {
     echo '</div>';
 
     echo '<div class="options_group fourhd-customizer-admin">';
+    woocommerce_wp_select([
+    'id'          => '_fourhd_customizer_type',
+    'label'       => 'Customizer Type',
+    'description' => 'Select the customization layout for this product.',
+    'desc_tip'    => true,
+    'options'     => [
+        'apparel' => 'Apparel',
+        'caps'    => 'Caps',
+    ],
+]);
+
+    woocommerce_wp_select([
+        'id'          => '_fourhd_cap_print_layout',
+        'label'       => 'Cap Print Layout',
+        'description' => 'Choose which print locations customers can customize.',
+        'desc_tip'    => true,
+        'options'     => [
+            'front_only' => 'Front Only',
+            'multiple'   => 'Multiple Locations',
+        ],
+    ]);
+
+woocommerce_wp_text_input([
+    'id'          => '_fourhd_customizer_heading',
+    'label'       => 'Customizer Heading',
+    'placeholder' => 'Customize Your T-Shirt',
+    'description' => 'Example: Customize Your Hoodie, Customize Your Cap.',
+    'desc_tip'    => true,
+]);
     echo '<h4 class="fourhd-admin-heading">Product Customizer Pricing</h4>';
 
     $price_fields = [
-        '_fourhd_front_extra'        => ['Front Print Extra', 'Extra price when Front is an additional print location.'],
-        '_fourhd_back_extra'         => ['Back Print Extra', 'Extra price when Back is an additional print location.'],
-        '_fourhd_pocket_extra'       => ['Pocket Print Extra', 'Extra price when Pocket is an additional print location.'],
-        '_fourhd_left_sleeve_extra'  => ['Left Sleeve Extra', 'Extra price when Left Sleeve is an additional print location.'],
-        '_fourhd_right_sleeve_extra' => ['Right Sleeve Extra', 'Extra price when Right Sleeve is an additional print location.'],
+        // Apparel and Caps
+        '_fourhd_front_extra' => [
+            'Front Print Extra',
+            'Additional front printing cost.'
+        ],
+        '_fourhd_back_extra' => [
+            'Back Print Extra',
+            'Additional back printing cost.'
+        ],
+
+        // Apparel only
+        '_fourhd_pocket_extra' => [
+            'Pocket Print Extra',
+            'Additional pocket printing cost.'
+        ],
+        '_fourhd_left_sleeve_extra' => [
+            'Left Sleeve Extra',
+            'Additional left sleeve printing cost.'
+        ],
+        '_fourhd_right_sleeve_extra' => [
+            'Right Sleeve Extra',
+            'Additional right sleeve printing cost.'
+        ],
+
+        // Caps only
+        '_fourhd_front_left_extra' => [
+            'Front Left Print Extra',
+            'Additional front-left printing cost.'
+        ],
+        '_fourhd_front_right_extra' => [
+            'Front Right Print Extra',
+            'Additional front-right printing cost.'
+        ],
+        '_fourhd_left_side_extra' => [
+            'Left Side Print Extra',
+            'Additional left-side printing cost.'
+        ],
+        '_fourhd_right_side_extra' => [
+            'Right Side Print Extra',
+            'Additional right-side printing cost.'
+        ],
+        '_fourhd_under_brim_extra' => [
+            'Under Brim Print Extra',
+            'Additional under-brim printing cost.'
+        ],
+        '_fourhd_brim_sticker_extra' => [
+            'Premium Brim Sticker Extra',
+            'Additional premium sticker cost.'
+        ],
     ];
 
     foreach ($price_fields as $id => $data) {
@@ -213,13 +286,74 @@ add_action('woocommerce_product_options_general_product_data', function () {
     </script>
     <script>
     jQuery(function($){
-        function toggleFourHDAdmin(){
+        function toggleFourHDAdmin() {
             var mode = $('#_fourhd_upload_mode').val();
+
             $('.fourhd-customizer-admin').toggle(mode === 'customizer');
             $('.fourhd-print-admin').toggle(mode === 'print');
         }
+
+        function toggleFourHDPricingFields() {
+            var type = $('#_fourhd_customizer_type').val();
+
+            $('#_fourhd_cap_print_layout')
+            .closest('.form-field')
+            .toggle(type === 'caps');
+
+            var apparelOnly = [
+                '_fourhd_pocket_extra',
+                '_fourhd_left_sleeve_extra',
+                '_fourhd_right_sleeve_extra'
+            ];
+
+            var capsOnly = [
+                '_fourhd_front_left_extra',
+                '_fourhd_front_right_extra',
+                '_fourhd_left_side_extra',
+                '_fourhd_right_side_extra',
+                '_fourhd_under_brim_extra',
+                '_fourhd_brim_sticker_extra'
+            ];
+
+            function setFieldState(id, enabled) {
+                var field = $('#' + id);
+
+                field.prop('disabled', !enabled);
+                field.closest('.form-field').css({
+                    opacity: enabled ? 1 : 0.4
+                });
+            }
+
+            apparelOnly.forEach(function(id) {
+                setFieldState(id, type === 'apparel');
+            });
+
+            var capLayout = $('#_fourhd_cap_print_layout').val();
+            var multipleCaps = type === 'caps' && capLayout === 'multiple';
+
+            capsOnly.forEach(function(id) {
+                setFieldState(id, multipleCaps);
+            });
+
+            // Back printing is available for Apparel and Multiple Location Caps.
+            setFieldState(
+                '_fourhd_back_extra',
+                type === 'apparel' || multipleCaps
+            );
+
+            // Front Only Caps do not need additional print pricing.
+            setFieldState(
+                '_fourhd_front_extra',
+                type === 'apparel' || multipleCaps
+            );
+        }
+
         toggleFourHDAdmin();
+        toggleFourHDPricingFields();
+
         $('#_fourhd_upload_mode').on('change', toggleFourHDAdmin);
+        $('#_fourhd_customizer_type').on('change', toggleFourHDPricingFields);
+        $('#_fourhd_cap_print_layout').on('change', toggleFourHDPricingFields);
 
         $('#fourhd-add-print-field').on('click', function(){
             var indexes = $('#fourhd-print-fields .fourhd-print-field-row').map(function(){
@@ -307,12 +441,69 @@ add_action('woocommerce_process_product_meta', function ($product_id) {
         $mode = 'disabled';
     }
     update_post_meta($product_id, '_fourhd_upload_mode', $mode);
+    // Save Customizer Type.
+$customizer_type = isset($_POST['_fourhd_customizer_type'])
+    ? sanitize_key(wp_unslash($_POST['_fourhd_customizer_type']))
+    : 'apparel';
+
+if (!in_array($customizer_type, ['apparel', 'caps'], true)) {
+    $customizer_type = 'apparel';
+}
+
+update_post_meta($product_id, '_fourhd_customizer_type', $customizer_type);
+
+// Save Cap Print Layout.
+$cap_print_layout = isset($_POST['_fourhd_cap_print_layout'])
+    ? sanitize_key(wp_unslash($_POST['_fourhd_cap_print_layout']))
+    : 'front_only';
+
+if (!in_array($cap_print_layout, ['front_only', 'multiple'], true)) {
+    $cap_print_layout = 'front_only';
+}
+
+update_post_meta(
+    $product_id,
+    '_fourhd_cap_print_layout',
+    $cap_print_layout
+);
+
+// Save Customizer Heading.
+$customizer_heading = isset($_POST['_fourhd_customizer_heading'])
+    ? sanitize_text_field(wp_unslash($_POST['_fourhd_customizer_heading']))
+    : '';
+
+update_post_meta($product_id, '_fourhd_customizer_heading', $customizer_heading);
 
     // Keep legacy meta synchronized for backward compatibility.
     update_post_meta($product_id, '_fourhd_enable_upload', $mode === 'customizer' ? 'yes' : 'no');
 
-    foreach (['_fourhd_front_extra','_fourhd_back_extra','_fourhd_pocket_extra','_fourhd_left_sleeve_extra','_fourhd_right_sleeve_extra'] as $field) {
-        $value = isset($_POST[$field]) ? wc_format_decimal(wp_unslash($_POST[$field])) : '';
+    $customizer_price_fields = [
+        // Apparel and Caps
+        '_fourhd_front_extra',
+        '_fourhd_back_extra',
+
+        // Apparel
+        '_fourhd_pocket_extra',
+        '_fourhd_left_sleeve_extra',
+        '_fourhd_right_sleeve_extra',
+
+        // Caps
+        '_fourhd_front_left_extra',
+        '_fourhd_front_right_extra',
+        '_fourhd_left_side_extra',
+        '_fourhd_right_side_extra',
+        '_fourhd_under_brim_extra',
+        '_fourhd_brim_sticker_extra',
+    ];
+
+    foreach ($customizer_price_fields as $field) {
+        if (!isset($_POST[$field])) {
+            continue;
+        }
+
+        $value = wc_format_decimal(wp_unslash($_POST[$field]));
+        $value = $value === '' ? '' : max(0, (float) $value);
+
         update_post_meta($product_id, $field, $value);
     }
 
@@ -390,33 +581,158 @@ function fourhd_upload_field() {
 }
 
 function fourhd_render_product_customizer($product, $product_id) {
-    $locations = [
-        'front'        => ['label' => 'Front',        'price' => (float) get_post_meta($product_id, '_fourhd_front_extra', true)],
-        'back'         => ['label' => 'Back',         'price' => (float) get_post_meta($product_id, '_fourhd_back_extra', true)],
-        'pocket'       => ['label' => 'Pocket',       'price' => (float) get_post_meta($product_id, '_fourhd_pocket_extra', true)],
-        'left_sleeve'  => ['label' => 'Left Sleeve',  'price' => (float) get_post_meta($product_id, '_fourhd_left_sleeve_extra', true)],
-        'right_sleeve' => ['label' => 'Right Sleeve', 'price' => (float) get_post_meta($product_id, '_fourhd_right_sleeve_extra', true)],
-    ];
+   $customizer_type = get_post_meta(
+        $product_id,
+        '_fourhd_customizer_type',
+        true
+    ) ?: 'apparel';
+
+    $customizer_heading = get_post_meta(
+        $product_id,
+        '_fourhd_customizer_heading',
+        true
+    );
+
+    $cap_layout = get_post_meta(
+    $product_id,
+    '_fourhd_cap_print_layout',
+    true
+) ?: 'front_only';
+
+    $is_front_only_cap = (
+        $customizer_type === 'caps' &&
+        $cap_layout !== 'multiple'
+    );
+
+    if ($customizer_type === 'caps') {
+
+        if ($is_front_only_cap) {
+            $locations = [
+                'front' => [
+                    'label' => 'Front',
+                    'price' => 0,
+                ],
+            ];
+        } else {
+            $cap_locations = [
+                'front'       => 'Front Center',
+                'front_left'  => 'Front Left',
+                'front_right' => 'Front Right',
+                'back'        => 'Back',
+                'left_side'   => 'Left Side',
+                'right_side'  => 'Right Side',
+                'under_brim'  => 'Under Brim',
+            ];
+
+            $price_meta = [
+                'front'       => '_fourhd_front_extra',
+                'front_left'  => '_fourhd_front_left_extra',
+                'front_right' => '_fourhd_front_right_extra',
+                'back'        => '_fourhd_back_extra',
+                'left_side'   => '_fourhd_left_side_extra',
+                'right_side'  => '_fourhd_right_side_extra',
+                'under_brim'  => '_fourhd_under_brim_extra',
+            ];
+
+            $locations = [];
+
+            foreach ($cap_locations as $key => $label) {
+                $locations[$key] = [
+                    'label' => $label,
+                    'price' => (float) get_post_meta(
+                        $product_id,
+                        $price_meta[$key],
+                        true
+                    ),
+                ];
+            }
+        }
+
+    } else {
+
+        $locations = [
+            'front' => [
+                'label' => 'Front',
+                'price' => (float) get_post_meta($product_id, '_fourhd_front_extra', true),
+            ],
+            'back' => [
+                'label' => 'Back',
+                'price' => (float) get_post_meta($product_id, '_fourhd_back_extra', true),
+            ],
+            'pocket' => [
+                'label' => 'Pocket',
+                'price' => (float) get_post_meta($product_id, '_fourhd_pocket_extra', true),
+            ],
+            'left_sleeve' => [
+                'label' => 'Left Sleeve',
+                'price' => (float) get_post_meta($product_id, '_fourhd_left_sleeve_extra', true),
+            ],
+            'right_sleeve' => [
+                'label' => 'Right Sleeve',
+                'price' => (float) get_post_meta($product_id, '_fourhd_right_sleeve_extra', true),
+            ],
+        ];
+    }
     ?>
     <div class="fourhd-product-customizer" data-base-price="<?php echo esc_attr($product->get_price()); ?>">
-        <h3>Customize Your T-Shirt</h3>
+        <h3>
+            <?php echo esc_html(
+                $customizer_heading ?: (
+                    $customizer_type === 'caps'
+                        ? 'Customize Your Cap'
+                        : 'Customize Your Apparel'
+                )
+            ); ?>
+        </h3>
         <div class="fourhd-print-section">
             <h4>Included Print Location</h4>
-            <p>Choose one print location included with your T-shirt.</p>
-            <div class="fourhd-location-options">
-                <?php foreach ($locations as $key => $location) : ?>
-                    <label class="fourhd-location-option">
-                        <input type="radio" name="fourhd_primary_location" value="<?php echo esc_attr($key); ?>" required>
-                        <span><?php echo esc_html($location['label']); ?></span>
-                    </label>
-                <?php endforeach; ?>
+            <p>
+                <?php if ($is_front_only_cap) : ?>
+                    Front printing is included with your cap.
+                <?php else : ?>
+                    Choose one print location included with your product.
+                <?php endif; ?>
+            </p>
+            <?php if ($is_front_only_cap) : ?>
+                <input type="hidden" name="fourhd_primary_location" value="front">
+            <?php endif; ?>
+            <div class="fourhd-location-options"
+                <?php echo $is_front_only_cap ? 'hidden' : ''; ?>>
+
+                <?php if (!$is_front_only_cap) : ?>
+                    <?php foreach ($locations as $key => $location) : ?>
+
+                        <label class="fourhd-location-option">
+                            <input
+                                type="radio"
+                                name="fourhd_primary_location"
+                                value="<?php echo esc_attr($key); ?>"
+                                required
+                            >
+                            <span>
+                                <?php echo esc_html($location['label']); ?>
+                            </span>
+                        </label>
+
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
             </div>
+
+            <?php if ($is_front_only_cap) : ?>
+                <p class="fourhd-cap-note">
+                    Looking for a different print placement or custom setup?
+                    Contact us to discuss your options.
+                </p>
+            <?php endif; ?>
         </div>
 
-        <div class="fourhd-print-section">
+        <div class="fourhd-print-section"
+            <?php echo $is_front_only_cap ? 'hidden' : ''; ?>>
             <h4>Additional Print Locations</h4>
             <p>Add more print locations if needed.</p>
             <div class="fourhd-extra-locations">
+                <?php if (!$is_front_only_cap) : ?>
                 <?php foreach ($locations as $key => $location) : ?>
                     <label class="fourhd-extra-location" data-location="<?php echo esc_attr($key); ?>">
                         <input type="checkbox" name="fourhd_extra_locations[]" value="<?php echo esc_attr($key); ?>" data-price="<?php echo esc_attr($location['price']); ?>">
@@ -426,8 +742,67 @@ function fourhd_render_product_customizer($product, $product_id) {
                         <?php endif; ?>
                     </label>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
+
+        <?php if ($customizer_type === 'caps' && !$is_front_only_cap) : ?>
+
+        <?php
+        $sticker_price = (float) get_post_meta(
+            $product_id,
+            '_fourhd_brim_sticker_extra',
+            true
+        );
+        ?>
+
+        <div class="fourhd-print-section fourhd-sticker-section">
+
+            <h4>Premium Brim Sticker</h4>
+
+            <p>Add a premium decorative sticker to your cap's brim.</p>
+
+            <label class="fourhd-extra-location">
+
+                <input
+                    type="checkbox"
+                    name="fourhd_brim_sticker"
+                    value="yes"
+                    data-price="<?php echo esc_attr($sticker_price); ?>"
+                >
+
+                <span class="fourhd-extra-location__name">
+                    Add Premium Brim Sticker
+                </span>
+
+                <span class="fourhd-extra-location__price">
+                    +<?php echo wp_kses_post(wc_price($sticker_price)); ?>
+                </span>
+
+            </label>
+            <div class="fourhd-sticker-upload" hidden>
+
+                <label for="fourhd_brim_sticker_design">
+                    Upload Your Sticker Design
+                </label>
+
+                <input
+                    type="file"
+                    id="fourhd_brim_sticker_design"
+                    name="fourhd_brim_sticker_design"
+                    accept="image/png,image/jpeg"
+                >
+
+                <div class="fourhd-design-preview" hidden>
+                    <img src="" alt="Sticker Design Preview">
+                    <span class="fourhd-design-preview__filename"></span>
+                </div>
+
+            </div>
+
+        </div>
+
+    <?php endif; ?>
 
         <div class="fourhd-location-uploads">
             <?php foreach ($locations as $key => $location) : ?>
@@ -558,7 +933,7 @@ function fourhd_validate_upload($passed, $product_id, $quantity, $variation_id =
     $mode = fourhd_get_upload_mode($product_id);
 
     if ($mode === 'customizer') {
-        return fourhd_validate_customizer($passed);
+        return fourhd_validate_customizer($passed, $product_id);
     }
 
     if ($mode === 'print') {
@@ -567,41 +942,214 @@ function fourhd_validate_upload($passed, $product_id, $quantity, $variation_id =
 
     return $passed;
 }
+    function fourhd_validate_customizer($passed, $product_id) {
 
-function fourhd_validate_customizer($passed) {
-    $allowed = ['front', 'back', 'pocket', 'left_sleeve', 'right_sleeve'];
+        $type = get_post_meta(
+            $product_id,
+            '_fourhd_customizer_type',
+            true
+        ) ?: 'apparel';
 
-    if (empty($_POST['fourhd_primary_location'])) {
-        wc_add_notice('Please select an included print location.', 'error');
-        return false;
-    }
+        $cap_layout = get_post_meta(
+            $product_id,
+            '_fourhd_cap_print_layout',
+            true
+        ) ?: 'front_only';
 
-    $primary = sanitize_key(wp_unslash($_POST['fourhd_primary_location']));
-    if (!in_array($primary, $allowed, true)) {
-        wc_add_notice('Invalid print location.', 'error');
-        return false;
-    }
+        // Allowed print locations
+        if ($type === 'caps') {
 
-    $active = [$primary];
-    if (!empty($_POST['fourhd_extra_locations']) && is_array($_POST['fourhd_extra_locations'])) {
-        foreach (wp_unslash($_POST['fourhd_extra_locations']) as $location) {
-            $location = sanitize_key($location);
-            if (in_array($location, $allowed, true) && $location !== $primary) {
-                $active[] = $location;
-            }
+            $allowed = $cap_layout === 'multiple'
+                ? [
+                    'front',
+                    'front_left',
+                    'front_right',
+                    'back',
+                    'left_side',
+                    'right_side',
+                    'under_brim'
+                ]
+                : ['front'];
+
+        } else {
+
+            $allowed = [
+                'front',
+                'back',
+                'pocket',
+                'left_sleeve',
+                'right_sleeve'
+            ];
         }
-    }
 
-    foreach (array_unique($active) as $location) {
-        $name = 'fourhd_design_' . $location;
-        if (empty($_FILES[$name]['name']) || !isset($_FILES[$name]['error']) || $_FILES[$name]['error'] !== UPLOAD_ERR_OK) {
-            wc_add_notice(sprintf('Please upload your %s design.', ucwords(str_replace('_', ' ', $location))), 'error');
+        // Primary print location
+        $primary = isset($_POST['fourhd_primary_location'])
+            ? sanitize_key(wp_unslash($_POST['fourhd_primary_location']))
+            : '';
+
+        if (!in_array($primary, $allowed, true)) {
+            wc_add_notice('Please select a valid print location.', 'error');
             return false;
         }
-    }
 
-    return $passed;
-}
+        // Additional print locations
+        $extras = [];
+
+        if (!empty($_POST['fourhd_extra_locations'])) {
+
+            if (!is_array($_POST['fourhd_extra_locations'])) {
+                wc_add_notice('Invalid additional print locations.', 'error');
+                return false;
+            }
+
+            foreach (wp_unslash($_POST['fourhd_extra_locations']) as $location) {
+
+                $location = sanitize_key($location);
+
+                if (
+                    !in_array($location, $allowed, true) ||
+                    $location === $primary
+                ) {
+                    wc_add_notice('Invalid additional print location.', 'error');
+                    return false;
+                }
+
+                $extras[] = $location;
+            }
+        }
+
+        // Front-only caps cannot have extra locations
+        if (
+            $type === 'caps' &&
+            $cap_layout !== 'multiple' &&
+            !empty($extras)
+        ) {
+            wc_add_notice('This cap only supports front printing.', 'error');
+            return false;
+        }
+
+        $active = array_merge([$primary], $extras);
+
+        // Prevent duplicate locations
+        if (count($active) !== count(array_unique($active))) {
+            wc_add_notice('Duplicate print locations are not allowed.', 'error');
+            return false;
+        }
+
+        // Flat Bill Cap: Front Center incompatibility
+        if ($type === 'caps' && $cap_layout === 'multiple') {
+
+            if (
+                in_array('front', $active, true) &&
+                (
+                    in_array('front_left', $active, true) ||
+                    in_array('front_right', $active, true)
+                )
+            ) {
+                wc_add_notice(
+                    'Front Center cannot be combined with Front Left or Front Right.',
+                    'error'
+                );
+                return false;
+            }
+        }
+
+        // Apparel: Front and Pocket incompatibility
+        if (
+            $type !== 'caps' &&
+            in_array('front', $active, true) &&
+            in_array('pocket', $active, true)
+        ) {
+            wc_add_notice(
+                'Front and Pocket printing cannot be selected together.',
+                'error'
+            );
+            return false;
+        }
+
+        // Validate artwork for selected print locations
+        foreach ($active as $location) {
+
+            $name = 'fourhd_design_' . $location;
+
+            if (
+                empty($_FILES[$name]['name']) ||
+                !isset($_FILES[$name]['error']) ||
+                $_FILES[$name]['error'] !== UPLOAD_ERR_OK
+            ) {
+                wc_add_notice(
+                    sprintf(
+                        'Please upload your %s design.',
+                        ucwords(str_replace('_', ' ', $location))
+                    ),
+                    'error'
+                );
+                return false;
+            }
+        }
+
+        // Premium Brim Sticker validation
+        $sticker_selected = (
+            $type === 'caps' &&
+            $cap_layout === 'multiple' &&
+            isset($_POST['fourhd_brim_sticker']) &&
+            wp_unslash($_POST['fourhd_brim_sticker']) === 'yes'
+        );
+
+        if ($sticker_selected) {
+
+            $file = $_FILES['fourhd_brim_sticker_design'] ?? null;
+
+            if (
+                !$file ||
+                empty($file['name']) ||
+                !isset($file['error']) ||
+                $file['error'] !== UPLOAD_ERR_OK
+            ) {
+                wc_add_notice(
+                    'Please upload your Premium Brim Sticker design.',
+                    'error'
+                );
+                return false;
+            }
+
+            // Validate actual file type
+            $file_type = wp_check_filetype_and_ext(
+                $file['tmp_name'],
+                $file['name'],
+                [
+                    'jpg|jpeg' => 'image/jpeg',
+                    'png'      => 'image/png'
+                ]
+            );
+
+            if (
+                !in_array(
+                    $file_type['type'],
+                    ['image/jpeg', 'image/png'],
+                    true
+                ) ||
+                empty($file_type['ext'])
+            ) {
+                wc_add_notice(
+                    'Premium Brim Sticker designs must be PNG or JPG images.',
+                    'error'
+                );
+                return false;
+            }
+
+            // Maximum file size: 10 MB
+            if ($file['size'] > 10 * 1024 * 1024) {
+                wc_add_notice(
+                    'Premium Brim Sticker design must be 10 MB or smaller.',
+                    'error'
+                );
+                return false;
+            }
+        }
+
+        return $passed;
+    }
 
 function fourhd_validate_print_upload($passed, $product_id, $variations) {
     $fields = fourhd_get_print_fields($product_id);
@@ -671,57 +1219,244 @@ function fourhd_save_upload($cart_item_data, $product_id) {
     return $cart_item_data;
 }
 
-function fourhd_save_customizer_to_cart($cart_item_data, $product_id) {
-    $allowed = [
-        'front' => 'Front', 'back' => 'Back', 'pocket' => 'Pocket',
-        'left_sleeve' => 'Left Sleeve', 'right_sleeve' => 'Right Sleeve',
-    ];
+    function fourhd_save_customizer_to_cart($cart_item_data, $product_id) {
 
-    if (!empty($_POST['fourhd_primary_location'])) {
-        $primary = sanitize_key(wp_unslash($_POST['fourhd_primary_location']));
-        if (isset($allowed[$primary])) {
-            $cart_item_data['fourhd_primary_location'] = $primary;
-        }
+    $customizer_type = get_post_meta(
+        $product_id,
+        '_fourhd_customizer_type',
+        true
+    );
+
+    $cap_layout = get_post_meta(
+        $product_id,
+        '_fourhd_cap_print_layout',
+        true
+    ) ?: 'front_only';
+
+    if ($customizer_type === 'caps') {
+        $allowed = $cap_layout === 'multiple'
+            ? [
+                'front', 'front_left', 'front_right',
+                'back', 'left_side', 'right_side', 'under_brim'
+            ]
+            : ['front'];
+    } else {
+        $allowed = [
+            'front', 'back', 'pocket',
+            'left_sleeve', 'right_sleeve'
+        ];
     }
 
-    if (!empty($_POST['fourhd_extra_locations']) && is_array($_POST['fourhd_extra_locations'])) {
-        $extras = array_map('sanitize_key', wp_unslash($_POST['fourhd_extra_locations']));
-        $extras = array_filter($extras, function ($location) use ($allowed) { return isset($allowed[$location]); });
-        if (!empty($cart_item_data['fourhd_primary_location'])) {
-            $extras = array_diff($extras, [$cart_item_data['fourhd_primary_location']]);
-        }
-        $cart_item_data['fourhd_extra_locations'] = array_values($extras);
+    // Primary location
+    $primary = isset($_POST['fourhd_primary_location'])
+        ? sanitize_key(wp_unslash($_POST['fourhd_primary_location']))
+        : '';
+
+    if (in_array($primary, $allowed, true)) {
+        $cart_item_data['fourhd_primary_location'] = $primary;
     }
 
-    $active = [];
-    if (!empty($cart_item_data['fourhd_primary_location'])) $active[] = $cart_item_data['fourhd_primary_location'];
-    if (!empty($cart_item_data['fourhd_extra_locations'])) $active = array_merge($active, $cart_item_data['fourhd_extra_locations']);
+    // Additional locations
+    $extras = [];
 
-    if ($active) {
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        foreach (array_unique($active) as $location) {
-            $name = 'fourhd_design_' . $location;
-            if (empty($_FILES[$name]['name']) || $_FILES[$name]['error'] !== UPLOAD_ERR_OK) continue;
-            $file = $_FILES[$name];
-            $upload = wp_handle_upload($file, [
-                'test_form' => false,
-                'mimes' => ['jpg|jpeg' => 'image/jpeg', 'png' => 'image/png'],
-            ]);
-            if (!empty($upload['url']) && empty($upload['error'])) {
-                $cart_item_data['fourhd_designs'][$location] = [
-                    'url' => esc_url_raw($upload['url']),
-                    'name' => sanitize_file_name($file['name']),
-                ];
+    if (
+        !empty($_POST['fourhd_extra_locations']) &&
+        is_array($_POST['fourhd_extra_locations'])
+    ) {
+        $submitted = wp_unslash($_POST['fourhd_extra_locations']);
+
+        foreach ($submitted as $location) {
+            $location = sanitize_key($location);
+
+            if (
+                in_array($location, $allowed, true) &&
+                $location !== $primary
+            ) {
+                $extras[] = $location;
             }
         }
     }
 
-    if (isset($_POST['fourhd_mockup']) && $_POST['fourhd_mockup'] === 'yes') {
+    $extras = array_values(array_unique($extras));
+
+    if ($extras) {
+        $cart_item_data['fourhd_extra_locations'] = $extras;
+    }
+
+    $active = array_values(array_unique(
+        array_merge($primary ? [$primary] : [], $extras)
+    ));
+
+    // Premium Brim Sticker
+    $sticker_selected = (
+        $customizer_type === 'caps' &&
+        $cap_layout === 'multiple' &&
+        isset($_POST['fourhd_brim_sticker']) &&
+        wp_unslash($_POST['fourhd_brim_sticker']) === 'yes'
+    );
+
+    // Build one upload queue for all required designs
+    $queue = [];
+
+    foreach ($active as $location) {
+        $queue[] = [
+            'field'    => 'fourhd_design_' . $location,
+            'location' => $location,
+            'label'    => ucwords(str_replace('_', ' ', $location)),
+        ];
+    }
+
+    if ($sticker_selected) {
+        $queue[] = [
+            'field'    => 'fourhd_brim_sticker_design',
+            'location' => 'brim_sticker',
+            'label'    => 'Premium Brim Sticker',
+        ];
+    }
+
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+
+    $uploaded_paths = [];
+    $saved_designs = [];
+    $upload_failed = false;
+
+    $mimes = [
+        'jpg|jpeg' => 'image/jpeg',
+        'png'      => 'image/png',
+    ];
+
+    foreach ($queue as $entry) {
+
+        $field = $entry['field'];
+        $file = $_FILES[$field] ?? null;
+
+        // Reject missing or incomplete uploads
+        if (
+            !is_array($file) ||
+            empty($file['name']) ||
+            !isset($file['error']) ||
+            $file['error'] !== UPLOAD_ERR_OK ||
+            empty($file['tmp_name']) ||
+            !is_uploaded_file($file['tmp_name'])
+        ) {
+            $upload_failed = true;
+
+            wc_add_notice(
+                sprintf(
+                    'Unable to receive your %s design. Please try again.',
+                    $entry['label']
+                ),
+                'error'
+            );
+
+            break;
+        }
+
+        // Validate size and actual file type
+        $check = wp_check_filetype_and_ext(
+            $file['tmp_name'],
+            $file['name'],
+            $mimes
+        );
+
+        if (
+            empty($check['ext']) ||
+            !in_array(
+                $check['type'] ?? '',
+                ['image/jpeg', 'image/png'],
+                true
+            ) ||
+            (int) $file['size'] > 10 * 1024 * 1024
+        ) {
+            $upload_failed = true;
+
+            wc_add_notice(
+                sprintf(
+                    '%s must be a valid PNG or JPG image, 10 MB or smaller.',
+                    $entry['label']
+                ),
+                'error'
+            );
+
+            break;
+        }
+
+        // Save file
+        $upload = wp_handle_upload($file, [
+            'test_form' => false,
+            'mimes'     => $mimes,
+        ]);
+
+        if (
+            !empty($upload['error']) ||
+            empty($upload['url']) ||
+            empty($upload['file'])
+        ) {
+            $upload_failed = true;
+
+            wc_add_notice(
+                sprintf(
+                    'Unable to save your %s design. Please try again.',
+                    $entry['label']
+                ),
+                'error'
+            );
+
+            // Handle a partially created file, if returned
+            if (!empty($upload['file']) && is_file($upload['file'])) {
+                @unlink($upload['file']);
+            }
+
+            break;
+        }
+
+        $uploaded_paths[] = $upload['file'];
+
+        $saved_designs[$entry['location']] = [
+            'url'  => esc_url_raw($upload['url']),
+            'name' => sanitize_file_name($file['name']),
+        ];
+    }
+
+    // Roll back every successful upload if any file failed
+    if ($upload_failed) {
+
+        foreach ($uploaded_paths as $path) {
+            if (is_file($path)) {
+                wp_delete_file($path);
+            }
+        }
+
+        throw new Exception('');
+
+        return $cart_item_data;
+    }
+
+    // Commit all successfully uploaded designs
+    foreach ($active as $location) {
+        if (isset($saved_designs[$location])) {
+            $cart_item_data['fourhd_designs'][$location] =
+                $saved_designs[$location];
+        }
+    }
+
+    if ($sticker_selected) {
+        $cart_item_data['fourhd_brim_sticker'] = 'yes';
+        $cart_item_data['fourhd_brim_sticker_design'] =
+            $saved_designs['brim_sticker'];
+    }
+
+    // Existing mockup option
+    if (
+        isset($_POST['fourhd_mockup']) &&
+        wp_unslash($_POST['fourhd_mockup']) === 'yes'
+    ) {
         $cart_item_data['fourhd_mockup'] = 'yes';
     }
 
     return $cart_item_data;
 }
+
 
 function fourhd_save_print_upload_to_cart($cart_item_data, $product_id) {
     $fields = fourhd_get_print_fields($product_id);
@@ -762,36 +1497,96 @@ function fourhd_save_print_upload_to_cart($cart_item_data, $product_id) {
 add_filter('woocommerce_get_item_data', 'fourhd_show_upload', 10, 2);
 
 function fourhd_show_upload($item_data, $cart_item) {
+
     $labels = [
-        'front' => 'Front', 'back' => 'Back', 'pocket' => 'Pocket',
-        'left_sleeve' => 'Left Sleeve', 'right_sleeve' => 'Right Sleeve',
+        'front'        => 'Front Center',
+        'front_left'   => 'Front Left',
+        'front_right'  => 'Front Right',
+        'back'         => 'Back',
+        'left_side'    => 'Left Side',
+        'right_side'   => 'Right Side',
+        'under_brim'   => 'Under Brim',
+        'pocket'       => 'Pocket',
+        'left_sleeve'  => 'Left Sleeve',
+        'right_sleeve' => 'Right Sleeve',
     ];
 
     if (!empty($cart_item['fourhd_primary_location'])) {
         $location = $cart_item['fourhd_primary_location'];
-        $item_data[] = ['name' => 'Included Print', 'value' => $labels[$location] ?? $location];
+
+        $item_data[] = [
+            'name'  => 'Included Print',
+            'value' => $labels[$location] ?? $location,
+        ];
     }
 
     if (!empty($cart_item['fourhd_extra_locations'])) {
+
         $extra_labels = [];
-        foreach ($cart_item['fourhd_extra_locations'] as $location) $extra_labels[] = $labels[$location] ?? $location;
-        $item_data[] = ['name' => 'Additional Prints', 'value' => implode(', ', $extra_labels)];
+
+        foreach ($cart_item['fourhd_extra_locations'] as $location) {
+            $extra_labels[] = $labels[$location] ?? $location;
+        }
+
+        $item_data[] = [
+            'name'  => 'Additional Prints',
+            'value' => implode(', ', $extra_labels),
+        ];
     }
 
     if (!empty($cart_item['fourhd_designs'])) {
+
         foreach ($cart_item['fourhd_designs'] as $location => $design) {
-            $item_data[] = ['name' => ($labels[$location] ?? $location) . ' Design', 'value' => 'File received'];
+
+            $item_data[] = [
+                'name'  => ($labels[$location] ?? $location) . ' Design',
+                'value' => 'File received',
+            ];
         }
     }
 
+    // Premium Brim Sticker
+    if (
+        !empty($cart_item['fourhd_brim_sticker']) &&
+        $cart_item['fourhd_brim_sticker'] === 'yes'
+    ) {
+
+        $item_data[] = [
+            'name'  => 'Premium Brim Sticker',
+            'value' => 'Yes',
+        ];
+
+        if (!empty($cart_item['fourhd_brim_sticker_design']['url'])) {
+
+            $item_data[] = [
+                'name'  => 'Brim Sticker Design',
+                'value' => sanitize_file_name(
+                    $cart_item['fourhd_brim_sticker_design']['name'] ?? 'File received'
+                ),
+            ];
+        }
+    }
+
+    // Existing print artwork
     if (!empty($cart_item['fourhd_print_artwork'])) {
+
         foreach ($cart_item['fourhd_print_artwork'] as $artwork) {
-            $item_data[] = ['name' => $artwork['label'], 'value' => $artwork['name'] ?: 'File received'];
+
+            $item_data[] = [
+                'name'  => $artwork['label'],
+                'value' => $artwork['name'] ?: 'File received',
+            ];
         }
     }
 
-    if (!empty($cart_item['fourhd_mockup']) && $cart_item['fourhd_mockup'] === 'yes') {
-        $item_data[] = ['name' => 'Mockup', 'value' => 'Requested by email'];
+    if (
+        !empty($cart_item['fourhd_mockup']) &&
+        $cart_item['fourhd_mockup'] === 'yes'
+    ) {
+        $item_data[] = [
+            'name'  => 'Mockup',
+            'value' => 'Requested by email',
+        ];
     }
 
     return $item_data;
@@ -804,37 +1599,113 @@ function fourhd_show_upload($item_data, $cart_item) {
 add_action('woocommerce_checkout_create_order_line_item', 'fourhd_save_design_to_order', 10, 4);
 
 function fourhd_save_design_to_order($item, $cart_item_key, $values, $order) {
+
     $labels = [
-        'front' => 'Front', 'back' => 'Back', 'pocket' => 'Pocket',
-        'left_sleeve' => 'Left Sleeve', 'right_sleeve' => 'Right Sleeve',
+        'front'        => 'Front Center',
+        'front_left'   => 'Front Left',
+        'front_right'  => 'Front Right',
+        'back'         => 'Back',
+        'left_side'    => 'Left Side',
+        'right_side'   => 'Right Side',
+        'under_brim'   => 'Under Brim',
+        'pocket'       => 'Pocket',
+        'left_sleeve'  => 'Left Sleeve',
+        'right_sleeve' => 'Right Sleeve',
     ];
 
     if (!empty($values['fourhd_primary_location'])) {
+
         $location = $values['fourhd_primary_location'];
-        $item->add_meta_data('Included Print', $labels[$location] ?? $location);
+
+        $item->add_meta_data(
+            'Included Print',
+            $labels[$location] ?? $location
+        );
     }
 
     if (!empty($values['fourhd_extra_locations'])) {
+
         $extras = [];
-        foreach ($values['fourhd_extra_locations'] as $location) $extras[] = $labels[$location] ?? $location;
-        $item->add_meta_data('Additional Prints', implode(', ', $extras));
+
+        foreach ($values['fourhd_extra_locations'] as $location) {
+            $extras[] = $labels[$location] ?? $location;
+        }
+
+        $item->add_meta_data(
+            'Additional Prints',
+            implode(', ', $extras)
+        );
     }
 
+    // Print location artwork
     if (!empty($values['fourhd_designs'])) {
+
         foreach ($values['fourhd_designs'] as $location => $design) {
-            $item->add_meta_data(($labels[$location] ?? $location) . ' Design', esc_url_raw($design['url']));
+
+            if (empty($design['url'])) {
+                continue;
+            }
+
+            $item->add_meta_data(
+                ($labels[$location] ?? $location) . ' Design',
+                esc_url_raw($design['url'])
+            );
         }
     }
 
+    // Premium Brim Sticker
+    if (
+        !empty($values['fourhd_brim_sticker']) &&
+        $values['fourhd_brim_sticker'] === 'yes'
+    ) {
+
+        $item->add_meta_data(
+            'Premium Brim Sticker',
+            'Yes'
+        );
+
+        if (!empty($values['fourhd_brim_sticker_design']['url'])) {
+
+            $sticker = $values['fourhd_brim_sticker_design'];
+
+            $item->add_meta_data(
+                'Brim Sticker Design',
+                esc_url_raw($sticker['url'])
+            );
+
+            $item->add_meta_data(
+                '_fourhd_brim_sticker_filename',
+                sanitize_file_name($sticker['name'] ?? '')
+            );
+        }
+    }
+
+    // Existing print artwork
     if (!empty($values['fourhd_print_artwork'])) {
+
         foreach ($values['fourhd_print_artwork'] as $artwork) {
-            $item->add_meta_data($artwork['label'], esc_url_raw($artwork['url']));
-            $item->add_meta_data('_' . sanitize_key($artwork['label']) . '_filename', sanitize_file_name($artwork['name']));
+
+            $item->add_meta_data(
+                $artwork['label'],
+                esc_url_raw($artwork['url'])
+            );
+
+            $item->add_meta_data(
+                '_' . sanitize_key($artwork['label']) . '_filename',
+                sanitize_file_name($artwork['name'])
+            );
         }
     }
 
-    if (!empty($values['fourhd_mockup']) && $values['fourhd_mockup'] === 'yes') {
-        $item->add_meta_data('Mockup', 'Requested by email');
+    if (
+        !empty($values['fourhd_mockup']) &&
+        $values['fourhd_mockup'] === 'yes'
+    ) {
+
+        $item->add_meta_data(
+            'Mockup',
+            'Requested by email'
+        );
     }
 }
 
@@ -859,21 +1730,74 @@ function fourhd_apply_custom_print_price($cart) {
         $base_price = (float) $base_product->get_price();
         $extra_price = 0;
         $price_fields = [
-            'front' => '_fourhd_front_extra',
-            'back' => '_fourhd_back_extra',
-            'pocket' => '_fourhd_pocket_extra',
+            // Apparel and Caps
+            'front'       => '_fourhd_front_extra',
+            'back'        => '_fourhd_back_extra',
+
+            // Apparel
+            'pocket'      => '_fourhd_pocket_extra',
             'left_sleeve' => '_fourhd_left_sleeve_extra',
-            'right_sleeve' => '_fourhd_right_sleeve_extra',
+            'right_sleeve'=> '_fourhd_right_sleeve_extra',
+
+            // Caps
+            'front_left'  => '_fourhd_front_left_extra',
+            'front_right' => '_fourhd_front_right_extra',
+            'left_side'   => '_fourhd_left_side_extra',
+            'right_side'  => '_fourhd_right_side_extra',
+            'under_brim'  => '_fourhd_under_brim_extra',
         ];
 
+        // Additional print locations
         if (!empty($cart_item['fourhd_extra_locations'])) {
+
             foreach ($cart_item['fourhd_extra_locations'] as $location) {
-                if ($location === $cart_item['fourhd_primary_location']) continue;
+
+                if ($location === $cart_item['fourhd_primary_location']) {
+                    continue;
+                }
+
                 if (isset($price_fields[$location])) {
-                    $extra_price += (float) get_post_meta($product_id, $price_fields[$location], true);
+
+                    $extra_price += (float) get_post_meta(
+                        $product_id,
+                        $price_fields[$location],
+                        true
+                    );
                 }
             }
         }
+
+        // Premium Brim Sticker
+        $customizer_type = get_post_meta(
+            $product_id,
+            '_fourhd_customizer_type',
+            true
+        );
+
+        $cap_layout = get_post_meta(
+            $product_id,
+            '_fourhd_cap_print_layout',
+            true
+        );
+
+        if (
+            $customizer_type === 'caps' &&
+            $cap_layout === 'multiple' &&
+            !empty($cart_item['fourhd_brim_sticker']) &&
+            $cart_item['fourhd_brim_sticker'] === 'yes'
+        ) {
+
+            $sticker_price = (float) get_post_meta(
+                $product_id,
+                '_fourhd_brim_sticker_extra',
+                true
+            );
+
+            $extra_price += $sticker_price;
+        }
+
+        // Final unit price
+        $cart_item['data']->set_price($base_price + $extra_price);
 
         $cart_item['data']->set_price($base_price + $extra_price);
     }

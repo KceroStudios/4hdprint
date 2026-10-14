@@ -256,6 +256,7 @@
     display: flex;
     flex: 1;
     flex-direction: column;
+    min-width: 0;
 
     color: var(--black);
     text-decoration: none;
@@ -290,14 +291,33 @@ li.product
 .woocommerce-loop-product__title {
     margin: 0;
     padding: 20px 20px 10px;
-
+    width: auto;
     color: var(--black);
 
-    font-size: 20px;
-    line-height: 1.25;
+    font-size: 16px;
     font-weight: 600;
+    line-height: 1.4;
+    text-align: left;
 
     overflow-wrap: anywhere;
+}
+
+/* =========================================
+   PRODUCT RATING
+========================================= */
+
+.product-category-products ul.products li.product .star-rating {
+    float: none;
+    margin: 0 20px 10px;
+    color: var(--ligth-main-color);
+}
+
+.product-category-products ul.products li.product .star-rating::before {
+    color: var(--middle-gray);
+}
+
+.product-category-products ul.products li.product .star-rating span::before {
+    color: var(--ligth-main-color);
 }
 
 
@@ -306,6 +326,7 @@ li.product
 ========================================= */
 
 .product-category-products ul.products li.product .price {
+    display: block;
     margin: 0;
     padding: 0 20px 18px;
 
@@ -313,6 +334,7 @@ li.product
 
     font-size: 16px;
     font-weight: 700;
+    text-align: left;
 }
 
 
@@ -322,20 +344,22 @@ li.product
 
 .product-category-products ul.products li.product .button {
     display: block;
+    width: auto;
+    box-sizing: border-box;
 
     margin: auto 20px 20px;
-    padding: 10px 18px;
+    padding: 12px 18px;
 
     color: var(--black);
     background: transparent;
 
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 500;
     text-align: center;
     text-decoration: none;
 
     border: 1px solid var(--main-color);
-    border-radius: 0;
+    border-radius: 6px;
 
     transition:
         color .3s ease,
@@ -687,3 +711,4 @@ li.product
     color: var(--black);
     font-weight: 600;
 }
+
