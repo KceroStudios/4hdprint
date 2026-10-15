@@ -817,6 +817,104 @@ function fourhd_render_product_customizer($product, $product_id) {
             <?php endforeach; ?>
         </div>
 
+        <div class="fourhd-artwork-authorization">
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="fourhd_artwork_authorized"
+                    value="yes"
+                    required
+                >
+
+                <span>
+                    I confirm that I own or have permission to use
+                    the artwork I am uploading and authorize
+                    4HD PRINT to reproduce it for my order.
+                </span>
+            </label>
+
+            <button
+                type="button"
+                class="fourhd-artwork-policy-trigger"
+            >
+                Read More – Artwork Usage Policy
+            </button>
+
+        </div>
+
+        <div id="fourhd-artwork-modal" class="fourhd-artwork-modal" hidden>
+            <div class="fourhd-artwork-modal__content" role="dialog"
+                aria-modal="true" aria-labelledby="fourhd-policy-title">
+
+                <button type="button" class="fourhd-artwork-modal__close"
+                        aria-label="Close">&times;</button>
+
+                <h3 id="fourhd-policy-title">Artwork Ownership &amp; Usage Authorization</h3>
+
+                <p>By uploading artwork to 4HD PRINT, you acknowledge and agree to the following:</p>
+
+                <h4>1. Ownership and Permission</h4>
+                <p>You confirm that you own the artwork or have obtained all necessary
+                licenses and permissions to reproduce it.</p>
+
+                <h4>2. Copyrights and Trademarks</h4>
+                <p>You agree not to upload artwork that infringes copyrights, trademarks,
+                intellectual property rights, or privacy and publicity rights.</p>
+
+                <h4>3. Customer Responsibility</h4>
+                <p>You are responsible for ensuring that your submitted artwork may legally
+                be reproduced and for claims arising from unauthorized use, to the extent
+                permitted by applicable law.</p>
+
+                <h4>4. Authorization to Print</h4>
+                <p>You authorize 4HD PRINT to process and reproduce your artwork solely
+                as necessary to fulfill your order.</p>
+
+                <h4>5. Right to Refuse Orders</h4>
+                <p>4HD PRINT reserves the right to refuse or cancel orders involving
+                artwork that appears to violate applicable laws or company policies.</p>
+
+                <h4>6. No Transfer of Ownership</h4>
+                <p>Uploading artwork does not transfer ownership of the design to
+                4HD PRINT. All applicable rights remain with their respective owners.</p>
+
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('fourhd-artwork-modal');
+                const trigger = document.querySelector('.fourhd-artwork-policy-trigger');
+                const close = modal?.querySelector('.fourhd-artwork-modal__close');
+
+                if (!modal || !trigger || !close) return;
+
+                trigger.addEventListener('click', function () {
+                    modal.hidden = false;
+                    close.focus();
+                });
+
+                close.addEventListener('click', function () {
+                    modal.hidden = true;
+                    trigger.focus();
+                });
+
+                modal.addEventListener('click', function (event) {
+                    if (event.target === modal) {
+                        modal.hidden = true;
+                    }
+                });
+
+                document.addEventListener('keydown', function (event) {
+                    if (event.key === 'Escape' && !modal.hidden) {
+                        modal.hidden = true;
+                        trigger.focus();
+                    }
+                });
+            });
+            </script>
+
         <div class="fourhd-custom-price"><span>Estimated Total</span><strong id="fourhd_custom_total"><?php echo wp_kses_post($product->get_price_html()); ?></strong></div>
         <label class="fourhd-mockup-option"><input type="checkbox" name="fourhd_mockup" value="yes"><span>I would like to receive a mockup by email.</span></label>
     </div>
@@ -929,19 +1027,41 @@ function fourhd_render_print_artwork_upload($product, $product_id) {
 
 add_filter('woocommerce_add_to_cart_validation', 'fourhd_validate_upload', 10, 5);
 
-function fourhd_validate_upload($passed, $product_id, $quantity, $variation_id = 0, $variations = []) {
-    $mode = fourhd_get_upload_mode($product_id);
 
-    if ($mode === 'customizer') {
-        return fourhd_validate_customizer($passed, $product_id);
+    function fourhd_validate_upload($passed, $product_id, $quantity, $variation_id = 0, $variations = []) {
+
+        $mode = fourhd_get_upload_mode($product_id);
+
+        // Artwork authorization required for products with design uploads.
+        if (in_array($mode, ['customizer', 'print'], true)) {
+
+            $authorized = isset($_POST['fourhd_artwork_authorized'])
+                && is_string($_POST['fourhd_artwork_authorized'])
+                && sanitize_text_field(
+                    wp_unslash($_POST['fourhd_artwork_authorized'])
+                ) === 'yes';
+
+            if (!$authorized) {
+                wc_add_notice(
+                    'Please confirm that you own or have permission to use the uploaded artwork.',
+                    'error'
+                );
+
+                return false;
+            }
+        }
+
+        if ($mode === 'customizer') {
+            return fourhd_validate_customizer($passed, $product_id);
+        }
+
+        if ($mode === 'print') {
+            return fourhd_validate_print_upload($passed, $product_id, $variations);
+        }
+
+        return $passed;
     }
 
-    if ($mode === 'print') {
-        return fourhd_validate_print_upload($passed, $product_id, $variations);
-    }
-
-    return $passed;
-}
     function fourhd_validate_customizer($passed, $product_id) {
 
         $type = get_post_meta(
@@ -1214,6 +1334,15 @@ function fourhd_save_upload($cart_item_data, $product_id) {
 
     if ($mode !== 'disabled') {
         $cart_item_data['fourhd_unique_key'] = md5(microtime(true) . wp_rand());
+    }
+
+    // Save artwork authorization.
+    if (
+        isset($_POST['fourhd_artwork_authorized']) &&
+        is_string($_POST['fourhd_artwork_authorized']) &&
+        wp_unslash($_POST['fourhd_artwork_authorized']) === 'yes'
+    ) {
+        $cart_item_data['fourhd_artwork_authorized'] = 'yes';
     }
 
     return $cart_item_data;
@@ -1707,6 +1836,22 @@ function fourhd_save_design_to_order($item, $cart_item_key, $values, $order) {
             'Requested by email'
         );
     }
+
+    // Artwork ownership authorization.
+    if (
+        !empty($values['fourhd_artwork_authorized']) &&
+        $values['fourhd_artwork_authorized'] === 'yes'
+    ) {
+        $item->add_meta_data(
+            'Artwork Rights Confirmed',
+            'Yes'
+        );
+
+        $item->add_meta_data(
+            '_fourhd_artwork_policy_version',
+            '1.0'
+        );
+    }
 }
 
 /* =========================================================
@@ -1802,3 +1947,4 @@ function fourhd_apply_custom_print_price($cart) {
         $cart_item['data']->set_price($base_price + $extra_price);
     }
 }
+
