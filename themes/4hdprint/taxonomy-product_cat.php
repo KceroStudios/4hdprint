@@ -63,9 +63,6 @@ $category = get_queried_object();
 </section>
 
 
-    <!-- =========================================
-         CATEGORY CONTENT
-    ========================================== -->
 
     <!-- =========================================
      CATEGORY CONTENT
@@ -80,9 +77,6 @@ $category = get_queried_object();
              SIDEBAR — CATEGORIES
         ====================================== -->
 
-        <!-- =====================================
-     SIDEBAR — CATEGORIES
-====================================== -->
 
 <aside class="product-category-sidebar">
 

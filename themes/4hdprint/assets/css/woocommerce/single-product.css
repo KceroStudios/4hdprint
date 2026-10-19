@@ -752,110 +752,46 @@ select[name="attribute_color"] {
 }
 
 
+
 /* =========================================
-
-   PRODUCT BREADCRUMB
-
+   SINGLE PRODUCT — BREADCRUMB
 ========================================= */
 
-
-.woocommerce .woocommerce-breadcrumb {
-
-    width: 80%;
-
-    max-width: 1200px;
-
-    margin: 0 auto 30px;
-
-    padding: 15px 0;
-
+.single-product .woocommerce-breadcrumb {
+    width: 100%;
+    max-width: none;
     box-sizing: border-box;
 
+    margin: 0 0 30px;
+    padding: 16px max(20px, calc((100% - 1160px) / 2));
+
+    background: var(--ligth-gray);
     border-bottom: 1px solid var(--middle-gray);
 
+    color: var(--black);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.6;
 }
 
+.single-product .woocommerce-breadcrumb a {
+    color: var(--gray);
+    font-weight: 400;
+    text-decoration: none;
+    transition: color .2s ease;
+}
+
+.single-product .woocommerce-breadcrumb a:hover {
+    color: var(--main-color);
+}
 
 @media (max-width: 768px) {
-
-    .woocommerce .woocommerce-breadcrumb {
-
-        width: auto;
-
-        margin: 0 20px 25px;
-
-        padding: 12px 0;
-
+    .single-product .woocommerce-breadcrumb {
+        margin: 0 0 25px;
+        padding: 14px 20px;
     }
-
 }
 
-
-.flex-control-nav {
-
-    display: flex;
-
-    flex-direction: row;
-
-    list-style: none;
-
-    padding: 0;
-
-    flex-wrap: wrap;
-
-    gap: 5px;
-
-}
-
-
-.flex-control-nav li{
-
-    border: 1px solid #ccc;
-
-    border-radius: 5px;
-
-    padding: 5px;
-
-}
-
-
-.flex-control-nav li:hover{
-
-    border: 1px solid var(--main-color);
-
-    cursor: pointer;
-
-
-}
-
-
-.woocommerce-product-gallery__trigger .emoji{
-
-    font-size: x-large;
-
-}
-
-
-.variations label {
-
-    font-size: 17px;
-
-    font-weight: 400;
-
-    margin-right: 10px;
-
-    border-right: 3px dotted #fa8626;
-
-    padding-right: 10px;
-
-}
-
-
-.quantity{
-
-    margin-bottom: 10px;
-
-}
 
 
 /* =========================================
@@ -2774,5 +2710,241 @@ input[type="file"]::file-selector-button:hover {
 
     .fourhd-artwork-authorization label {
         font-size: 12px;
+    }
+}
+
+
+
+/* =========================================
+   4HD PRINT — PRINT ARTWORK UPLOAD
+   Shared design for mugs, business cards, etc.
+========================================= */
+
+.single-product .fourhd-print-artwork {
+    margin: 28px 0;
+    padding: 25px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.single-product .fourhd-print-artwork > h3 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--black);
+}
+
+.single-product .fourhd-print-artwork > p {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--gray);
+}
+
+.single-product .fourhd-print-artwork .fourhd-artwork-help {
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+
+/* Individual upload cards */
+
+.single-product .fourhd-artwork-field {
+    margin-bottom: 12px;
+    padding: 18px;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    background: #fafafa;
+    box-sizing: border-box;
+}
+
+.single-product .fourhd-artwork-field[hidden] {
+    display: none !important;
+}
+
+.single-product .fourhd-artwork-field > label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+}
+
+/* File input */
+
+.single-product .fourhd-artwork-field input[type="file"] {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px dashed #ccc;
+    border-radius: 7px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.single-product .fourhd-artwork-field
+input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 9px 14px;
+    border: 0;
+    border-radius: 5px;
+    background: var(--black);
+    color: #fff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.single-product .fourhd-artwork-field
+input[type="file"]::file-selector-button:hover {
+    background: var(--main-color);
+}
+
+/* Selected filename */
+
+.single-product .fourhd-artwork-filename {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--gray);
+    overflow-wrap: anywhere;
+}
+
+.single-product .fourhd-artwork-field .fourhd-required {
+    color: var(--main-color);
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+    .single-product .fourhd-print-artwork {
+        padding: 20px 15px;
+    }
+
+    .single-product .fourhd-artwork-field {
+        padding: 14px;
+    }
+}
+
+
+/* =========================================
+   4HD PRINT — PRINTING SWATCHES
+========================================= */
+
+.fourhd-printing-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 16px;
+}
+
+.fourhd-printing-swatch {
+    min-height: 48px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    background: #fff;
+    color: var(--black);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease;
+}
+
+.fourhd-printing-swatch:hover {
+    border-color: var(--main-color);
+}
+
+.fourhd-printing-swatch.is-selected {
+    border-color: var(--main-color);
+    background: var(--main-color);
+    color: #fff;
+}
+
+.fourhd-printing-swatch:focus-visible {
+    outline: 2px solid var(--main-color);
+    outline-offset: 3px;
+}
+
+.fourhd-printing-swatch:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .fourhd-printing-swatch {
+        flex: 1 1 calc(50% - 8px);
+    }
+}
+
+
+/* =========================================
+   PRINT ARTWORK CUSTOMIZER
+========================================= */
+
+.fourhd-print-customizer {
+    margin: 28px 0;
+}
+
+.fourhd-print-customizer .variations {
+    width: 100%;
+    margin-bottom: 20px !important;
+}
+
+.fourhd-print-customizer .variations tr {
+    display: block;
+}
+
+.fourhd-print-customizer .variations th,
+.fourhd-print-customizer .variations td {
+    display: block;
+    width: 100%;
+    padding: 0 !important;
+    text-align: left;
+}
+
+.fourhd-print-customizer .variations th.label {
+    margin-bottom: 10px;
+}
+
+.fourhd-print-customizer .variations th.label label {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.fourhd-print-customizer .fourhd-print-artwork {
+    margin: 20px 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+
+.fourhd-print-customizer .fourhd-print-artwork > h3 {
+    font-size: 17px;
+}
+
+.fourhd-print-customizer .fourhd-printing-swatches {
+    margin: 10px 0;
+}
+
+.fourhd-print-customizer .reset_variations {
+    display: inline-block;
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--gray);
+}
+
+@media (max-width: 600px) {
+    .fourhd-print-customizer {
+        padding: 20px 15px;
     }
 }

@@ -774,3 +774,167 @@ if (accountMenu) {
         }
     });
 }
+
+
+/* =========================================
+   4HD PRINT — PRINTING SWATCHES
+========================================= */
+
+document.addEventListener('DOMContentLoaded', function () {
+    const select = document.querySelector(
+        'form.variations_form select[name="attribute_printing"]'
+    );
+
+    if (!select || select.dataset.fourhdSwatchesReady) return;
+
+    const form = select.closest('form.variations_form');
+    if (!form) return;
+
+    select.dataset.fourhdSwatchesReady = '1';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'fourhd-printing-swatches';
+    wrapper.setAttribute('role', 'group');
+    wrapper.setAttribute('aria-label', 'Printing');
+
+    const buttons = [];
+
+    Array.from(select.options).forEach(function (option) {
+        if (!option.value) return;
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'fourhd-printing-swatch';
+        button.textContent = option.textContent.trim();
+        button.dataset.value = option.value;
+
+        button.addEventListener('click', function () {
+            if (button.disabled) return;
+
+            select.value = option.value;
+
+            select.dispatchEvent(
+                new Event('change', { bubbles: true })
+            );
+        });
+
+        wrapper.appendChild(button);
+        buttons.push(button);
+    });
+
+    if (!buttons.length) return;
+
+    select.insertAdjacentElement('afterend', wrapper);
+
+    function syncButtons() {
+        buttons.forEach(function (button) {
+            const option = Array.from(select.options).find(
+                item => item.value === button.dataset.value
+            );
+
+            const selected = select.value === button.dataset.value;
+
+            button.classList.toggle('is-selected', selected);
+            button.setAttribute('aria-pressed', String(selected));
+            button.disabled = !option || option.disabled;
+        });
+    }
+
+    select.addEventListener('change', syncButtons);
+
+    if (window.jQuery) {
+        window.jQuery(form).on(
+            'reset_data woocommerce_update_variation_values',
+            syncButtons
+        );
+    }
+
+    syncButtons();
+
+    // Hide native selector only after buttons exist.
+    select.classList.add('fourhd-native-select-hidden');
+});
+
+
+
+/* =========================================
+   4HD PRINT — PRINT ARTWORK CUSTOMIZER
+========================================= */
+
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector(
+        'form.variations_form'
+    );
+
+    if (!form) return;
+
+    const artwork = form.querySelector(
+        '.fourhd-print-artwork'
+    );
+
+    const variations = form.querySelector(
+        'table.variations'
+    );
+
+    if (!artwork || !variations) return;
+
+    // Avoid duplicate initialization
+    if (form.querySelector('.fourhd-print-customizer')) return;
+
+    const customizer = document.createElement('div');
+    customizer.className =
+        'fourhd-product-customizer fourhd-print-customizer';
+
+    const title = document.createElement('h3');
+    title.textContent = 'Customize Your Product';
+
+    customizer.appendChild(title);
+
+    // Place the customizer where variations originally appeared.
+    variations.parentNode.insertBefore(customizer, variations);
+
+    // Keep both elements inside the same WooCommerce form.
+    customizer.appendChild(variations);
+    customizer.appendChild(artwork);
+});
+
+
+/* 4HD PRINT - Artwork Usage Policy Modal */
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.fourhd-artwork-policy-trigger').forEach(function (button) {
+
+        const authorization = button.closest('.fourhd-artwork-authorization');
+        const modal = authorization?.nextElementSibling;
+
+        if (!modal || !modal.classList.contains('fourhd-artwork-modal')) {
+            return;
+        }
+
+        const closeButton = modal.querySelector('.fourhd-artwork-modal__close');
+
+        function closeModal() {
+            modal.hidden = true;
+            button.focus();
+        }
+
+        button.addEventListener('click', function () {
+            modal.hidden = false;
+            closeButton?.focus();
+        });
+
+        closeButton?.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !modal.hidden) {
+                closeModal();
+            }
+        });
+    });
+});
